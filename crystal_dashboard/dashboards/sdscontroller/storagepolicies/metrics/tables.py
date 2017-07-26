@@ -7,7 +7,7 @@ from horizon import tables
 from horizon import exceptions
 from horizon import messages
 
-from openstack_dashboard.api import sds_controller as api
+from crystal_dashboard.api import sds_controller as api
 
 
 # class CreatePolicy(tables.LinkAction):

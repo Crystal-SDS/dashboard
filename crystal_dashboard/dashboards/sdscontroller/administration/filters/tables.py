@@ -11,9 +11,9 @@ from horizon import forms
 from horizon import messages
 from horizon import tables
 from models import Filter
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import common
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import common
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
 
 
 class MyStorletFilterAction(tables.FilterAction):

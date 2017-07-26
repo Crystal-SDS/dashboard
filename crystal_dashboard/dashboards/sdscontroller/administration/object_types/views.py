@@ -25,9 +25,9 @@ from horizon import forms
 from horizon.utils import memoized
 from horizon import exceptions
 
-from openstack_dashboard.dashboards.sdscontroller.administration.object_types \
+from crystal_dashboard.dashboards.sdscontroller.administration.object_types \
     import forms as ot_forms
-from openstack_dashboard.api import sds_controller as api
+from crystal_dashboard.api import sds_controller as api
 
 
 class CreateObjectTypeView(forms.ModalFormView):

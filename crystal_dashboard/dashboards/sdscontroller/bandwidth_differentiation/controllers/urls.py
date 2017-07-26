@@ -1,9 +1,9 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import views
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import views
 
-VIEWS_MOD = "openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers.views"
+VIEWS_MOD = "crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers.views"
 
 urlpatterns = patterns(
     VIEWS_MOD,

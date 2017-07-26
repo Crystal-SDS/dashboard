@@ -4,9 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import common
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import common
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
 
 
 class CreateDSLPolicy(forms.SelfHandlingForm):

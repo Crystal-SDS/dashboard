@@ -1,9 +1,9 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.policies import views
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.policies import views
 
-VIEWS_MOD = 'openstack_dashboard.dashboards.sdscontroller.storagepolicies.policies.views'
+VIEWS_MOD = 'crystal_dashboard.dashboards.sdscontroller.storagepolicies.policies.views'
 
 urlpatterns = patterns(
     VIEWS_MOD,

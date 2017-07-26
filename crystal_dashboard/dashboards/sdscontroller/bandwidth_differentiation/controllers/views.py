@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import forms
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import forms as controllers_forms
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import forms as controllers_forms
 
 
 class CreateGETView(forms.ModalFormView):

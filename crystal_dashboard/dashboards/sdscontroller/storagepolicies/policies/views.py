@@ -9,9 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import common
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.policies import forms as policies_forms
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import common
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.policies import forms as policies_forms
 
 
 class CreateSimplePolicyView(forms.ModalFormView):

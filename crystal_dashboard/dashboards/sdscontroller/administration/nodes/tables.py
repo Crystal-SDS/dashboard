@@ -10,8 +10,8 @@ from django.utils.translation import ungettext_lazy
 
 from horizon import tables
 from horizon import exceptions
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
 
 
 class MyProxyFilterAction(tables.FilterAction):

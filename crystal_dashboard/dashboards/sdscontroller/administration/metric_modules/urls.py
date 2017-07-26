@@ -1,9 +1,9 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.administration.metric_modules import views
+from crystal_dashboard.dashboards.sdscontroller.administration.metric_modules import views
 
-VIEWS_MOD = 'openstack_dashboard.dashboards.sdscontroller.administration.metric_modules.views'
+VIEWS_MOD = 'crystal_dashboard.dashboards.sdscontroller.administration.metric_modules.views'
 
 urlpatterns = patterns(
     VIEWS_MOD,

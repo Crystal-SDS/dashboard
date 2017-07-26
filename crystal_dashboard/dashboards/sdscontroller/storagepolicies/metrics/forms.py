@@ -24,7 +24,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import messages
 
-from openstack_dashboard.api import sds_controller as api
+from crystal_dashboard.api import sds_controller as api
 
 
 class CreatePolicy(forms.SelfHandlingForm):

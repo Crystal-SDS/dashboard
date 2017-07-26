@@ -25,8 +25,8 @@ from horizon import forms
 from horizon import messages
 import json
 
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
-from openstack_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import sds_controller as api
 
 
 class CreateStoragePolicy(forms.SelfHandlingForm):

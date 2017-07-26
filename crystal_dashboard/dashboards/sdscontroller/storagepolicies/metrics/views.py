@@ -20,7 +20,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import forms
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.dynamic_policies import forms as policies_forms
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.dynamic_policies import forms as policies_forms
 
 
 class CreatePolicyView(forms.ModalFormView):

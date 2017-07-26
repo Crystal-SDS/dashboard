@@ -15,9 +15,9 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.administration.nodes import views
+from crystal_dashboard.dashboards.sdscontroller.administration.nodes import views
 
-VIEWS_MOD = 'openstack_dashboard.dashboards.sdscontroller.administration.nodes.views'
+VIEWS_MOD = 'crystal_dashboard.dashboards.sdscontroller.administration.nodes.views'
 
 urlpatterns = patterns(
     VIEWS_MOD,

@@ -24,8 +24,8 @@ from horizon import exceptions
 from horizon import forms
 from horizon import messages
 
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
 
 
 class UpdateNode(forms.SelfHandlingForm):

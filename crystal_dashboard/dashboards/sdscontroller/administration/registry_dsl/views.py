@@ -7,8 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller.administration.registry_dsl import forms as policies_forms
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller.administration.registry_dsl import forms as policies_forms
 
 
 class CreateFilterView(forms.ModalFormView):

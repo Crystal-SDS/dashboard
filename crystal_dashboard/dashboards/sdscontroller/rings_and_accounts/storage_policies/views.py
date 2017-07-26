@@ -25,7 +25,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from horizon import forms
 
-from openstack_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import forms as storage_policies_forms
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import forms as storage_policies_forms
 
 
 class CreateStoragePolicy(forms.ModalFormView):

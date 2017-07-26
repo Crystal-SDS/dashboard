@@ -15,7 +15,7 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import views
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import views
 
 VIEWS_MOD = ('openstack_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies.views')
 

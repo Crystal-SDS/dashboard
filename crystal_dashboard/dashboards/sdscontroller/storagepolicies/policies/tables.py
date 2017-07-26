@@ -10,8 +10,8 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from models import StaticPolicy
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import common
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import common
 
 
 class MyStaticPolicyFilterAction(tables.FilterAction):
