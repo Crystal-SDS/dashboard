@@ -32,7 +32,7 @@ from horizon.workflows import views
 from openstack_auth import policy as policy_backend
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.sdscontroller.projects import workflows
+from crystal_dashboard.dashboards.sdscontroller.projects import workflows
 from openstack_dashboard.test import helpers as test
 from openstack_dashboard import usage
 from openstack_dashboard.usage import quotas

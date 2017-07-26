@@ -37,7 +37,7 @@ from openstack_dashboard.api import nova
 from openstack_dashboard.usage import quotas
 from openstack_dashboard.api import sds_controller
 
-from openstack_dashboard.dashboards.sdscontroller.projects import tables
+from crystal_dashboard.dashboards.sdscontroller.projects import tables
 
 INDEX_URL = "horizon:sdscontroller:projects:index"
 ADD_USER_URL = "horizon:sdscontroller:projects:create_user"

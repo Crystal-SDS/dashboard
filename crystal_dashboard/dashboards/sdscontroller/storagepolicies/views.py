@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tabs
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies import tabs as policies_tabs
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies import tabs as policies_tabs
 
 
 class IndexView(tabs.TabbedTableView):

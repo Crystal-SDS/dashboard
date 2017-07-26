@@ -20,7 +20,7 @@ class SwiftTab(tabs.TableTab):
 #     slug = "grafana_plot_editor"
 #     template_name = "horizon/dashboards/sdscontroller/system/_grafana_admin.html"
 
-from openstack_dashboard.dashboards.sdscontroller.administration.registry_dsl import tables as registry_tables
+from crystal_dashboard.dashboards.sdscontroller.administration.registry_dsl import tables as registry_tables
 
 
 class PlotEditor(tabs.TableTab):

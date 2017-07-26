@@ -13,7 +13,7 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-import openstack_dashboard.dashboards.sdscontroller.storagemonitoring.views as views
+import crystal_dashboard.dashboards.sdscontroller.storagemonitoring.views as views
 
 
 urlpatterns = patterns(

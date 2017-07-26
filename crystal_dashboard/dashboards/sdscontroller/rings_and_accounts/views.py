@@ -11,8 +11,7 @@
 # under the License.
 
 from horizon import tabs
-from openstack_dashboard.dashboards.sdscontroller.rings_and_accounts \
-    import tabs as mydashboard_tabs
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts import tabs as mydashboard_tabs
 
 class IndexView(tabs.TabbedTableView):
     # A very simple class-based view...

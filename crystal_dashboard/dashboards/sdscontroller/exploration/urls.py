@@ -13,7 +13,7 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.exploration.views \
+from crystal_dashboard.dashboards.sdscontroller.exploration.views \
     import IndexView
 
 

@@ -4,15 +4,15 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import common
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import models as controllers_models
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import tables as controllers_tables
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.proxy_sorting import models as proxy_sorting_models
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.proxy_sorting import tables as proxy_sorting_tables
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.slas import models as slas_models
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation.slas import tables as slas_tables
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import common
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import models as controllers_models
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import tables as controllers_tables
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.proxy_sorting import models as proxy_sorting_models
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.proxy_sorting import tables as proxy_sorting_tables
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.slas import models as slas_models
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.slas import tables as slas_tables
 
 
 class SLAsTab(tabs.TableTab):

@@ -5,7 +5,7 @@ from swiftclient import ClientException
 
 from horizon import exceptions
 from openstack_dashboard.api import keystone
-from openstack_dashboard.api import sds_controller as api
+from crystal_dashboard.api import sds_controller as api
 from openstack_dashboard.api import swift
 
 

@@ -2,8 +2,8 @@ from django.conf.urls import include
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies import views
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.policies import urls as policies_urls
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies import views
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.policies import urls as policies_urls
 
 urlpatterns = patterns(
     '',

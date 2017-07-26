@@ -1,6 +1,6 @@
 from horizon import tabs
 
-from openstack_dashboard.dashboards.sdscontroller.administration import tabs as administration_tabs
+from crystal_dashboard.dashboards.sdscontroller.administration import tabs as administration_tabs
 
 
 class IndexView(tabs.TabbedTableView):

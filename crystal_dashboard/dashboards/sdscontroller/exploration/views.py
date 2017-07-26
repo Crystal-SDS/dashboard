@@ -12,7 +12,7 @@
 
 from horizon import views
 
-from openstack_dashboard.dashboards.sdscontroller.exploration \
+from crystal_dashboard.dashboards.sdscontroller.exploration \
     import tabs as mydashboard_tabs
 from urlparse import urlparse
 

@@ -1,6 +1,6 @@
 from horizon import tabs
 
-from openstack_dashboard.dashboards.sdscontroller.bandwidth_differentiation import tabs as mydashboard_tabs
+from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation import tabs as mydashboard_tabs
 
 
 class IndexView(tabs.TabbedTableView):

@@ -5,11 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.metrics import models as metrics_models
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.metrics import tables as metrics_tables
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.policies import models as policies_models
-from openstack_dashboard.dashboards.sdscontroller.storagepolicies.policies import tables as policies_tables
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.metrics import models as metrics_models
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.metrics import tables as metrics_tables
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.policies import models as policies_models
+from crystal_dashboard.dashboards.sdscontroller.storagepolicies.policies import tables as policies_tables
 
 
 class Policies(tabs.TableTab):

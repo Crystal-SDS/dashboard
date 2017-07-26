@@ -36,11 +36,11 @@ from horizon.utils.urlresolvers import reverse  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
-from openstack_dashboard.dashboards.sdscontroller.containers \
+from crystal_dashboard.dashboards.sdscontroller.containers \
     import browsers as project_browsers
-from openstack_dashboard.dashboards.sdscontroller.containers \
+from crystal_dashboard.dashboards.sdscontroller.containers \
     import forms as project_forms
-from openstack_dashboard.dashboards.sdscontroller.containers import utils
+from crystal_dashboard.dashboards.sdscontroller.containers import utils
 
 
 class ContainerView(browsers.ResourceBrowserView):

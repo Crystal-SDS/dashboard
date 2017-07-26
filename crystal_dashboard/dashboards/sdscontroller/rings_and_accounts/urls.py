@@ -14,9 +14,8 @@ from django.conf.urls import patterns
 from django.conf.urls import url
 from django.conf.urls import include
 
-from openstack_dashboard.dashboards.sdscontroller.rings_and_accounts.views \
-    import IndexView
-from openstack_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import urls as storage_policies
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.views import IndexView
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import urls as storage_policies
 
 
 urlpatterns = patterns(

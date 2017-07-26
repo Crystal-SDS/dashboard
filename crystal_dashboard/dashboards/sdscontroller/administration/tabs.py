@@ -4,22 +4,22 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from openstack_dashboard.api import sds_controller as api
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
-from openstack_dashboard.dashboards.sdscontroller.administration.dependencies import models as dependency_models
-from openstack_dashboard.dashboards.sdscontroller.administration.dependencies import tables as dependency_tables
-from openstack_dashboard.dashboards.sdscontroller.administration.filters import models as filters_models
-from openstack_dashboard.dashboards.sdscontroller.administration.filters import tables as filter_tables
-from openstack_dashboard.dashboards.sdscontroller.administration.groups import models as group_models
-from openstack_dashboard.dashboards.sdscontroller.administration.groups import tables as group_tables
-from openstack_dashboard.dashboards.sdscontroller.administration.metric_modules import models as metric_module_models
-from openstack_dashboard.dashboards.sdscontroller.administration.metric_modules import tables as metric_module_tables
-from openstack_dashboard.dashboards.sdscontroller.administration.nodes import models as nodes_models
-from openstack_dashboard.dashboards.sdscontroller.administration.nodes import tables as nodes_tables
-from openstack_dashboard.dashboards.sdscontroller.administration.object_types import models as object_types_models
-from openstack_dashboard.dashboards.sdscontroller.administration.object_types import tables as object_types_tables
-from openstack_dashboard.dashboards.sdscontroller.administration.registry_dsl import models as registry_models
-from openstack_dashboard.dashboards.sdscontroller.administration.registry_dsl import tables as registry_tables
+from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.dashboards.sdscontroller.administration.dependencies import models as dependency_models
+from crystal_dashboard.dashboards.sdscontroller.administration.dependencies import tables as dependency_tables
+from crystal_dashboard.dashboards.sdscontroller.administration.filters import models as filters_models
+from crystal_dashboard.dashboards.sdscontroller.administration.filters import tables as filter_tables
+from crystal_dashboard.dashboards.sdscontroller.administration.groups import models as group_models
+from crystal_dashboard.dashboards.sdscontroller.administration.groups import tables as group_tables
+from crystal_dashboard.dashboards.sdscontroller.administration.metric_modules import models as metric_module_models
+from crystal_dashboard.dashboards.sdscontroller.administration.metric_modules import tables as metric_module_tables
+from crystal_dashboard.dashboards.sdscontroller.administration.nodes import models as nodes_models
+from crystal_dashboard.dashboards.sdscontroller.administration.nodes import tables as nodes_tables
+from crystal_dashboard.dashboards.sdscontroller.administration.object_types import models as object_types_models
+from crystal_dashboard.dashboards.sdscontroller.administration.object_types import tables as object_types_tables
+from crystal_dashboard.dashboards.sdscontroller.administration.registry_dsl import models as registry_models
+from crystal_dashboard.dashboards.sdscontroller.administration.registry_dsl import tables as registry_tables
 
 
 class RegistryTab(tabs.TableTab):

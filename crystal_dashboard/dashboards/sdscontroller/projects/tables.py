@@ -29,8 +29,8 @@ from swiftclient import client
 
 from openstack_dashboard import api
 from openstack_dashboard import policy
-from openstack_dashboard.api import sds_controller as sds_controller_api
-from openstack_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import sds_controller as sds_controller_api
+from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
 
 
 class RescopeTokenToProject(tables.LinkAction):

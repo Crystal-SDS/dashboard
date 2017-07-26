@@ -4,10 +4,10 @@ from horizon import exceptions
 from horizon import tabs
 import json
 
-from openstack_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import tables as storagepolicies_tables
-from openstack_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import models as storage_policies_models
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import tables as storagepolicies_tables
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import models as storage_policies_models
 
-from openstack_dashboard.api import sds_controller as api
+from crystal_dashboard.api import sds_controller as api
 
 class StoragePolicies(tabs.TableTab):
     table_classes = (storagepolicies_tables.StoragePolicyTable,)
