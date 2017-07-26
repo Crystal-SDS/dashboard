@@ -27,7 +27,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import messages
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.sdscontroller.containers import utils
+from crystal_dashboard.dashboards.sdscontroller.containers import utils
 
 no_slash_validator = validators.RegexValidator(r'^(?u)[^/]+$',
                                                _("Slash is not an allowed "

@@ -19,7 +19,7 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-from openstack_dashboard.dashboards.sdscontroller.containers import views
+from crystal_dashboard.dashboards.sdscontroller.containers import views
 
 
 VIEW_MOD = 'openstack_dashboard.dashboards.sdscontroller.containers.views'

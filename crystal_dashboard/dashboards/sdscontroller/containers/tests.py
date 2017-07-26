@@ -28,10 +28,10 @@ from mox3.mox import IsA  # noqa
 import six
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.sdscontroller.containers import forms
-from openstack_dashboard.dashboards.sdscontroller.containers import tables
-from openstack_dashboard.dashboards.sdscontroller.containers import utils
-from openstack_dashboard.dashboards.sdscontroller.containers import views
+from crystal_dashboard.dashboards.sdscontroller.containers import forms
+from crystal_dashboard.dashboards.sdscontroller.containers import tables
+from crystal_dashboard.dashboards.sdscontroller.containers import utils
+from crystal_dashboard.dashboards.sdscontroller.containers import views
 from openstack_dashboard.test import helpers as test
 
 from horizon.utils.urlresolvers import reverse  # noqa

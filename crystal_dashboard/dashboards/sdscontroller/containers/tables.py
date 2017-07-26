@@ -30,7 +30,7 @@ from horizon.utils.urlresolvers import reverse  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
-from openstack_dashboard.dashboards.sdscontroller.containers import utils
+from crystal_dashboard.dashboards.sdscontroller.containers import utils
 
 
 LOG = logging.getLogger(__name__)
