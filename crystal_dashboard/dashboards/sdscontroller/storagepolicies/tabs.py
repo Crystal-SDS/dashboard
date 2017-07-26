@@ -60,8 +60,8 @@ class Policies(tabs.TableTab):
 
 
 class MetricTab(tabs.TableTab):
-    name = _("Workload Metric Tab")
-    slug = "workload_metric_tab"
+    name = _("Activated Workload Metrics")
+    slug = "activated_workload_metrics"
     table_classes = (metrics_tables.MetricTable,)
     template_name = ("horizon/common/_detail_table.html")
     preload = False

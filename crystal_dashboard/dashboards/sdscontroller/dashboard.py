@@ -18,7 +18,7 @@ import horizon
 class Objectstorage(horizon.PanelGroup):
     slug = "objectstorage"
     name = _("Object Storage")
-    panels = ('administration', 'projects', 'rings_and_accounts', 'containers', 'storagepolicies', 'bandwidth_differentiation', 'storagemonitoring',)
+    panels = ('administration', 'rings_and_accounts', 'storagepolicies', 'bandwidth_differentiation', 'storagemonitoring',)
 
 
 class Dataexploration(horizon.PanelGroup):
