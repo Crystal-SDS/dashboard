@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Exploration" %}{% endblock %}
+
+{% block page_header %}
+{% endblock page_header %}
+
+{% block main %}
+    <h3>{% trans "Data exploration tool" %}</h3>
+    {% include "sdscontroller/exploration/system/_exploration.html" with title=_("Data exploration tool") %}
+{% endblock %}
+

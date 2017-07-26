@@ -1,0 +1,38 @@
+{% load i18n %}
+{#{% block title %}{% trans "Storage Monitoring" %}{% endblock %}#}
+
+{% block page_header %}
+   {% include "horizon/common/_page_header.html" with title=_("Storage Monitoring") %}
+{% endblock page_header %}
+
+{% block nav %}
+        <ul id="nav">
+            <li class="btn btn-primary pull-right"
+                {% if active == "swift_project_plots" %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #e6e6e6;"
+                {% else %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #ffffff;" onMouseOver="this.style.backgroundColor='#e6e6e6'" onMouseOut="this.style.backgroundColor='#FFFFFF'"
+                {% endif %}
+                >
+                <a href="{% url "horizon:sdscontroller:storagemonitoring:index" %}" style="text-decoration: none; color: #000000">Swift Tenants Monitoring</a>
+            </li>
+            <li class="btn btn-primary pull-right"
+                {% if active == 'swift_container_plots' %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #e6e6e6;"
+                {% else %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #ffffff;" onMouseOver="this.style.backgroundColor='#e6e6e6'" onMouseOut="this.style.backgroundColor='#FFFFFF'"
+                {% endif %}
+                >
+                <a href="{% url "horizon:sdscontroller:storagemonitoring:swift_container" %}" style="text-decoration: none; color: #000000">Swift Container Monitoring</a>
+            </li>
+            <li class="btn btn-primary pull-right"
+                {% if active == 'system_plots' %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #e6e6e6;"
+                {% else %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #ffffff;" onMouseOver="this.style.backgroundColor='#e6e6e6'" onMouseOut="this.style.backgroundColor='#FFFFFF'"
+                {% endif %}
+                >
+                <a href="{% url "horizon:sdscontroller:storagemonitoring:system" %}" style="text-decoration: none; color: #000000">System Monitoring</a>
+            </li>
+        </ul>
+{% endblock %}

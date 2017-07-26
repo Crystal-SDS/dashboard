@@ -1,0 +1,18 @@
+<br/>
+
+<!-- reload page every 10 seconds -->
+<!--<script type="text/javascript">-->
+    <!--setInterval(function() {-->
+        <!--&lt;!&ndash; only if nodes table is active &ndash;&gt;-->
+        <!--if ($("#mypanel_tabs__nodes_table.active").length != 0) {-->
+            <!--window.location.reload();-->
+        <!--}-->
+    <!--}, 10000);-->
+<!--</script>-->
+
+<div id="proxys">
+    {{ proxys_table.render }}
+</div>
+<div id="storage_nodes">
+    {{ storagenodes_table.render }}
+</div>

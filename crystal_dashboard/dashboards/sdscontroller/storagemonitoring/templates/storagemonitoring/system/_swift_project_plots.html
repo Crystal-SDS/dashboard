@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_header %}
+    {% include "sdscontroller/storagemonitoring/index.html" with title=_("Monitoring System") active="swift_project_plots" %}
+{% endblock page_header %}
+{% block main %}
+    <iframe src="http://{{ ip_host }}:8089/goto/{{ projects_plot }}?embed=true" height="783" width="100%"></iframe>
+{% endblock %}

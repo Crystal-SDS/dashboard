@@ -1,0 +1,6 @@
+{% load i18n %}
+{% for k, v in devices.items %}
+<ul>
+  <li>{{ k }}: {{ v.free|usage_percentage:v.size }} {% trans "used of" %} {{ v.size|filesizeformat }}</li>
+</ul>
+{% endfor %}

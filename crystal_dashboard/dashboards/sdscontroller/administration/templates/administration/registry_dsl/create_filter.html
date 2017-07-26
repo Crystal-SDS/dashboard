@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Register Filter" %}{% endblock %}
+
+{% block main %}
+    {% include 'sdscontroller/administration/registry_dsl/_create_filter.html' %}
+{% endblock %}

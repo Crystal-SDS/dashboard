@@ -1,0 +1,28 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block form_id %}create_storage_policy_form{% endblock %}
+{% block form_name %}createStoragePolicy{% endblock %}
+{% block form_action %}{% url 'horizon:sdscontroller:rings_and_accounts:storage_policies:bind_storage_node' %}{% endblock %}
+{% block form_attrs %}enctype="multipart/form-data"{% endblock %}
+
+{% block modal-header %}
+  {% blocktrans %}Register Storage Node{% endblocktrans %}
+{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+<div class="right">
+    <h3>{% trans "Description:" %}</h3>
+    <p><strong>{% trans "Storage Node:" %}</strong> {% trans "Nodes registered in the OpenStack Swift system." %}</p>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Register Storage Node" %}" />
+  <a href="{% url 'horizon:sdscontroller:rings_and_accounts:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}

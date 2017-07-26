@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Upload Dependency" %}{% endblock %}
+
+{% block main %}
+    {% include 'sdscontroller/administration/dependencies/_upload.html' %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block form_attrs %}enctype="multipart/form-data"{% endblock %}
+
+{% block modal-header %}
+  {% blocktrans %}Edit Dependency{% endblocktrans %}
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Update Dependency" %}" />
+  <a href="{% url 'horizon:sdscontroller:administration:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
+
