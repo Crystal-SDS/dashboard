@@ -97,6 +97,7 @@ class DeleteProxyNodeAction(tables.DeleteAction):
 class ProxysTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("Hostname"))
     ip = tables.Column('ip', verbose_name="IP")
+    ssh_access = tables.Column('ssh_access', verbose_name="SSH Access")
     last_ping = tables.Column(lambda obj: '{0} seconds ago'.format(calendar.timegm(time.gmtime()) - int(float(getattr(obj, 'last_ping', '0')))),
                               verbose_name="Last Swift ping")
     node_status = tables.Column(lambda obj: 'UP' if getattr(obj, 'node_status', False) is True else 'DOWN', verbose_name="Swift Status", status=True)
@@ -193,12 +194,15 @@ class DeleteStorageNodeAction(tables.DeleteAction):
                               _(error_message),
                               redirect=redirect)
 
+
 class StorageNodesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("Hostname"))
     ip = tables.Column('ip', verbose_name="IP")
+    ssh_access = tables.Column('ssh_access', verbose_name="SSH Access")
     last_ping = tables.Column(lambda obj: '{0} seconds ago'.format(calendar.timegm(time.gmtime()) - int(float(getattr(obj, 'last_ping', '0')))),
                               verbose_name="Last Swift ping")
     node_status = tables.Column(lambda obj: 'UP' if getattr(obj, 'node_status', False) is True else 'DOWN', verbose_name="Swift Status", status=True)
+
     devices = tables.Column(get_devices_info, verbose_name=_("Devices"), classes=('nowrap-col',), sortable=False)
 
     class Meta:

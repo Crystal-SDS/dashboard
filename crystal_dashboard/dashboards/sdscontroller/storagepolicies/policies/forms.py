@@ -70,11 +70,12 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
         choices=[
             ('', _('Select one')),
             ('Execution Servers', [
-                ('default', _('Default')),
+                ('default', _('Default'), ),
                 ('proxy', _('Proxy Server')),
                 ('object', _('Object Storage Servers'))]
              )
         ],
+        initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
             'data-slug': 'source'
@@ -91,6 +92,7 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
                 ('object', _('Object Storage Servers'))]
              )
         ],
+        initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
             'data-slug': 'source'
