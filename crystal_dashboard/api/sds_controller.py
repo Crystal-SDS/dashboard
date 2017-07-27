@@ -1,13 +1,12 @@
 # encoding: utf-8
 from __future__ import unicode_literals
 
+from django.conf import settings
+from swiftclient import client
+from horizon.utils.memoized import memoized  # noqa
+import requests
 import json
 import urllib
-
-import requests
-from django.conf import settings
-
-from horizon.utils.memoized import memoized  # noqa
 
 
 @memoized
@@ -159,7 +158,21 @@ def bw_delete_sort_method(request, name):
     return r
 
 
-# # Swift - Tenants
+# # Swift - Tenants/ Projects
+def is_sds_project(project_name):
+    try:
+        keystone_admin_url = settings.OPENSTACK_KEYSTONE_URL
+        admin_user = settings.IOSTACK_KEYSTONE_ADMIN_USER
+        admin_password = settings.IOSTACK_KEYSTONE_ADMIN_PASSWORD
+        os_options = {'tenant_name': project_name}
+        url, token = client.get_auth(keystone_admin_url, admin_user, admin_password, os_options=os_options, auth_version="2.0")
+        head = client.head_account(url, token)
+        return 'x-account-meta-storlet-enabled' in head
+    except Exception:
+        # If the admin user is not assigned to the project (auth exception), then is not a SDS project
+        return False
+
+
 def swift_list_tenants(request):
     token = sds_controller_api(request)
 

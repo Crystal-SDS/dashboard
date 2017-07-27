@@ -7,3 +7,4 @@ include setup.py
 recursive-include crystal_dashboard *.js *.html *.scss
 
 global-exclude *.pyc
+

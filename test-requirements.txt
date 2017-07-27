@@ -4,7 +4,7 @@
 # Order matters to the pip dependency resolver, so sorting this file
 # changes how packages are installed.  New dependencies should be
 # added in alphabetical order, however, some dependencies may need to
-# be installed in a specific order.
+# be installed in a specific order. 
 #
 # Hacking should appear first in case something else depends on pep8
 hacking>=0.12.0,!=0.13.0,<0.14 # Apache-2.0
