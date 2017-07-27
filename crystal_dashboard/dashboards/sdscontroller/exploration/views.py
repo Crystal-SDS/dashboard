@@ -20,6 +20,6 @@ class IndexView(views.APIView):
 
     def get_data(self, request, context, *args, **kwargs):
         # Add data to the context here...
-        context["kibana_host"] = settings.KIBANA_HOST
+        context["kibana_host"] = request.META['HTTP_HOST'].split(':')[0]
         context["kibana_port"] = settings.KIBANA_PORT
         return context
