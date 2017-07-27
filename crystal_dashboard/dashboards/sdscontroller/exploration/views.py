@@ -11,12 +11,7 @@
 # under the License.
 
 from horizon import views
-
-from crystal_dashboard.dashboards.sdscontroller.exploration \
-    import tabs as mydashboard_tabs
-from urlparse import urlparse
-
-
+from django.conf import settings
 
 
 class IndexView(views.APIView):
@@ -25,20 +20,6 @@ class IndexView(views.APIView):
 
     def get_data(self, request, context, *args, **kwargs):
         # Add data to the context here...
-        context["ip_host"] = request.META['HTTP_HOST'].split(':')[0]
+        context["kibana_host"] = settings.KIBANA_HOST
+        context["kibana_port"] = settings.KIBANA_PORT
         return context
-
-#
-# from horizon import tabs
-#
-# from openstack_dashboard.dashboards.sdscontroller.administration \
-#     import tabs as mydashboard_tabs
-#
-#
-# class IndexView(tabs.TabbedTableView):
-#     tab_group_class = mydashboard_tabs.MypanelTabs
-#     template_name = 'sdscontroller/administration/index.html'
-#
-#     def get_data(self, request, context, *args, **kwargs):
-#         # Add data to the context here...
-#         return context

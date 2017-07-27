@@ -1,4 +1,4 @@
 {% load i18n %}
 {% block main %}
-          <iframe src="http://{{ ip_host }}:8089/app/kibana" style="width:100%; height:1000px" frameborder="0"></iframe>
+          <iframe src="http://{{ kibana_host }}:{{ kibana_port }}/app/kibana" style="width:100%; height:1000px" frameborder="0"></iframe>
 {% endblock %}
