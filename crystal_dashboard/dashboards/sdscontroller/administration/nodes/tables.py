@@ -18,19 +18,16 @@ class MyProxyFilterAction(tables.FilterAction):
     name = "myproxyfilter"
 
 
-class UpdateNodeAction(tables.LinkAction):
+class UpdateProxyAction(tables.LinkAction):
     name = "update"
     verbose_name = _("Edit")
     icon = "pencil"
     classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, datum=None):
-        base_url = reverse("horizon:sdscontroller:administration:nodes:update", kwargs={'node_id': datum.id})
+        base_url = reverse("horizon:sdscontroller:administration:nodes:update", kwargs={'node_id': datum.id,
+                                                                                        'server': 'proxy'})
         return base_url
-
-
-class UpdateProxyAction(UpdateNodeAction):
-    pass
 
 
 class RestartProxyAction(tables.BatchAction):
@@ -80,7 +77,7 @@ class DeleteProxyNodeAction(tables.DeleteAction):
 
     def delete(self, request, node_id):
         try:
-            response = api.swift_delete_node(request, node_id)
+            response = api.swift_delete_node(request, 'proxy', node_id)
             if 200 <= response.status_code < 300:
                 pass
                 # messages.success(request, _('Successfully deleted node: %s') % obj_id)
@@ -130,8 +127,16 @@ class MyStorageNodeFilterAction(tables.FilterAction):
     name = "mystoragenodefilter"
 
 
-class UpdateStorageNodeAction(UpdateNodeAction):
-    pass
+class UpdateStorageNodeAction(tables.LinkAction):
+    name = "update"
+    verbose_name = _("Edit")
+    icon = "pencil"
+    classes = ("ajax-modal", "btn-update",)
+
+    def get_link_url(self, datum=None):
+        base_url = reverse("horizon:sdscontroller:administration:nodes:update", kwargs={'node_id': datum.id,
+                                                                                        'server': 'object'})
+        return base_url
 
 
 class RestartStorageNodeAction(tables.BatchAction):
@@ -181,7 +186,7 @@ class DeleteStorageNodeAction(tables.DeleteAction):
 
     def delete(self, request, node_id):
         try:
-            response = api.swift_delete_node(request, node_id)
+            response = api.swift_delete_node(request, 'object', node_id)
             if 200 <= response.status_code < 300:
                 pass
                 # messages.success(request, _('Successfully deleted node: %s') % obj_id)

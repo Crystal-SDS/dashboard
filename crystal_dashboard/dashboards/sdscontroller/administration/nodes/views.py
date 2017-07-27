@@ -28,15 +28,17 @@ class UpdateNodeView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(UpdateNodeView, self).get_context_data(**kwargs)
         context['node_id'] = self.kwargs['node_id']
-        args = (self.kwargs['node_id'],)
+        context['server'] = self.kwargs['server']
+        args = (self.kwargs['server'], self.kwargs['node_id'],)
         context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method
     def _get_object(self, *args, **kwargs):
-        name = self.kwargs['node_id']
+        node_id = self.kwargs['node_id']
+        server = self.kwargs['server']
         try:
-            object_type = api.swift_get_node_detail(self.request, name)
+            object_type = api.swift_get_node_detail(self.request, server, node_id)
             return object_type
         except Exception:
             redirect = self.success_url
@@ -48,4 +50,5 @@ class UpdateNodeView(forms.ModalFormView):
         node_id = self.kwargs['node_id']
         initial = json.loads(node.text)
         initial['id'] = node_id
+        initial['server'] = initial['type']
         return initial

@@ -59,7 +59,6 @@ class Filters(tabs.TableTab):
     table_classes = (filter_tables.StorletFilterTable, filter_tables.NativeFilterTable, filter_tables.GlobalFilterTable)
     name = _("Filters")
     slug = "filters_table"
-    #template_name = "horizon/common/_detail_table.html"
     template_name = "sdscontroller/administration/filters/_detail.html"
     preload = False
 
@@ -192,7 +191,6 @@ class Nodes(tabs.TableTab):
     table_classes = (nodes_tables.ProxysTable, nodes_tables.StorageNodesTable,)
     name = _("Nodes")
     slug = "nodes_table"
-    # template_name = "horizon/common/_detail_table.html"
     template_name = "sdscontroller/administration/nodes/_detail.html"
     preload = False
 
@@ -231,7 +229,7 @@ class Nodes(tabs.TableTab):
         nodes = json.loads(strobj)
         for node in nodes:
             if node['type'] == 'object':
-                devices = []
+                # devices = []
                 # for k, v in node['devices'].iteritems():
                 #     used = v['size'] - v['free']
                 #     device_str = k + ': ' + str(float(used)/v['size']) + "% used of " + str(v['size']) + ' bytes'

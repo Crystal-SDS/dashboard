@@ -21,5 +21,5 @@ VIEWS_MOD = 'crystal_dashboard.dashboards.sdscontroller.administration.nodes.vie
 
 urlpatterns = patterns(
     VIEWS_MOD,
-    url(r'^update/(?P<node_id>[^/]+)/$', views.UpdateNodeView.as_view(), name='update'),
+    url(r'^update/(?P<server>[^/]+)/(?P<node_id>[^/]+)/$', views.UpdateNodeView.as_view(), name='update'),
 )

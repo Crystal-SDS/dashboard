@@ -244,11 +244,11 @@ def swift_get_all_nodes(request):
     return r
 
 
-def swift_get_node_detail(request, node_id):
+def swift_get_node_detail(request, server, node_id):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(node_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(server) + "/" + str(node_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -257,11 +257,11 @@ def swift_get_node_detail(request, node_id):
     return r
 
 
-def swift_update_node(request, node_id, data):
+def swift_update_node(request, server, node_id, data):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(node_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(server) + "/" + str(node_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -270,11 +270,11 @@ def swift_update_node(request, node_id, data):
     return r
 
 
-def swift_delete_node(request, node_id):
+def swift_delete_node(request, server, node_id):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(node_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(server) + "/" + str(node_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -295,8 +295,10 @@ def swift_restart_node(request, node_id):
     r = requests.put(url, headers=headers)
     return r
 
-############################## # Registry DSL API # ##############################
+
+# ############################# # Registry DSL API # ##############################
 # # Registry DSL - Storage Nodes
+
 
 def registry_storage_node(request, data):
     token = sds_controller_api(request)
@@ -811,7 +813,7 @@ def dsl_delete_object_type(request, object_type_id):
     return r
 
 
-############################## # Filters API # ##############################
+# ############################# # Filters API # ##############################
 
 
 # Filters - Filters
