@@ -9,6 +9,7 @@ from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_polic
 
 from crystal_dashboard.api import sds_controller as api
 
+
 class StoragePolicies(tabs.TableTab):
     table_classes = (storagepolicies_tables.StoragePolicyTable,)
     name = _("Storage Policies")
@@ -39,4 +40,3 @@ class MypanelTabs(tabs.TabGroup):
     slug = "mypanel_tabs"
     tabs = (StoragePolicies,)
     sticky = True
-

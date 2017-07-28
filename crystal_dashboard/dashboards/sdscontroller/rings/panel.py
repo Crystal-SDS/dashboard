@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -12,11 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import os
-import sys
+from django.utils.translation import ugettext_lazy as _
 
-from django.core.management import execute_from_command_line  # noqa
+import horizon
+from crystal_dashboard.dashboards.sdscontroller import dashboard
 
-if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crystal_dashboard.local.settings")
-    execute_from_command_line(sys.argv)
+
+class Rings_And_Accounts(horizon.Panel):
+    name = _("Storage Policies (Rings)")
+    slug = "rings"
+
+
+# dashboard.Sdscontroller.register(Rings_And_Accounts)
+dashboard.SDSController.register(Rings_And_Accounts)

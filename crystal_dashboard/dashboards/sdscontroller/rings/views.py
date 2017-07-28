@@ -10,15 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from django.utils.translation import ugettext_lazy as _
-
-import horizon
-from crystal_dashboard.dashboards.sdscontroller import dashboard
-
-class Rings_And_Accounts(horizon.Panel):
-    name = _("Rings & Storage Policies")
-    slug = "rings_and_accounts"
+from horizon import tabs
+from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts import tabs as mydashboard_tabs
 
 
-# dashboard.Sdscontroller.register(Rings_And_Accounts)
-dashboard.SDSController.register(Rings_And_Accounts)
+class IndexView(tabs.TabbedTableView):
+    # A very simple class-based view...
+    tab_group_class = mydashboard_tabs.MypanelTabs
+    template_name = 'sdscontroller/rings/index.html'
+
+    def get_data(self, request, context, *args, **kwargs):
+        # Add data to the context here...
+        return context
