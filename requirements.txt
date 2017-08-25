@@ -8,7 +8,7 @@
 #
 # PBR should always appear first
 pbr>=2.0.0 # Apache-2.0
-Django>=1.8,<1.9  # BSD
+Django<2.0,>=1.8 # BSD
 django-babel>=0.5.1 # BSD
 django_compressor>=2.0  # MIT
 django-nose>=1.4.4  # BSD
