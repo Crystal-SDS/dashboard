@@ -23,7 +23,7 @@ from openstack_dashboard import api
 from openstack_dashboard import policy
 from openstack_dashboard.usage import quotas
 
-from crystal_dashboard.api import sds_controller as sds_api
+from crystal_dashboard.api import crystal as sds_api
 
 
 class RescopeTokenToProject(tables.LinkAction):
@@ -240,9 +240,9 @@ class TenantsTable(tables.DataTable):
                                 label=_('Enabled'),
                                 required=False))
 
-    sds_project = tables.Column(lambda obj: sds_api.is_sds_project(getattr(obj, 'name', None)),
-                                verbose_name=_('SDS'), status=True,
-                                filters=(filters.yesno, filters.capfirst))
+    crystal_project = tables.Column(lambda obj: sds_api.is_crystal_project(getattr(obj, 'name', None)),
+                                    verbose_name=_('Crystal Enabled'), status=True,
+                                    filters=(filters.yesno, filters.capfirst))
 
     def get_project_detail_link(self, project):
         # this method is an ugly monkey patch, needed because

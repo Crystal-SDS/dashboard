@@ -1,7 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
-
-import horizon
 from crystal_dashboard.dashboards.sdscontroller import dashboard
+import horizon
 
 
 class BandwidthDifferentiation(horizon.Panel):
@@ -9,4 +8,4 @@ class BandwidthDifferentiation(horizon.Panel):
     slug = 'bandwidth_differentiation'
 
 
-dashboard.SDSController.register(BandwidthDifferentiation)
+dashboard.CrystalController.register(BandwidthDifferentiation)

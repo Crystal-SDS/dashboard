@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Kibana" %}{% endblock %}
+
+{% block page_header %}
+{% endblock page_header %}
+
+{% block main %}
+    {% include "sdscontroller/kibana/_exploration.html" with title=_("Kibana tool") %}
+{% endblock %}
+

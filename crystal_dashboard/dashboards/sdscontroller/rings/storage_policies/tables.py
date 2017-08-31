@@ -1,11 +1,10 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
-
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
-from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.api import crystal as api
 from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
 
 
@@ -16,21 +15,23 @@ class MyFilterAction(tables.FilterAction):
 class CreateStoragePolicy(tables.LinkAction):
     name = "create_storage_policy"
     verbose_name = _("Create new policy")
-    url = "horizon:sdscontroller:rings_and_accounts:storage_policies:create_storage_policy"
+    url = "horizon:sdscontroller:rings:storage_policies:create_storage_policy"
     classes = ("ajax-modal",)
     icon = "plus"
+
 
 class CreateECStoragePolicy(tables.LinkAction):
     name = "create_ec_storage_policy"
     verbose_name = _("Create EC Storage Policy")
-    url = "horizon:sdscontroller:rings_and_accounts:storage_policies:create_ec_storage_policy"
+    url = "horizon:sdscontroller:rings:storage_policies:create_ec_storage_policy"
     classes = ("ajax-modal",)
     icon = "plus"
+
 
 class BindStorageNode(tables.LinkAction):
     name = "bind_storage_node"
     verbose_name = _("Register Storage Node")
-    url = "horizon:sdscontroller:rings_and_accounts:storage_policies:bind_storage_node"
+    url = "horizon:sdscontroller:rings:storage_policies:bind_storage_node"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -53,7 +54,7 @@ class DeleteStorageNode(tables.DeleteAction):
         )
 
     name = "delete_storage_node"
-    success_url = "horizon:sdscontroller:rings_and_accounts:index"
+    success_url = "horizon:sdscontroller:rings:index"
 
     def delete(self, request, obj_id):
         try:
@@ -63,7 +64,7 @@ class DeleteStorageNode(tables.DeleteAction):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:sdscontroller:rings_and_accounts:index")
+            redirect = reverse("horizon:sdscontroller:rings:index")
             error_message = "Unable to remove storage node.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 

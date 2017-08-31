@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_header %}
+    {% include "sdscontroller/swift_monitoring/index.html" with title=_("Monitoring System") active="swift_container_plots" %}
+{% endblock page_header %}
+{% block main %}
+    <iframe src="http://{{ kibana_host }}:{{ kibana_port }}/goto/{{ containers_plot }}?embed=true" height="783" width="100%"></iframe>
+{% endblock %}

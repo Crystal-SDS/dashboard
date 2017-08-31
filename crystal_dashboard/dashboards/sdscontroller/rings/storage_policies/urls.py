@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import views
+from crystal_dashboard.dashboards.sdscontroller.rings.storage_policies import views
 
 urlpatterns = [
     url(r'^create_storage_policy', views.CreateStoragePolicy.as_view(),

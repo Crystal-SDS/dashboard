@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from crystal_dashboard.api import sds_controller as api
+from crystal_dashboard.api import crystal as api
 from crystal_dashboard.dashboards.sdscontroller import common
 from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
 from crystal_dashboard.dashboards.sdscontroller.bandwidth_differentiation.controllers import models as controllers_models
@@ -158,8 +158,8 @@ class ProxySortingTab(tabs.TableTab):
         return ret
 
 
-class MypanelTabs(tabs.TabGroup):
-    slug = "mypanel_tabs"
+class BwDiffTabs(tabs.TabGroup):
+    slug = "bandwidth_differentiation_tabs"
     # tabs = (SLAsTab, ProxySortingTab,)
     tabs = (SLAsTab, ControllersTab,)
     sticky = True

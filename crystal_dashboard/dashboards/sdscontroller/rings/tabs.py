@@ -1,13 +1,10 @@
+from crystal_dashboard.dashboards.sdscontroller.rings.storage_policies import tables as storagepolicies_tables
+from crystal_dashboard.dashboards.sdscontroller.rings.storage_policies import models as storage_policies_models
+from crystal_dashboard.api import crystal as api
 from django.utils.translation import ugettext_lazy as _
-
 from horizon import exceptions
 from horizon import tabs
 import json
-
-from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import tables as storagepolicies_tables
-from crystal_dashboard.dashboards.sdscontroller.rings_and_accounts.storage_policies import models as storage_policies_models
-
-from crystal_dashboard.api import sds_controller as api
 
 
 class StoragePolicies(tabs.TableTab):
@@ -36,7 +33,7 @@ class StoragePolicies(tabs.TableTab):
         return ret
 
 
-class MypanelTabs(tabs.TabGroup):
-    slug = "mypanel_tabs"
+class RingsTabs(tabs.TabGroup):
+    slug = "rings_tabs"
     tabs = (StoragePolicies,)
     sticky = True

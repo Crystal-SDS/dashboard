@@ -37,7 +37,7 @@ from openstack_dashboard.api import nova
 from openstack_dashboard.usage import quotas
 from openstack_dashboard.utils import identity as identity
 
-from crystal_dashboard.api import sds_controller as sds_api
+from crystal_dashboard.api import crystal as sds_api
 
 LOG = logging.getLogger(__name__)
 
