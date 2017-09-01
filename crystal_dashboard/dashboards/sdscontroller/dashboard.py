@@ -5,7 +5,7 @@ import horizon
 class SwiftCluster(horizon.PanelGroup):
     slug = "swift_cluster"
     name = _("Swift Cluster")
-    panels = ('nodes', 'rings',)
+    panels = ('nodes', 'rings', 'containers',)
 
 
 class SDSManagement(horizon.PanelGroup):
@@ -25,7 +25,7 @@ class CrystalController(horizon.Dashboard):
     slug = "sdscontroller"
     panels = (SwiftCluster, SDSManagement, Monitoring,)  # Add your panels here.
     default_panel = 'sds_policies'  # Specify the slug of the default panel.
-    permissions = ('openstack.roles.admin',)
+    permissions = ('openstack.roles.admin', 'openstack.services.object-store',)
 
 
 horizon.register(CrystalController)

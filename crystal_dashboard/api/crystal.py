@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from swiftclient import client
+import six.moves.urllib.parse as urlparse
 from horizon.utils.memoized import memoized  # noqa
+from oslo_utils import timeutils
 import requests
 import json
 import urllib
@@ -227,6 +229,46 @@ def swift_list_storage_policies(request):
 
     r = requests.get(url, headers=headers)
     return r
+
+
+from openstack_dashboard.api.swift import swift_api
+from openstack_dashboard.api.swift import Container
+from openstack_dashboard.api.swift import GLOBAL_READ_ACL
+from openstack_dashboard.api import base
+
+
+def swift_get_container(request, container_name, with_data=True):
+    if with_data:
+        headers, data = swift_api(request).get_object(container_name, "")
+    else:
+        data = None
+        headers = swift_api(request).head_container(container_name)
+    timestamp = None
+    is_public = False
+    public_url = None
+    try:
+        is_public = GLOBAL_READ_ACL in headers.get('x-container-read', '')
+        if is_public:
+            swift_endpoint = base.url_for(request,
+                                          'object-store',
+                                          endpoint_type='publicURL')
+            parameters = urlparse.quote(container_name.encode('utf8'))
+            public_url = swift_endpoint + '/' + parameters
+        ts_float = float(headers.get('x-timestamp'))
+        timestamp = timeutils.iso8601_from_timestamp(ts_float)
+    except Exception:
+        pass
+    container_info = {
+        'name': container_name,
+        'container_object_count': headers.get('x-container-object-count'),
+        'container_bytes_used': headers.get('x-container-bytes-used'),
+        'timestamp': timestamp,
+        'data': data,
+        'is_public': is_public,
+        'public_url': public_url,
+        'storage_policy': headers.get('x-storage-policy')
+    }
+    return Container(container_info)
 
 
 # # Swift - Nodes

@@ -35,10 +35,10 @@ from openstack_dashboard import usage
 from openstack_dashboard.usage import quotas
 
 
-INDEX_URL = reverse('horizon:identity:projects:index')
+INDEX_URL = reverse('horizon:sdscontroller:projects:index')
 USER_ROLE_PREFIX = workflows.PROJECT_USER_MEMBER_SLUG + "_role_"
 GROUP_ROLE_PREFIX = workflows.PROJECT_GROUP_MEMBER_SLUG + "_role_"
-PROJECT_DETAIL_URL = reverse('horizon:identity:projects:detail', args=[1])
+PROJECT_DETAIL_URL = reverse('horizon:sdscontroller:projects:detail', args=[1])
 
 
 class TenantsViewTests(test.BaseAdminViewTests):
@@ -62,7 +62,7 @@ class TenantsViewTests(test.BaseAdminViewTests):
         self.mox.ReplayAll()
 
         res = self.client.get(INDEX_URL)
-        self.assertTemplateUsed(res, 'identity/projects/index.html')
+        self.assertTemplateUsed(res, 'sdscontroller/projects/index.html')
         self.assertItemsEqual(res.context['table'].data, self.tenants.list())
 
     @test.create_stubs({api.keystone: ('tenant_list',
@@ -90,14 +90,14 @@ class TenantsViewTests(test.BaseAdminViewTests):
         self.mox.ReplayAll()
 
         res = self.client.get(INDEX_URL)
-        self.assertTemplateUsed(res, 'identity/projects/index.html')
+        self.assertTemplateUsed(res, 'sdscontroller/projects/index.html')
         self.assertItemsEqual(res.context['table'].data, domain_tenants)
         self.assertContains(res, "<em>test_domain:</em>")
 
     @test.update_settings(FILTER_DATA_FIRST={'identity.projects': True})
     def test_index_with_filter_first(self):
         res = self.client.get(INDEX_URL)
-        self.assertTemplateUsed(res, 'identity/projects/index.html')
+        self.assertTemplateUsed(res, 'sdscontroller/projects/index.html')
         projects = res.context['table'].data
         self.assertItemsEqual(projects, [])
 
@@ -121,7 +121,7 @@ class ProjectsViewNonAdminTests(test.TestCase):
         self.mox.ReplayAll()
 
         res = self.client.get(INDEX_URL)
-        self.assertTemplateUsed(res, 'identity/projects/index.html')
+        self.assertTemplateUsed(res, 'sdscontroller/projects/index.html')
         self.assertItemsEqual(res.context['table'].data, self.tenants.list())
 
 
@@ -230,7 +230,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
 
         self.mox.ReplayAll()
 
-        url = reverse('horizon:identity:projects:create')
+        url = reverse('horizon:sdscontroller:projects:create')
         res = self.client.get(url)
 
         self.assertTemplateUsed(res, views.WorkflowView.template_name)
@@ -295,7 +295,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
             .AndReturn(self.roles.list())
         self.mox.ReplayAll()
 
-        res = self.client.get(reverse('horizon:identity:projects:create'))
+        res = self.client.get(reverse('horizon:sdscontroller:projects:create'))
 
         self.assertTemplateUsed(res, views.WorkflowView.template_name)
         if django.VERSION >= (1, 10):
@@ -402,7 +402,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
         workflow_data.update(self._get_workflow_data(project, quota))
         workflow_data.update({'phone_num': phone_number})
 
-        url = reverse('horizon:identity:projects:create')
+        url = reverse('horizon:sdscontroller:projects:create')
         res = self.client.post(url, workflow_data)
 
         self.assertNoFormErrors(res)
@@ -471,7 +471,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
 
         self.mox.ReplayAll()
 
-        url = reverse('horizon:identity:projects:create')
+        url = reverse('horizon:sdscontroller:projects:create')
         res = self.client.get(url)
 
         self.assertTemplateUsed(res, views.WorkflowView.template_name)
@@ -528,7 +528,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
 
         workflow_data = self._get_workflow_data(project, quota)
 
-        url = reverse('horizon:identity:projects:create')
+        url = reverse('horizon:sdscontroller:projects:create')
         res = self.client.post(url, workflow_data)
 
         self.assertNoFormErrors(res)
@@ -616,7 +616,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
 
         workflow_data.update(self._get_workflow_data(project, quota))
 
-        url = reverse('horizon:identity:projects:create')
+        url = reverse('horizon:sdscontroller:projects:create')
         res = self.client.post(url, workflow_data)
 
         self.assertNoFormErrors(res)
@@ -705,7 +705,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
 
         workflow_data.update(self._get_workflow_data(project, quota))
 
-        url = reverse('horizon:identity:projects:create')
+        url = reverse('horizon:sdscontroller:projects:create')
         res = self.client.post(url, workflow_data)
 
         self.assertNoFormErrors(res)
@@ -756,7 +756,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
         workflow_data = self._get_workflow_data(project, quota)
         workflow_data["name"] = ""
 
-        url = reverse('horizon:identity:projects:create')
+        url = reverse('horizon:sdscontroller:projects:create')
         res = self.client.post(url, workflow_data)
 
         self.assertContains(res, "field is required")
@@ -946,7 +946,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
 
         self.mox.ReplayAll()
 
-        url = reverse('horizon:identity:projects:update',
+        url = reverse('horizon:sdscontroller:projects:update',
                       args=[self.tenant.id])
         res = self.client.get(url)
 
@@ -1097,7 +1097,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
                         "enabled": project.enabled}
         workflow_data.update(project_data)
         workflow_data.update(updated_quota)
-        url = reverse('horizon:identity:projects:update',
+        url = reverse('horizon:sdscontroller:projects:update',
                       args=[self.tenant.id])
         res = self.client.post(url, workflow_data)
 
@@ -1133,7 +1133,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
 
         self.mox.ReplayAll()
 
-        url = reverse('horizon:identity:projects:update',
+        url = reverse('horizon:sdscontroller:projects:update',
                       args=[self.tenant.id])
         res = self.client.get(url)
 
@@ -1254,7 +1254,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
                         "enabled": project.enabled}
         workflow_data.update(project_data)
         workflow_data.update(updated_quota)
-        url = reverse('horizon:identity:projects:update',
+        url = reverse('horizon:sdscontroller:projects:update',
                       args=[self.tenant.id])
         res = self.client.post(url, workflow_data)
 
@@ -1384,7 +1384,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
                         "enabled": project.enabled}
         workflow_data.update(project_data)
         workflow_data.update(updated_quota)
-        url = reverse('horizon:identity:projects:update',
+        url = reverse('horizon:sdscontroller:projects:update',
                       args=[self.tenant.id])
         res = self.client.post(url, workflow_data)
 
@@ -1508,7 +1508,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
                         "enabled": project.enabled}
         workflow_data.update(project_data)
         workflow_data.update(updated_quota)
-        url = reverse('horizon:identity:projects:update',
+        url = reverse('horizon:sdscontroller:projects:update',
                       args=[self.tenant.id])
         res = self.client.post(url, workflow_data)
 
@@ -1538,7 +1538,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
                                      tenant_id=self.tenant.id).AndReturn(quota)
         self.mox.ReplayAll()
 
-        url = reverse('horizon:identity:projects:update',
+        url = reverse('horizon:sdscontroller:projects:update',
                       args=[self.tenant.id])
 
         try:
@@ -1618,7 +1618,7 @@ class UsageViewTests(test.BaseAdminViewTests):
         self.mox.ReplayAll()
 
         project_id = self.tenants.first().id
-        csv_url = reverse('horizon:identity:projects:usage',
+        csv_url = reverse('horizon:sdscontroller:projects:usage',
                           args=[project_id]) + "?format=csv"
         res = self.client.get(csv_url)
         self.assertTemplateUsed(res, 'project/overview/usage.csv')
@@ -1642,7 +1642,7 @@ class DetailProjectViewTests(test.BaseAdminViewTests):
 
         res = self.client.get(PROJECT_DETAIL_URL, args=[project.id])
 
-        self.assertTemplateUsed(res, 'identity/projects/detail.html')
+        self.assertTemplateUsed(res, 'sdscontroller/projects/detail.html')
         self.assertEqual(res.context['project'].name, project.name)
         self.assertEqual(res.context['project'].id, project.id)
 
@@ -1698,7 +1698,7 @@ class SeleniumTests(test.SeleniumAdminTestCase):
 
         self.selenium.get("%s%s" %
                           (self.live_server_url,
-                           reverse('horizon:identity:projects:create')))
+                           reverse('horizon:sdscontroller:projects:create')))
 
         members = self.selenium.find_element_by_css_selector(member_css_class)
 
