@@ -81,7 +81,11 @@ class CreateContainer(forms.SelfHandlingForm):
         try:
             if not data['parent']:
                 is_public = data["access"] == "public"
-                metadata = ({'is_public': is_public})
+                policy_name = data["policy_name"]
+                if policy_name:
+                    metadata = ({'is_public': is_public, "policy_name": policy_name})
+                else:
+                    metadata = ({'is_public': is_public})
                 # Create a container
                 api.swift.swift_create_container(request,
                                                  data["name"],
