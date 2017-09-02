@@ -23,7 +23,7 @@ from openstack_dashboard import api
 from openstack_dashboard import policy
 from openstack_dashboard.usage import quotas
 
-from crystal_dashboard.api import crystal as sds_api
+from crystal_dashboard.api import crystal as crystal_api
 
 
 class RescopeTokenToProject(tables.LinkAction):
@@ -207,7 +207,7 @@ class TenantFilterAction(tables.FilterAction):
         filter_choices = (('name', _("Project Name ="), True),
                           ('id', _("Project ID ="), True),
                           ('enabled', _("Enabled ="), True, _('e.g. Yes/No')),
-                          ('sds', _("SDS ="), True, _('e.g. Yes/No')))
+                          ('sds', _("Crystal Enabled ="), True, _('e.g. Yes/No')))
 
 
 class UpdateRow(tables.Row):
@@ -240,7 +240,7 @@ class TenantsTable(tables.DataTable):
                                 label=_('Enabled'),
                                 required=False))
 
-    crystal_project = tables.Column(lambda obj: sds_api.is_crystal_project(getattr(obj, 'name', None)),
+    crystal_project = tables.Column(lambda obj: crystal_api.is_crystal_project(getattr(obj, 'name', None)),
                                     verbose_name=_('Crystal Enabled'), status=True,
                                     filters=(filters.yesno, filters.capfirst))
 
