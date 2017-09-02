@@ -4,7 +4,7 @@
 {% block form_id %}update_object_form{% endblock %}
 {% block ng_controller %}DummyController{% endblock %}
 {% block form_name %}updateForm{% endblock %}
-{% block form_action %}{% url 'horizon:sdscontroller:containers:object_update' container_name subfolder_path object_path %}{% endblock %}
+{% block form_action %}{% url 'horizon:crystal:containers:object_update' container_name subfolder_path object_path %}{% endblock %}
 {% block form_attrs %}enctype="multipart/form-data"{% endblock %}
 
 {% block modal-header %}{% trans "Edit Object" %}{% endblock %}
@@ -23,6 +23,6 @@
 {% endblock %}
 
 {% block modal-footer %}
-  <a href="{% url 'horizon:sdscontroller:containers:index' container_name|add:'/' %}" class="btn btn-default cancel">{% trans "Cancel" %}</a>
+  <a href="{% url 'horizon:crystal:containers:index' container_name|add:'/' %}" class="btn btn-default cancel">{% trans "Cancel" %}</a>
   <input class="btn btn-primary" type="submit" ng-disabled="updateForm.$invalid" value="{% trans "Update Object" %}" />
 {% endblock %}

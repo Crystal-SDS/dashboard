@@ -188,7 +188,7 @@ def swift_list_tenants(request):
     return r
 
 
-def enable_sds(request, tenant_name):
+def enable_crystal(request, tenant_name):
     token = sds_controller_api(request)
     headers = {}
 

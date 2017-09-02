@@ -8,12 +8,12 @@
          <div class="page_title table_header">
             <div>
                 <h3>
-                    <a href="{% url 'horizon:sdscontroller:containers:index' %}{{ container_name }}/">{{ container_name }}</a> : /
+                    <a href="{% url 'horizon:crystal:containers:index' %}{{ container_name }}/">{{ container_name }}</a> : /
                     {% for folder in subfolders %}
                         {%  if forloop.last %}
                             {{ folder.0 }}
                         {%  else %}
-                           <a href="{% url 'horizon:sdscontroller:containers:index' %}{{ container_name }}/{{ folder.1 }}">{{ folder.0 }}</a> /
+                           <a href="{% url 'horizon:crystal:containers:index' %}{{ container_name }}/{{ folder.1 }}">{{ folder.0 }}</a> /
                         {% endif %}
                     {% endfor %}
                 </h3>

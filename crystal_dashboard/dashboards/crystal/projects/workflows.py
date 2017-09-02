@@ -488,7 +488,7 @@ class CreateProject(CommonQuotaWorkflow):
                                                      domain=domain_id,
                                                      **kwargs)
             if data['sds_project']:
-                crystal_api.enable_sds(request, data['name'])
+                crystal_api.enable_crystal(request, data['name'])
 
             return self.object
         except exceptions.Conflict:
@@ -622,7 +622,7 @@ class UpdateProjectInfoAction(CreateProjectInfoAction):
             self.fields['enabled'].help_text = _(
                 'You cannot disable your current project')
 
-        initial['sds_project'] = crystal_api.is_sds_project(initial['name'])
+        initial['sds_project'] = crystal_api.is_crystal_project(initial['name'])
         if initial['sds_project'] is True:
             self.fields['sds_project'].widget.attrs['disabled'] = True
 
@@ -712,7 +712,7 @@ class UpdateProject(CommonQuotaWorkflow):
                 kwargs = {}
 
             if data['sds_project']:
-                crystal_api.enable_sds(request, data['name'])
+                crystal_api.enable_crystal(request, data['name'])
 
             updated_tenant = api.keystone.tenant_update(
                 request,
@@ -724,7 +724,7 @@ class UpdateProject(CommonQuotaWorkflow):
                 **kwargs)
 
             if data['sds_project']:
-                crystal_api.enable_sds(request, data['name'])
+                crystal_api.enable_crystal(request, data['name'])
 
             return updated_tenant
 

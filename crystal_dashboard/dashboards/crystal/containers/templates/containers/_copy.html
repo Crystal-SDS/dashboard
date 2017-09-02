@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block form_id %}copy_object_form{% endblock %}
-{% block form_action %}{% url 'horizon:sdscontroller:containers:object_copy' container_name object_name %}{% endblock %}
+{% block form_action %}{% url 'horizon:crystal:containers:object_copy' container_name object_name %}{% endblock %}
 
 {% block modal-header %}{% blocktrans %}Copy Object: {{ object_name }}{% endblocktrans %}{% endblock %}
 
@@ -20,5 +20,5 @@
 
 {% block modal-footer %}
     <input class="btn btn-primary pull-right" type="submit" value="{% trans "Copy Object" %}" />
-    <a href="{% url 'horizon:sdscontroller:containers:index' container_name|add:'/' %}" class="btn btn-default cancel">{% trans "Cancel" %}</a>
+    <a href="{% url 'horizon:crystal:containers:index' container_name|add:'/' %}" class="btn btn-default cancel">{% trans "Cancel" %}</a>
 {% endblock %}
