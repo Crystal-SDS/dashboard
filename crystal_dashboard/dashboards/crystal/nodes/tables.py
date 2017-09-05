@@ -26,7 +26,7 @@ class UpdateProxyAction(tables.LinkAction):
 
     def get_link_url(self, datum=None):
         base_url = reverse("horizon:crystal:nodes:update", kwargs={'node_id': datum.id,
-                                                                         'server': 'proxy'})
+                                                                   'server': 'proxy'})
         return base_url
 
 
@@ -34,16 +34,16 @@ class RestartProxyAction(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Restart Swift Node",
-            u"Restart Swift Nodes",
+            u"Restart Swift Proxy Node",
+            u"Restart Swift Proxy Nodes",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Swift Node Restarted",
-            u"Swift Nodes Restarted",
+            u"Swift Proxy Node Restarted",
+            u"Swift Proxy Nodes Restarted",
             count
         )
 
@@ -51,8 +51,12 @@ class RestartProxyAction(tables.BatchAction):
     verbose_name = _("Restart Swift")
     success_url = "horizon:crystal:nodes:index"
 
-    def action(self, request, datum_id):
-        api.swift_restart_node(request, datum_id)
+    def action(self, request, node_id):
+        response = api.swift_restart_node(request, 'proxy', node_id)
+        if 200 <= response.status_code < 300:
+            pass
+        else:
+            exceptions.handle(request)
 
 
 class DeleteProxyNodeAction(tables.DeleteAction):
@@ -135,7 +139,7 @@ class UpdateStorageNodeAction(tables.LinkAction):
 
     def get_link_url(self, datum=None):
         base_url = reverse("horizon:crystal:nodes:update", kwargs={'node_id': datum.id,
-                                                                         'server': 'object'})
+                                                                   'server': 'object'})
         return base_url
 
 
@@ -143,16 +147,16 @@ class RestartStorageNodeAction(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Restart Swift Node",
-            u"Restart Swift Nodes",
+            u"Restart Swift Storage Node",
+            u"Restart Swift Storage Nodes",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Swift Node Restarted",
-            u"Swift Nodes Restarted",
+            u"Swift Storage Node Restarted",
+            u"Swift Storage Nodes Restarted",
             count
         )
 
@@ -160,8 +164,12 @@ class RestartStorageNodeAction(tables.BatchAction):
     verbose_name = _("Restart Swift")
     success_url = "horizon:crystal:nodes:index"
 
-    def action(self, request, datum_id):
-        api.swift_restart_node(request, datum_id)
+    def action(self, request, node_id):
+        response = api.swift_restart_node(request, 'object', node_id)
+        if 200 <= response.status_code < 300:
+            pass
+        else:
+            exceptions.handle(request)
 
 
 class DeleteStorageNodeAction(tables.DeleteAction):
