@@ -169,25 +169,25 @@ class UpdateMetricModule(tables.LinkAction):
 
 class UpdateCell(tables.UpdateAction):
     def allowed(self, request, project, cell):
-        return ((cell.column.name == 'class_name') or
-                (cell.column.name == 'out_flow') or
+        return ((cell.column.name == 'out_flow') or
                 (cell.column.name == 'in_flow') or
-                (cell.column.name == 'execution_server') or
-                (cell.column.name == 'enabled'))
+                (cell.column.name == 'execution_server'))
 
     def update_cell(self, request, datum, metric_module_id, cell_name, new_cell_value):
         try:
             # updating changed value by new value
             response = api.mtr_get_metric_module(request, metric_module_id)
             data = json.loads(response.text)
-            data[cell_name] = new_cell_value
-
             # TODO: Check only the valid keys, delete the rest
             if 'id' in data:  # PUT does not allow this key
                 del data['id']
             if 'path' in data:  # PUT does not allow this key
                 del data['path']
 
+            if cell_name == 'out_flow' or cell_name == 'in_flow':
+                new_cell_value = (new_cell_value == 'True')
+
+            data[cell_name] = new_cell_value
             api.mtr_update_metric_module(request, metric_module_id, data)
         except Conflict:
             # Returning a nice error message about name conflict. The message
@@ -215,10 +215,10 @@ class MetricTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     metric_name = tables.Column('metric_name', verbose_name=_("Metric Name"))
     class_name = tables.Column('class_name', verbose_name=_("Class Name"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    out_flow = tables.Column('out_flow', verbose_name=_("Out Flow"),
-                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    in_flow = tables.Column('in_flow', verbose_name=_("In Flow"),
+    in_flow = tables.Column('in_flow', verbose_name=_("PUT"),
                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
+    out_flow = tables.Column('out_flow', verbose_name=_("GET"),
+                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"),
                                      form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]),
                                      update_action=UpdateCell)

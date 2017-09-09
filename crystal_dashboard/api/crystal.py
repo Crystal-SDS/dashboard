@@ -490,7 +490,7 @@ def mtr_add_metric_module_metadata(request, data, in_memory_file):
     files = {'file': (in_memory_file.name, in_memory_file.read())}
     data_to_send = {'metadata': json.dumps(data)}
 
-    r = requests.post(url, data_to_send, files=files, headers=headers)
+    r = requests.put(url, data_to_send, files=files, headers=headers)
     return r
 
 
@@ -516,7 +516,7 @@ def mtr_update_metric_module(request, metric_module_id, data):
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
 
-    r = requests.put(url, json.dumps(data), headers=headers)
+    r = requests.post(url, json.dumps(data), headers=headers)
     return r
 
 
