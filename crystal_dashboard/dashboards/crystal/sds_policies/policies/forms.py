@@ -25,13 +25,13 @@ class CreateDSLPolicy(forms.SelfHandlingForm):
         try:
             response = api.dsl_add_policy(request, data['policy'])
             if 200 <= response.status_code < 300:
-                messages.success(request, _('Successfully created policy/rule: %s') % data['policy'])
+                messages.success(request, _('Successfully created policy: %s') % data['policy'])
                 return data
             else:
                 raise ValueError(response.text)
         except Exception as ex:
             redirect = reverse("horizon:crystal:sds_policies:index")
-            error_message = "Unable to create policy/rule.\t %s" % ex.message
+            error_message = "Unable to create policy.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
@@ -106,6 +106,7 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
+        # TODO: GET FROM REDIS ONLY THE CRYSTAL ENABLED PROJECTS
         self.target_choices = common.get_project_list_choices(request)
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
 
@@ -150,7 +151,7 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
                 response = api.fil_deploy_filter(request, data['filter_id'], data['target_id'], data)
 
             if 200 <= response.status_code < 300:
-                messages.success(request, _('Successfully created simple policy/rule!'))
+                messages.success(request, _('Successfully created static policy'))
                 return data
             else:
                 raise ValueError(response.text)
