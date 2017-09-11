@@ -14,7 +14,7 @@ class UploadFilter(forms.SelfHandlingForm):
     filter_file = forms.FileField(label=_("File"),
                                   required=True,
                                   allow_empty_file=False)
-
+    """
     interface_version = forms.CharField(max_length=255,
                                         label=_("Interface Version"),
                                         required=False,
@@ -30,6 +30,7 @@ class UploadFilter(forms.SelfHandlingForm):
                                    widget=forms.TextInput(
                                        attrs={"ng-model": "dependencies"}
                                    ))
+    """
 
     object_metadata = forms.CharField(max_length=255,
                                       label=_("Object Metadata"),
@@ -74,7 +75,66 @@ class UploadFilter(forms.SelfHandlingForm):
         super(UploadFilter, self).__init__(request, *args, **kwargs)
 
 
-class UploadStorletFilter(UploadFilter):
+class UploadStorletFilter(forms.SelfHandlingForm):
+    filter_file = forms.FileField(label=_("File"),
+                                  required=True,
+                                  allow_empty_file=False)
+
+    interface_version = forms.CharField(max_length=255,
+                                        label=_("Interface Version"),
+                                        required=True,
+                                        help_text=_("Interface Version"),
+                                        widget=forms.TextInput(
+                                            attrs={"ng-model": "interface_version", "not-blank": ""}
+                                        ))
+    """
+    dependencies = forms.CharField(max_length=255,
+                                   label=_("Dependencies"),
+                                   required=False,
+                                   help_text=_("A comma separated list of dependencies"),
+                                   widget=forms.TextInput(
+                                       attrs={"ng-model": "dependencies"}
+                                   ))
+    """
+    object_metadata = forms.CharField(max_length=255,
+                                      label=_("Object Metadata"),
+                                      required=False,
+                                      help_text=_("Currently, not in use, but must appear. Use the value 'no'"),
+                                      widget=forms.HiddenInput(  # hidden
+                                          attrs={"ng-model": "object_metadata"}
+                                      ))
+
+    main = forms.CharField(max_length=255,
+                           label=_("Main Class"),
+                           help_text=_("The name of the class that implements the Filters API."),
+                           widget=forms.TextInput(
+                               attrs={"ng-model": "main", "not-blank": ""}
+                           ))
+
+    execution_server = forms.ChoiceField(
+        label=_('Execution Server'),
+        choices=[
+            ('proxy', _('Proxy Server')),
+            ('object', _('Object Storage Servers'))
+        ],
+        widget=forms.Select(attrs={
+            'class': 'switchable',
+            'data-slug': 'source'
+        })
+    )
+
+    execution_server_reverse = forms.ChoiceField(
+        label=_('Execution Server Reverse'),
+        choices=[
+            ('proxy', _('Proxy Server')),
+            ('object', _('Object Storage Servers'))
+        ],
+        widget=forms.Select(attrs={
+            'class': 'switchable',
+            'data-slug': 'source'
+        })
+    )
+
     is_pre_put = forms.BooleanField(required=False, label="PUT")
     is_post_get = forms.BooleanField(required=False, label="GET")
     is_post_put = forms.BooleanField(required=False, widget=forms.HiddenInput)

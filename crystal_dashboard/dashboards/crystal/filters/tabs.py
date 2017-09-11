@@ -180,5 +180,5 @@ class Groups(tabs.TableTab):
 
 class FiltersTabs(tabs.TabGroup):
     slug = "filters_tabs"
-    tabs = (Filters, Dependencies, RegistryTab, Groups,)
+    tabs = (Filters, RegistryTab, Groups,)
     sticky = True

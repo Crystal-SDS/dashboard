@@ -98,6 +98,8 @@ class DeleteProxyNodeAction(tables.DeleteAction):
 class ProxysTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("Hostname"))
     ip = tables.Column('ip', verbose_name="IP")
+    region_id = tables.Column('region_id', verbose_name="Region")
+    zone_id = tables.Column('zone_id', verbose_name="Zone")
     ssh_access = tables.Column('ssh_access', verbose_name="SSH Access")
     last_ping = tables.Column(lambda obj: '{0} seconds ago'.format(calendar.timegm(time.gmtime()) - int(float(getattr(obj, 'last_ping', '0')))),
                               verbose_name="Last Swift ping")
@@ -211,6 +213,8 @@ class DeleteStorageNodeAction(tables.DeleteAction):
 class StorageNodesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("Hostname"))
     ip = tables.Column('ip', verbose_name="IP")
+    region_id = tables.Column('region_id', verbose_name="Region")
+    zone_id = tables.Column('zone_id', verbose_name="Zone")
     ssh_access = tables.Column('ssh_access', verbose_name="SSH Access")
     last_ping = tables.Column(lambda obj: '{0} seconds ago'.format(calendar.timegm(time.gmtime()) - int(float(getattr(obj, 'last_ping', '0')))),
                               verbose_name="Last Swift ping")

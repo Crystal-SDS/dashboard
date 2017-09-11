@@ -192,10 +192,13 @@ class MyDynamicPolicyFilterAction(tables.FilterAction):
 
 class DynamicPoliciesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
-    policy = tables.Column('policy', verbose_name=_("Policy Description"))
+    target = tables.Column('target', verbose_name=_("Target"))
     condition = tables.Column('condition', verbose_name=_("Condition"))
+    filter = tables.Column('filter', verbose_name=_("Filter"))
+    object_type = tables.Column('object_type', verbose_name=_("Object Type"))
+    object_size = tables.Column('object_size', verbose_name=_("Object Size"))
     transient = tables.Column('transient', verbose_name=_("Transient"))
-    policy_location = tables.Column('policy_location', verbose_name=_("Policy Location"))
+    policy_location = tables.Column('policy', verbose_name=_("DSL Policy"))
     alive = tables.Column('alive', verbose_name="Alive")
 
     class Meta:

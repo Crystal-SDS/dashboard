@@ -15,14 +15,15 @@ class Nodes(tabs.TableTab):
     name = _("Nodes")
     slug = "nodes_table"
     template_name = "crystal/nodes/_detail.html"
-    preload = False
+    response = None
 
     def get_proxys_data(self):
         ret = []
         try:
-            response = api.swift_get_all_nodes(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.swift_get_all_nodes(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get nodes.'
                 raise sdsexception.SdsException(error_message)
@@ -33,15 +34,16 @@ class Nodes(tabs.TableTab):
         nodes = json.loads(strobj)
         for node in nodes:
             if node['type'] == 'proxy':
-                ret.append(nodes_models.ProxyNode(node['name'], node['ip'], node['last_ping']))
+                ret.append(nodes_models.ProxyNode(node['name'], node['ip'], node['region_id'], node['zone_id'], node['ssh_access'], node['last_ping']))
         return ret
 
     def get_storagenodes_data(self):
         ret = []
         try:
-            response = api.swift_get_all_nodes(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.swift_get_all_nodes(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get nodes.'
                 raise sdsexception.SdsException(error_message)
@@ -52,7 +54,7 @@ class Nodes(tabs.TableTab):
         nodes = json.loads(strobj)
         for node in nodes:
             if node['type'] == 'object':
-                ret.append(nodes_models.StorageNode(node['name'], node['ip'], node['last_ping'], node['devices']))
+                ret.append(nodes_models.StorageNode(node['name'], node['ip'], node['region_id'], node['zone_id'], node['ssh_access'], node['last_ping'], node['devices']))
         return ret
 
 
