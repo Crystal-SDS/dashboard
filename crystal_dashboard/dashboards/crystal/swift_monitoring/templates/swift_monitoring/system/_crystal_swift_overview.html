@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_header %}
+{% endblock page_header %}
+{% block main %}
+    <iframe src="http://{{ kibana_host }}:{{ kibana_port }}/goto/{{ crystal_dashboard }}?embed=true" height="783" width="100%"></iframe>
+{% endblock %}

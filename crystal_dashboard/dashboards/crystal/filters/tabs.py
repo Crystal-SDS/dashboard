@@ -52,13 +52,15 @@ class Filters(tabs.TableTab):
     name = _("Filters")
     slug = "filters_table"
     template_name = "crystal/filters/filters/_detail.html"
+    response = None
     preload = False
 
     def get_storlet_filters_data(self):
         try:
-            response = api.fil_list_filters(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.fil_list_filters(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get filters.'
                 raise sdsexception.SdsException(error_message)
@@ -79,9 +81,10 @@ class Filters(tabs.TableTab):
 
     def get_native_filters_data(self):
         try:
-            response = api.fil_list_filters(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.fil_list_filters(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get filters.'
                 raise sdsexception.SdsException(error_message)
@@ -102,9 +105,10 @@ class Filters(tabs.TableTab):
 
     def get_global_filters_data(self):
         try:
-            response = api.fil_list_filters(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.fil_list_filters(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get filters.'
                 raise sdsexception.SdsException(error_message)

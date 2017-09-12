@@ -70,6 +70,7 @@ class DownloadNativeFilter(DownloadFilter):
 class DownloadGlobalFilter(DownloadFilter):
     pass
 
+
 class DeleteFilter(tables.DeleteAction):
     @staticmethod
     def action_present(count):
@@ -257,7 +258,7 @@ class UpdateGlobalRow(tables.Row):
 
 
 class StorletFilterTable(tables.DataTable):
-    id = tables.Column('id', verbose_name=_("ID"))
+    #id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('filter_name', verbose_name=_("Name"))
     # filter_type = tables.Column('filter_type', verbose_name=_("Type"))
     interface_version = tables.Column('interface_version', verbose_name=_("Interface Version"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
@@ -279,7 +280,7 @@ class StorletFilterTable(tables.DataTable):
 
 
 class NativeFilterTable(tables.DataTable):
-    id = tables.Column('id', verbose_name=_("ID"))
+    #id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('filter_name', verbose_name=_("Name"))
     # filter_type = tables.Column('filter_type', verbose_name=_("Type"))
     #interface_version = tables.Column('interface_version', verbose_name=_("Interface Version"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)

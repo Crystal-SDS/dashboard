@@ -74,12 +74,14 @@ class ControllersTab(tabs.TableTab):
     # template_name = "horizon/common/_detail_table.html"
     template_name = "crystal/bandwidth_differentiation/controllers/_detail.html"
     preload = False
+    response = None
 
     def get_get_controllers_data(self):
         try:
-            response = api.dsl_get_all_global_controllers(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.dsl_get_all_global_controllers(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get instances.'
                 raise sdsexception.SdsException(error_message)
@@ -96,9 +98,10 @@ class ControllersTab(tabs.TableTab):
 
     def get_put_controllers_data(self):
         try:
-            response = api.dsl_get_all_global_controllers(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.dsl_get_all_global_controllers(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get instances.'
                 raise sdsexception.SdsException(error_message)
@@ -115,9 +118,10 @@ class ControllersTab(tabs.TableTab):
 
     def get_replication_controllers_data(self):
         try:
-            response = api.dsl_get_all_global_controllers(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
+            if not self.response:
+                self.response = api.dsl_get_all_global_controllers(self.request)
+            if 200 <= self.response.status_code < 300:
+                strobj = self.response.text
             else:
                 error_message = 'Unable to get instances.'
                 raise sdsexception.SdsException(error_message)
