@@ -91,7 +91,6 @@ class UpdateMetricModule(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             metric_module_id = self.initial['id']
-            # print "\n#################\n", request, "\n#################\n", data, "\n#################\n"
             response = api.mtr_update_metric_module(request, metric_module_id, data)
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully metric module updated.'))

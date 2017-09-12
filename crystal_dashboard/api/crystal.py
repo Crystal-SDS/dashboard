@@ -160,26 +160,30 @@ def bw_delete_sort_method(request, name):
     return r
 
 
-# # Swift - Tenants/ Projects
-def is_crystal_project(project_name):
-    try:
-        keystone_url = settings.OPENSTACK_KEYSTONE_URL
-        admin_user = settings.IOSTACK_KEYSTONE_ADMIN_USER
-        admin_password = settings.IOSTACK_KEYSTONE_ADMIN_PASSWORD
-        url, token = client.get_auth(keystone_url, project_name+":"+admin_user, admin_password, auth_version="3")
-        head = client.head_account(url, token)
-        return 'x-account-meta-crystal-enabled' in head
-    except Exception:
-        # If the admin user is not assigned to the project (auth exception), then is not a SDS project
-        return False
+#
+# Swift - Crystal Projects
+#
+def is_crystal_project(request, project_id):
+    token = sds_controller_api(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    parameters = {"project_id": project_id}
+
+    r = requests.post(url, json.dumps(parameters), headers=headers)
+    return r
 
 
-def swift_list_tenants(request):
+def list_projects_crystal_enabled(request):
     token = sds_controller_api(request)
 
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/swift/tenants"
+    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -188,26 +192,44 @@ def swift_list_tenants(request):
     return r
 
 
-def enable_crystal(request, tenant_name):
+def enable_crystal(request, project_id):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/swift/tenants"
+    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
 
-    parameters = {"tenant_name": tenant_name}
+    parameters = {"project_id": project_id}
 
-    r = requests.post(url, json.dumps(parameters), headers=headers)
+    r = requests.put(url, json.dumps(parameters), headers=headers)
     return r
 
 
+def disable_crystal(request, project_id):
+    token = sds_controller_api(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    parameters = {"project_id": project_id}
+
+    r = requests.delete(url, json.dumps(parameters), headers=headers)
+    return r
+
+
+#
+# SP
+#
 def new_storage_policy(request, data):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/swift/spolicies"
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policies"
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -338,49 +360,6 @@ def swift_restart_node(request, server_type, node_id):
 
 
 # ############################# # Registry DSL API # ##############################
-# # Registry DSL - Storage Nodes
-
-
-def registry_storage_node(request, data):
-    token = sds_controller_api(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/snode"
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "text/plain"
-
-    r = requests.post(url, json.dumps(data), headers=headers)
-    return r
-
-
-def list_storage_nodes(request):
-    token = sds_controller_api(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/snode"
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "text/plain"
-
-    r = requests.get(url, headers=headers)
-    return r
-
-
-def remove_storage_nodes(request, storage_node_id):
-    token = sds_controller_api(request)
-
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/snode/" + str(storage_node_id)
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    r = requests.delete(url, headers=headers)
-    return r
-
-
 # # Registry DSL - Policies
 def dsl_add_policy(request, policy):
     token = sds_controller_api(request)
