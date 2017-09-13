@@ -164,6 +164,7 @@ def bw_delete_sort_method(request, name):
 # Swift - Crystal Projects
 #
 def is_crystal_project(request, project_id):
+    return None
     token = sds_controller_api(request)
     headers = {}
 

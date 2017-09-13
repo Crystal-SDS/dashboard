@@ -27,8 +27,9 @@ class UploadMetricModule(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('proxy', _('Proxy Server')),
-            ('object', _('Object Storage Servers'))
+            ('proxy', _('Proxy Servers')),
+            # ('object', _('Object Storage Servers')),
+            ('proxy/object', _('Proxy & Object Storage Servers'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -72,7 +73,8 @@ class UpdateMetricModule(forms.SelfHandlingForm):
         label=_('Execution Server'),
         choices=[
             ('proxy', _('Proxy Server')),
-            ('object', _('Object Storage Servers'))
+            # ('object', _('Object Storage Servers')),
+            ('proxy/object', _('Proxy & Object Storage Servers'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',

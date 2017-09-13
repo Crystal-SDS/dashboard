@@ -240,7 +240,7 @@ class TenantsTable(tables.DataTable):
                                 label=_('Enabled'),
                                 required=False))
 
-    crystal_project = tables.Column(lambda obj: crystal_api.is_crystal_project(getattr(obj, 'name', None)),
+    crystal_project = tables.Column(lambda obj: crystal_api.is_crystal_project(None, getattr(obj, 'id', None)),
                                     verbose_name=_('Crystal Enabled'), status=True,
                                     filters=(filters.yesno, filters.capfirst))
 
