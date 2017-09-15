@@ -28,10 +28,10 @@ class CreateECStoragePolicy(tables.LinkAction):
     icon = "plus"
 
 
-class BindStorageNode(tables.LinkAction):
-    name = "bind_storage_node"
-    verbose_name = _("Register Storage Node")
-    url = "horizon:crystal:rings:storage_policies:bind_storage_node"
+class LoadSwiftPolicies(tables.LinkAction):
+    name = "load_swift_policies"
+    verbose_name = _("Load Swift Policies")
+    url = "horizon:crystal:rings:storage_policies:load_swift_policies"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -83,4 +83,4 @@ class StoragePolicyTable(tables.DataTable):
     class Meta:
         name = "storagepolicies"
         verbose_name = _("Storage Policies")
-        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, BindStorageNode, DeleteMultipleStorageNodes,)
+        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies, DeleteMultipleStorageNodes,)

@@ -33,14 +33,14 @@ class CreateECStoragePolicy(forms.ModalFormView):
     page_title = _("Create a Storage Policy")
 
 
-class BindStorageNode(forms.ModalFormView):
-    form_class = storage_policies_forms.BindStorageNode
-    form_id = "bind_storage_node_form"
+class LoadSwiftPolicies(forms.ModalFormView):
+    form_class = storage_policies_forms.LoadSwiftPolicies
+    form_id = "load_swift_policies_form"
 
-    modal_header = _("Registry Storage Node")
-    submit_label = _("Registry Storage Node")
-    submit_url = reverse_lazy('horizon:crystal:rings:storage_policies:bind_storage_node')
-    template_name = "crystal/rings/storage_policies/bind_storage_node.html"
-    context_object_name = 'storage_node'
+    modal_header = _("Load Swift Policies")
+    submit_label = _("Load Swift Policies")
+    submit_url = reverse_lazy('horizon:crystal:rings:storage_policies:load_swift_policies')
+    template_name = "crystal/rings/storage_policies/load_swift_policies.html"
+    context_object_name = 'swift_policie'
     success_url = reverse_lazy('horizon:crystal:rings:index')
-    page_title = _("Registry Storage Node")
+    page_title = _("Load Swift Policies")

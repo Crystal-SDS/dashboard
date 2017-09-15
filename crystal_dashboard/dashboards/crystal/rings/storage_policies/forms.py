@@ -243,7 +243,7 @@ class CreateECStoragePolicy(forms.SelfHandlingForm):
                               redirect=redirect)
 
 
-class BindStorageNode(forms.SelfHandlingForm):
+class LoadSwiftPolicies(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255,
                            label=_("Name"),
                            help_text=_("The name assigned to new storage node."),
@@ -265,7 +265,7 @@ class BindStorageNode(forms.SelfHandlingForm):
 
 
     def __init__(self, request, *args, **kwargs):
-        super(BindStorageNode, self).__init__(request, *args, **kwargs)
+        super(LoadSwiftPolicies, self).__init__(request, *args, **kwargs)
 
 
     def handle(self, request, data):
