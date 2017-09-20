@@ -842,7 +842,7 @@ def fil_create_filter(request, data):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/filters"
+    url = settings.IOSTACK_CONTROLLER_URL + "/filters/"
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
