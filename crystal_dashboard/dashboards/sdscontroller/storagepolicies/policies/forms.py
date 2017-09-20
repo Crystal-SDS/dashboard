@@ -100,6 +100,9 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
     )
 
     params = forms.CharField(max_length=255,
+                             widget=forms.Textarea(
+                                 attrs={'rows': 4}
+                             ),
                              label=_("Parameters"),
                              required=False,
                              help_text=_("Parameters list."))
@@ -207,6 +210,9 @@ class UpdatePolicy(forms.SelfHandlingForm):
                                       help_text=_("The order in which the policy will be executed."))
 
     params = forms.CharField(max_length=255,
+                             widget=forms.Textarea(
+                                 attrs={'rows': 8}
+                             ),
                              label=_("Parameters"),
                              required=False,
                              help_text=_("Parameters list."))

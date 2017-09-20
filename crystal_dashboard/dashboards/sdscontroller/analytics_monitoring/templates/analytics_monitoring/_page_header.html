@@ -1,0 +1,24 @@
+{% include "horizon/common/_page_header.html" with title=_("Analytics Monitoring") %}
+
+{% block nav %}
+        <ul id="nav">
+            <li class="btn btn-primary pull-right"
+                {% if active_tab == 'history-server' %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #e6e6e6;"
+                {% else %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #ffffff;" onMouseOver="this.style.backgroundColor='#e6e6e6'" onMouseOut="this.style.backgroundColor='#FFFFFF'"
+                {% endif %}
+                >
+                <a href="{% url "horizon:sdscontroller:analytics_monitoring:history" %}" style="text-decoration: none; color: #000000">History server</a>
+            </li>
+            <li class="btn btn-primary pull-right"
+                {% if active_tab == "index" %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #e6e6e6;"
+                {% else %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #ffffff;" onMouseOver="this.style.backgroundColor='#e6e6e6'" onMouseOut="this.style.backgroundColor='#FFFFFF'"
+                {% endif %}
+                >
+                <a href="{% url "horizon:sdscontroller:analytics_monitoring:index" %}" style="text-decoration: none; color: #000000">Spark master</a>
+            </li>
+        </ul>
+{% endblock %}

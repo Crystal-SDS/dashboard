@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_header %}
+    {% include "sdscontroller/analytics_monitoring/_page_header.html" with active_tab="history-server" %}
+{% endblock page_header %}
+
+{% block main %}
+    <iframe src="{{ spark_history_server_url }}" height="1120" width=100%></iframe>
+{% endblock %}

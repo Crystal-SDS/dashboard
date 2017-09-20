@@ -256,3 +256,40 @@ def get_storage_policy_list(request, by_attribute):
     for storage_policy in storage_policies:
         storage_policies_list.append((storage_policy[str(by_attribute)], storage_policy['name']))
     return storage_policies_list
+
+
+# Analyzers
+# ==========
+def get_anj_analyzer_list_choices(request):
+    """
+    Get a tuple of analyzers
+
+    :param request: the request which the dashboard is using
+    :return: tuple with analyzers
+    """
+    return ('', 'Select one'), ('Job Analyzers', get_anj_analyzer_list(request))
+
+
+def get_anj_analyzer_list(request):
+    """
+    Get a list of analyzers
+
+    :param request: the request which the dashboard is using
+    :return: list with analyzers
+    """
+    try:
+        response = api.anj_list_analyzers(request)
+        if 200 <= response.status_code < 300:
+            response_text = response.text
+        else:
+            raise ValueError('Unable to get analyzers.')
+    except Exception as exc:
+        response_text = '[]'
+        exceptions.handle(request, _(exc.message))
+
+    analyzers_list = []
+    analyzers = json.loads(response_text)
+    # Iterate dsl filters
+    for analyzer in analyzers:
+        analyzers_list.append((analyzer['id'], analyzer['name']))
+    return analyzers_list

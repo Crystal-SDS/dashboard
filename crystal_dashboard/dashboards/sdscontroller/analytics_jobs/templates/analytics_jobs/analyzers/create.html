@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Create Analyzer" %}{% endblock %}
+
+{% block main %}
+    {% include 'sdscontroller/analytics_jobs/analyzers/_create.html' %}
+{% endblock %}
