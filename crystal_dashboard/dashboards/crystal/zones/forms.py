@@ -19,16 +19,20 @@ class CreateZone(forms.SelfHandlingForm):
                            widget=forms.TextInput(
                                attrs={"ng-model": "name", "not-blank": ""}
                            ))
-    description = forms.CharField(max_length=255,
+
+    region = forms.ThemableChoiceField(label=_("Region"))
+    
+    description = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 4}),
                                   label=_("Description"),
-                                  help_text=_("The description of the new Zone"),
-                                  widget=forms.TextInput(
-                                      attrs={"ng-model": "description", "not-blank": ""}
-                                  ))
+                                  required=False)
+    
 
     def __init__(self, request, *args, **kwargs):
         super(CreateZone, self).__init__(request, *args, **kwargs)
-
+        regions = json.loads(api.swift_list_regions(request).text)
+        self.fields['region'].choices = [(region['id'], region['name']) for region in regions]
+            
     def handle(self, request, data):
         try:
             response = api.new_zone(request, data)
@@ -46,20 +50,28 @@ class CreateZone(forms.SelfHandlingForm):
 
 class UpdateZone(forms.SelfHandlingForm):
     
+    
     name = forms.CharField(max_length=255,
                            label=_("Name"),
                            help_text=_("The name of the new zone."))
+
+    regions = forms.ThemableChoiceField(label=_("Regions"))
                            
-    description = forms.CharField(max_length=255,
+    description = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 4}),
                                   label=_("Description"),
-                                  help_text=_("The description of the new Zone"))
+                                  required=False)
     
+        
     zone_id = forms.CharField(max_length=255,
                              label=_("Zone ID"),
                              widget=forms.HiddenInput())
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateZone, self).__init__(request, *args, **kwargs)
+        self.fields['regions'].choices = [(region['id'], region['name']) for region in json.loads(api.swift_list_regions(self.request).text)]
+        
+        
 
     def handle(self, request, data):
         try:

@@ -19,12 +19,10 @@ class CreateRegion(forms.SelfHandlingForm):
                            widget=forms.TextInput(
                                attrs={"ng-model": "name", "not-blank": ""}
                            ))
-    description = forms.CharField(max_length=255,
+    description = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 4}),
                                   label=_("Description"),
-                                  help_text=_("The description of the new Region"),
-                                  widget=forms.TextInput(
-                                      attrs={"ng-model": "description", "not-blank": ""}
-                                  ))
+                                  required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(CreateRegion, self).__init__(request, *args, **kwargs)
@@ -50,9 +48,10 @@ class UpdateRegion(forms.SelfHandlingForm):
                            label=_("Name"),
                            help_text=_("The name of the new region."))
                            
-    description = forms.CharField(max_length=255,
+    description = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 4}),
                                   label=_("Description"),
-                                  help_text=_("The description of the new Region"))
+                                  required=False)
     
     region_id = forms.CharField(max_length=255,
                              label=_("Region ID"),

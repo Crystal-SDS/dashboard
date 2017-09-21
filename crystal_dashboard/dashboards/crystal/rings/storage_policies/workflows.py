@@ -60,9 +60,6 @@ class StoragePolicyInfoAction(workflows.Action):
                            widget=forms.TextInput(
                                attrs={"ng-model": "time", "not-blank": ""}
                            ))
-    
-    newFiled = forms.ChoiceField(choices=[(1, 'Replication'), (2, 'Erasure coding')],
-                                           label=_("New Field"), required=False)
 
 
     class Meta(object):
@@ -73,7 +70,7 @@ class StoragePolicyInfoAction(workflows.Action):
 class StoragePolicyInfo(workflows.Step):
     action_class = StoragePolicyInfoAction
     
-    contributes = ("name", "storage_node", "replicas", "partitions", "time", "newFiled")
+    contributes = ("name", "storage_node", "replicas", "partitions", "time",)
     
     def contribute(self, data, context):    
         print "CONTEXT", context
@@ -127,8 +124,7 @@ class UpdateProjectMembers(workflows.UpdateMembersStep):
     no_members_text = _("No nodes selected.")
 
     def contribute(self, data, context):
-        
-        return {'test01': [1,2,3,4], 'test02': [123,123,123], 'test03': [321,]}
+        return context
 
 
 class CreateStoragePolicyClass(workflows.Workflow):
