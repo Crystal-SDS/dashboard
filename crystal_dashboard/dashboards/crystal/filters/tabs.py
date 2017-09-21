@@ -186,3 +186,4 @@ class FiltersTabs(tabs.TabGroup):
     slug = "filters_tabs"
     tabs = (Filters, RegistryTab, Groups,)
     sticky = True
+

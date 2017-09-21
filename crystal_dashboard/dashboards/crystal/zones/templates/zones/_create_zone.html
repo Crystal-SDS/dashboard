@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block form_id %}create_zone_form{% endblock %}
-{% block form_name %}createZone{% endblock %}
+{% block form_name %}createRegion{% endblock %}
 {% block form_action %}{% url 'horizon:crystal:zones:create_zone' %}{% endblock %}
 {% block form_attrs %}enctype="multipart/form-data"{% endblock %}
 
@@ -18,11 +18,11 @@
 </div>
 <div class="right">
     <h3>{% trans "Description:" %}</h3>
-    <p>{% trans "Openstack Swift Zones." %}</p>
+    <p>{% trans "Openstack Swift Regions." %}</p>
 </div>
 {% endblock %}
 
 {% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans 'Create Zone' %}" />
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans 'Create Region' %}" />
   <a href="{% url 'horizon:crystal:zones:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}

@@ -18,11 +18,11 @@
 </div>
 <div class="right">
     <h3>{% trans "Description:" %}</h3>
-    <p><strong>{% trans "Storage Node:" %}</strong> {% trans "Nodes registered in the OpenStack Swift system." %}</p>
+    <p><strong>{% trans "Storage Node:" %}</strong> {% trans "Load swift policies" %}</p>
 </div>
 {% endblock %}
 
 {% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Register Storage Node" %}" />
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Load Swift Policies" %}" />
   <a href="{% url 'horizon:crystal:rings:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}
