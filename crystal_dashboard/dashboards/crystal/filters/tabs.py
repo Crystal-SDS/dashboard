@@ -72,7 +72,7 @@ class Filters(tabs.TableTab):
         ret = []
         for inst in instances:
             if inst['filter_type'] == 'storlet':
-                ret.append(filters_models.Filter(inst['id'], inst['filter_name'], inst['filter_type'], inst['dependencies'],
+                ret.append(filters_models.Filter(inst['id'], inst['filter_name'], inst['filter_type'], None,
                                                  inst['interface_version'], inst['object_metadata'], inst['main'], inst['has_reverse'],
                                                  inst['execution_server'], inst['execution_server_reverse'],
                                                  inst['is_pre_put'], inst['is_post_put'], inst['is_pre_get'], inst['is_post_get'], 0, False
@@ -120,8 +120,8 @@ class Filters(tabs.TableTab):
         ret = []
         for inst in instances:
             if inst['filter_type'] == 'global':
-                ret.append(filters_models.Filter(inst['id'], inst['filter_name'], inst['filter_type'], inst['dependencies'],
-                                                 inst['interface_version'], inst['object_metadata'], inst['main'], inst['has_reverse'],
+                ret.append(filters_models.Filter(inst['id'], inst['filter_name'], inst['filter_type'], None,
+                                                 None, inst['object_metadata'], inst['main'], inst['has_reverse'],
                                                  inst['execution_server'], inst['execution_server_reverse'],
                                                  inst['is_pre_put'], inst['is_post_put'], inst['is_pre_get'], inst['is_post_get'],
                                                  inst['execution_order'], inst['enabled']
