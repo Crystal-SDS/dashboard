@@ -265,15 +265,15 @@ class UpdateFilter(forms.SelfHandlingForm):
                                   required=False,
                                   allow_empty_file=False)
 
-    interface_version = forms.CharField(max_length=255,
-                                        label=_("Interface Version"),
-                                        required=False,
-                                        help_text=_("Interface Version"))
-
-    dependencies = forms.CharField(max_length=255,
-                                   label=_("Dependencies"),
-                                   required=False,
-                                   help_text=_("A comma separated list of dependencies"))
+    # interface_version = forms.CharField(max_length=255,
+    #                                     label=_("Interface Version"),
+    #                                     required=False,
+    #                                     help_text=_("Interface Version"))
+    #
+    # dependencies = forms.CharField(max_length=255,
+    #                                label=_("Dependencies"),
+    #                                required=False,
+    #                                help_text=_("A comma separated list of dependencies"))
 
     object_metadata = forms.CharField(max_length=255,
                                       label=_("Object Metadata"),
@@ -328,6 +328,10 @@ class UpdateFilter(forms.SelfHandlingForm):
 
 class UpdateStorletFilter(UpdateFilter):
     # TODO: Check this, does not work properly on update
+    interface_version = forms.CharField(max_length=255,
+                                        label=_("Interface Version"),
+                                        required=False,
+                                        help_text=_("Interface Version"))
     is_pre_put = forms.BooleanField(required=False, label="PUT")
     is_post_get = forms.BooleanField(required=False, label="GET")
     is_post_put = forms.BooleanField(required=False, widget=forms.HiddenInput)
