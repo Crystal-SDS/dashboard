@@ -164,18 +164,15 @@ def bw_delete_sort_method(request, name):
 # Swift - Crystal Projects
 #
 def is_crystal_project(request, project_id):
-    return None
+
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
+    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects/" + str(project_id)
 
     headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
 
-    parameters = {"project_id": project_id}
-
-    r = requests.post(url, json.dumps(parameters), headers=headers)
+    r = requests.post(url, headers=headers)
     return r
 
 
@@ -187,7 +184,6 @@ def list_projects_crystal_enabled(request):
     url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
 
     headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
 
     r = requests.get(url, headers=headers)
     return r
@@ -197,14 +193,11 @@ def enable_crystal(request, project_id):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
+    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects/" + str(project_id)
 
     headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
 
-    parameters = {"project_id": project_id}
-
-    r = requests.put(url, json.dumps(parameters), headers=headers)
+    r = requests.put(url, headers=headers)
     return r
 
 
@@ -212,14 +205,11 @@ def disable_crystal(request, project_id):
     token = sds_controller_api(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects"
+    url = settings.IOSTACK_CONTROLLER_URL + "/controller/projects/" + str(project_id)
 
     headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
 
-    parameters = {"project_id": project_id}
-
-    r = requests.delete(url, json.dumps(parameters), headers=headers)
+    r = requests.delete(url, headers=headers)
     return r
 
 

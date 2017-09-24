@@ -8,6 +8,8 @@
     <dd>{{ project.id }}</dd>
     <dt>{% trans "Enabled" %}</dt>
     <dd>{{ project.enabled|yesno|capfirst }}</dd>
+    <dt>{% trans "Crystal Enabled" %}</dt>
+    <dd>{{ project.crystal_enabled|yesno|capfirst }}</dd>
     <dt>{% trans "Description" %}</dt>
     <dd>{{ project.description|default:_("None") }}</dd>
     {% if extras %}
@@ -18,4 +20,3 @@
     {% endif %}
   </dl>
 </div>
-

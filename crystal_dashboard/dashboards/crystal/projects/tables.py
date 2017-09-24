@@ -10,193 +10,76 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
-from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
+from django import forms
 
 from horizon import forms
 from horizon import tables
-
+from models import CrystalProject
 from openstack_dashboard import api
-from openstack_dashboard import policy
-from openstack_dashboard.usage import quotas
 
 from crystal_dashboard.api import crystal as crystal_api
 
 
-class RescopeTokenToProject(tables.LinkAction):
-    name = "rescope"
-    verbose_name = _("Set as Active Project")
-    url = "switch_tenants"
+class EnableProject(tables.BatchAction):
+    """
+    Enable a Project
+    """
+    name = "enable_project"
+    success_url = "horizon:crystal:projects:index"
 
-    def allowed(self, request, project):
-        # allow rescoping token to any project the user has a role on,
-        # authorized_tenants, and that they are not currently scoped to
-        return next((True for proj in request.user.authorized_tenants
-                     if proj.id == project.id and
-                     project.id != request.user.project_id and
-                     project.enabled), False)
-
-    def get_link_url(self, project):
-        # redirects to the switch_tenants url which then will redirect
-        # back to this page
-        dash_url = reverse("horizon:crystal:projects:index")
-        base_url = reverse(self.url, args=[project.id])
-        param = urlencode({"next": dash_url})
-        return "?".join([base_url, param])
-
-
-class UpdateMembersLink(tables.LinkAction):
-    name = "users"
-    verbose_name = _("Manage Members")
-    url = "horizon:crystal:projects:update"
-    classes = ("ajax-modal",)
-    icon = "pencil"
-    policy_rules = (("crystal", "crystal:list_users"),
-                    ("crystal", "crystal:list_roles"))
-
-    def get_link_url(self, project):
-        step = 'update_members'
-        base_url = reverse(self.url, args=[project.id])
-        param = urlencode({"step": step})
-        return "?".join([base_url, param])
-
-    def allowed(self, request, project):
-        if api.keystone.is_multi_domain_enabled():
-            # domain admin or cloud admin = True
-            # project admin or member = False
-            return api.keystone.is_domain_admin(request)
-        else:
-            return super(UpdateMembersLink, self).allowed(request, project)
-
-
-class UpdateGroupsLink(tables.LinkAction):
-    name = "groups"
-    verbose_name = _("Modify Groups")
-    url = "horizon:crystal:projects:update"
-    classes = ("ajax-modal",)
-    icon = "pencil"
-    policy_rules = (("crystal", "crystal:list_groups"),)
-
-    def allowed(self, request, project):
-        if api.keystone.is_multi_domain_enabled():
-            # domain admin or cloud admin = True
-            # project admin or member = False
-            return api.keystone.is_domain_admin(request)
-        else:
-            return super(UpdateGroupsLink, self).allowed(request, project)
-
-    def get_link_url(self, project):
-        step = 'update_group_members'
-        base_url = reverse(self.url, args=[project.id])
-        param = urlencode({"step": step})
-        return "?".join([base_url, param])
-
-
-class UsageLink(tables.LinkAction):
-    name = "usage"
-    verbose_name = _("View Usage")
-    url = "horizon:crystal:projects:usage"
-    icon = "stats"
-    policy_rules = (("compute", "compute_extension:simple_tenant_usage:show"),)
-
-    def allowed(self, request, project):
-        return (request.user.is_superuser and
-                api.base.is_service_enabled(request, 'compute'))
-
-
-class CreateProject(tables.LinkAction):
-    name = "create"
-    verbose_name = _("Create Project")
-    url = "horizon:crystal:projects:create"
-    classes = ("ajax-modal",)
-    icon = "plus"
-    policy_rules = (('crystal', 'crystal:create_project'),)
-
-    def allowed(self, request, project):
-        if api.keystone.is_multi_domain_enabled():
-            # domain admin or cloud admin = True
-            # project admin or member = False
-            return api.keystone.is_domain_admin(request)
-        else:
-            return api.keystone.keystone_can_edit_project()
-
-
-class UpdateProject(policy.PolicyTargetMixin, tables.LinkAction):
-    name = "update"
-    verbose_name = _("Edit Project")
-    url = "horizon:crystal:projects:update"
-    classes = ("ajax-modal",)
-    icon = "pencil"
-    policy_rules = (('crystal', 'crystal:update_project'),)
-    policy_target_attrs = (("target.project.domain_id", "domain_id"),)
-
-    def allowed(self, request, project):
-        if api.keystone.is_multi_domain_enabled():
-            # domain admin or cloud admin = True
-            # project admin or member = False
-            return api.keystone.is_domain_admin(request)
-        else:
-            return api.keystone.keystone_can_edit_project()
-
-
-class ModifyQuotas(tables.LinkAction):
-    name = "quotas"
-    verbose_name = _("Modify Quotas")
-    url = "horizon:crystal:projects:update"
-    classes = ("ajax-modal",)
-    icon = "pencil"
-    policy_rules = (('compute', "compute_extension:quotas:update"),)
-
-    def allowed(self, request, datum):
-        if api.keystone.VERSIONS.active < 3:
-            return True
-        else:
-            return (api.keystone.is_cloud_admin(request) and
-                    quotas.enabled_quotas(request))
-
-    def get_link_url(self, project):
-        step = 'update_quotas'
-        base_url = reverse(self.url, args=[project.id])
-        param = urlencode({"step": step})
-        return "?".join([base_url, param])
-
-
-class DeleteTenantsAction(policy.PolicyTargetMixin, tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete Project",
-            u"Delete Projects",
-            count
+            u"Enable",
+            u"Enable Projects",
+            count,
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted Project",
-            u"Deleted Projects",
-            count
+            u"Enabled",
+            u"Enabled Projects",
+            count,
         )
 
-    policy_rules = (("crystal", "crystal:delete_project"),)
-    policy_target_attrs = ("target.project.domain_id", "domain_id"),
+    def allowed(self, request, project):
+        return (project is None) or not project.crystal_enabled
+
+    def action(self, request, project_id):
+        crystal_api.enable_crystal(request, project_id)
+
+
+
+class DisableProject(tables.BatchAction):
+
+    name = "disable_project"
+    success_url = "horizon:crystal:projects:index"
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Disable",
+            u"Disable Projects",
+            count,
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Disabled",
+            u"Disabled Projects",
+            count,
+        )
 
     def allowed(self, request, project):
-        if api.keystone.is_multi_domain_enabled() \
-                and not api.keystone.is_domain_admin(request):
-            return False
-        return api.keystone.keystone_can_edit_project()
+        return (project is None) or project.crystal_enabled
 
-    def delete(self, request, obj_id):
-        api.keystone.tenant_delete(request, obj_id)
-
-    def handle(self, table, request, obj_ids):
-        response = \
-            super(DeleteTenantsAction, self).handle(table, request, obj_ids)
-        return response
+    def action(self, request, project_id):
+        crystal_api.disable_crystal(request, project_id)
 
 
 class TenantFilterAction(tables.FilterAction):
@@ -214,9 +97,17 @@ class UpdateRow(tables.Row):
     ajax = True
 
     def get_data(self, request, project_id):
-        project_info = api.keystone.tenant_get(request, project_id,
-                                               admin=True)
-        return project_info
+        project_info = api.keystone.tenant_get(request, project_id, admin=True)
+        response = crystal_api.is_crystal_project(request, project_id)
+        if response.status_code == 200:
+            crystal_enabled = True
+        else:
+            crystal_enabled = False
+        project = CrystalProject(project_info.id, project_info.name,
+                                 project_info.description, project_info.domain_id,
+                                 project_info.enabled, crystal_enabled)
+        return project
+
 
 
 class TenantsTable(tables.DataTable):
@@ -240,34 +131,20 @@ class TenantsTable(tables.DataTable):
                                 label=_('Enabled'),
                                 required=False))
 
-    crystal_project = tables.Column(lambda obj: crystal_api.is_crystal_project(None, getattr(obj, 'id', None)),
+    crystal_enabled = tables.Column('crystal_enabled',
                                     verbose_name=_('Crystal Enabled'), status=True,
-                                    filters=(filters.yesno, filters.capfirst))
+                                    filters=(filters.yesno, filters.capfirst),
+                                    form_field=forms.BooleanField(
+                                        label=_('Crystal Enabled'),
+                                        required=False)
+                                    )
 
-    def get_project_detail_link(self, project):
-        # this method is an ugly monkey patch, needed because
-        # the column link method does not provide access to the request
-        if policy.check((("crystal", "crystal:get_project"),),
-                        self.request, target={"project": project}):
-            return reverse("horizon:crystal:projects:detail",
-                           args=(project.id,))
-        return None
-
-    def __init__(self, request, data=None, needs_form_wrapper=None, **kwargs):
-        super(TenantsTable,
-              self).__init__(request, data=data,
-                             needs_form_wrapper=needs_form_wrapper,
-                             **kwargs)
-        # see the comment above about ugly monkey patches
-        self.columns['name'].get_link_url = self.get_project_detail_link
 
     class Meta(object):
         name = "tenants"
         verbose_name = _("Projects")
-        row_class = UpdateRow
-        row_actions = (UpdateMembersLink, UpdateGroupsLink, UpdateProject,
-                       UsageLink, ModifyQuotas, DeleteTenantsAction,
-                       RescopeTokenToProject)
-        table_actions = (TenantFilterAction, CreateProject,
-                         DeleteTenantsAction)
+        status_columns = ['crystal_enabled', ]
+        row_actions = (EnableProject, DisableProject)
+        table_actions = (TenantFilterAction,)
         pagination_param = "tenant_marker"
+        row_class = UpdateRow
