@@ -99,10 +99,10 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
         })
     )
 
-    params = forms.CharField(max_length=255,
+    params = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows': 4}),
                              label=_("Parameters"),
                              required=False,
-                             help_text=_("Parameters list."))
+                             help_text=_("CSV Parameters list.Ex: param1=value1, param2=value2"))
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
@@ -207,7 +207,7 @@ class UpdatePolicy(forms.SelfHandlingForm):
                                       label=_("Execution Order"),
                                       help_text=_("The order in which the policy will be executed."))
 
-    params = forms.CharField(max_length=255,
+    params = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows': 4}),
                              label=_("Parameters"),
                              required=False,
                              help_text=_("Parameters list."))

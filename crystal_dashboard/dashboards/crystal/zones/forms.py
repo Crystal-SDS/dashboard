@@ -1,4 +1,3 @@
-import sys
 from django.utils.translation import ugettext_lazy as _
 from django.forms import ValidationError  # noqa
 from django.core.urlresolvers import reverse
@@ -21,18 +20,17 @@ class CreateZone(forms.SelfHandlingForm):
                            ))
 
     region = forms.ThemableChoiceField(label=_("Region"))
-    
+
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-    
 
     def __init__(self, request, *args, **kwargs):
         super(CreateZone, self).__init__(request, *args, **kwargs)
         regions = json.loads(api.swift_list_regions(request).text)
         self.fields['region'].choices = [(region['id'], region['name']) for region in regions]
-            
+
     def handle(self, request, data):
         try:
             response = api.new_zone(request, data)

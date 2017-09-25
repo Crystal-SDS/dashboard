@@ -175,7 +175,7 @@ class StaticPoliciesTable(tables.DataTable):
     execution_server = tables.Column('execution_server', verbose_name="Execution Server", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
     execution_server_reverse = tables.Column('execution_server_reverse', verbose_name="Execution Server Reverse", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
     execution_order = tables.Column('execution_order', verbose_name="Execution Order", form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    params = tables.Column('params', verbose_name="Params", form_field=forms.CharField(max_length=255, required=False), update_action=UpdateCell)
+    params = tables.Column('params', verbose_name="Parameters", form_field=forms.CharField(max_length=300, required=False), update_action=UpdateCell)
 
     class Meta:
         name = "static_policies"

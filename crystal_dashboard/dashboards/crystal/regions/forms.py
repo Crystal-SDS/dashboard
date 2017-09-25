@@ -1,12 +1,9 @@
-import sys
 from django.utils.translation import ugettext_lazy as _
 from django.forms import ValidationError  # noqa
 from django.core.urlresolvers import reverse
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-
-import json
 
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.api import crystal as api
@@ -43,19 +40,19 @@ class CreateRegion(forms.SelfHandlingForm):
 
 
 class UpdateRegion(forms.SelfHandlingForm):
-    
+
     name = forms.CharField(max_length=255,
                            label=_("Name"),
                            help_text=_("The name of the new region."))
-                           
+
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-    
+
     region_id = forms.CharField(max_length=255,
-                             label=_("Region ID"),
-                             widget=forms.HiddenInput())
+                                label=_("Region ID"),
+                                widget=forms.HiddenInput())
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateRegion, self).__init__(request, *args, **kwargs)

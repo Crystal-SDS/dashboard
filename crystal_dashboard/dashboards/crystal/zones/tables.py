@@ -67,7 +67,7 @@ class DeleteProxyZoneAction(tables.DeleteAction):
 class StoragePolicyTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
-    region = tables.Column('region', verbose_name=_("region"))
+    region = tables.Column('region', verbose_name=_("Region"))
     description = tables.Column('description', verbose_name=_("Description"))
 
     class Meta:
