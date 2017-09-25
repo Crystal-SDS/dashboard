@@ -34,13 +34,7 @@ class Nodes(tabs.TableTab):
         nodes = json.loads(strobj)
         for node in nodes:
             if node['type'] == 'proxy':
-                try:
-                    region_name = json.loads(api.get_region(self.request, node['region_id']).text)['name']
-                    zone_name = json.loads(api.get_zone(self.request, node['zone_id']).text)['name']
-                except Exception as e:
-                    region_name = 'Unknown'
-                    zone_name = 'Unknown'
-                ret.append(nodes_models.ProxyNode(node['name'], node['ip'], region_name, zone_name, node['ssh_access'], node['last_ping']))
+                ret.append(nodes_models.ProxyNode(node['name'], node['ip'], node['region_name'], node['zone_name'], node['ssh_access'], node['last_ping']))
         return ret
 
     def get_storagenodes_data(self):
@@ -60,13 +54,7 @@ class Nodes(tabs.TableTab):
         nodes = json.loads(strobj)
         for node in nodes:
             if node['type'] == 'object':
-                try:
-                    region_name = json.loads(api.get_region(self.request, node['region_id']).text)['name']
-                    zone_name = json.loads(api.get_zone(self.request, node['zone_id']).text)['name']
-                except Exception as e:
-                    region_name = 'Unknown'
-                    zone_name = 'Unknown'
-                ret.append(nodes_models.StorageNode(node['name'], node['ip'], region_name, zone_name, node['ssh_access'], node['last_ping'], node['devices']))
+                ret.append(nodes_models.StorageNode(node['name'], node['ip'], node['region_name'], node['zone_name'], node['ssh_access'], node['last_ping'], node['devices']))
         return ret
 
 

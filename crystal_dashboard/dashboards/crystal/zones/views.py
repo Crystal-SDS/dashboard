@@ -36,11 +36,8 @@ class IndexView(tables.DataTableView):
 
         zones = json.loads(strobj)
         for zone in zones:
-            try:
-                region_name = json.loads(api.get_region(self.request, zone['region']).text)['name']
-            except Exception as e:
-                region_name = 'Unknown'
-            ret.append(Zone(zone['id'], zone['name'], region_name, zone['description']))
+            ret.append(Zone(zone['id'], zone['name'], zone['region_name'], zone['description']))
+            
         return ret
 
 

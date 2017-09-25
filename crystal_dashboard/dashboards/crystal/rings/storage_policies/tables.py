@@ -78,7 +78,6 @@ class StoragePolicyTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
     type = tables.Column('type', verbose_name=_("Type"))
-    new_field = tables.Column('new_field', verbose_name=_("New Field"))
 
     class Meta:
         name = "storagepolicies"
