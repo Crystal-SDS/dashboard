@@ -5,7 +5,7 @@ import horizon
 class SwiftCluster(horizon.PanelGroup):
     slug = "swift_cluster"
     name = _("Swift Cluster")
-    panels = ('nodes', 'regions', 'zones', 'rings', 'containers',)
+    panels = ('regions', 'zones', 'nodes', 'rings', 'containers',)
 
 
 class SDSManagement(horizon.PanelGroup):
