@@ -171,7 +171,6 @@ class UpdateCell(tables.UpdateAction):
             data = json.loads(response.text)
             data[cell_name] = new_cell_value
 
-
             # TODO: Check only the valid keys, delete the rest
             if 'id' in data:  # PUT does not allow this key
                 del data['id']
@@ -184,12 +183,17 @@ class UpdateCell(tables.UpdateAction):
             if 'path' in data:  # PUT does not allow this key
                 del data['path']
             if 'filter_type' in data:  # PUT does not allow this key
+                if data['filter_type'] == 'global' or data['filter_type'] == 'native':
+                    del data['interface_version']
+
                 if data['filter_type'] == 'native' or data['filter_type'] == 'storlet':
                     if 'execution_order' in data:
                         del data['execution_order']
                     if 'enabled' in data:
                         del data['enabled']
                 del data['filter_type']
+
+            del data['dependencies']
 
             api.fil_update_filter_metadata(request, id, data)
         except Conflict:
@@ -209,8 +213,8 @@ class UpdateStorletRow(tables.Row):
     def get_data(self, request, id):
         response = api.fil_get_filter_metadata(request, id)
         data = json.loads(response.text)
-        filter = Filter(data['id'], data['filter_name'],
-                        data['filter_type'], data['dependencies'],
+        filter = Filter(data['id'], data['filter_name'], data['language'],
+                        data['filter_type'], None,
                         data['interface_version'], data['object_metadata'],
                         data['main'],
                         data['has_reverse'], data['execution_server'],
@@ -227,10 +231,9 @@ class UpdateNativeRow(tables.Row):
     def get_data(self, request, id):
         response = api.fil_get_filter_metadata(request, id)
         data = json.loads(response.text)
-        filter = Filter(data['id'], data['filter_name'],
-                        data['filter_type'], data['dependencies'],
-                        data['interface_version'], data['object_metadata'],
-                        data['main'],
+        filter = Filter(data['id'], data['filter_name'], data['language'],
+                        data['filter_type'], None, None,
+                        data['object_metadata'], data['main'],
                         data['has_reverse'], data['execution_server'],
                         data['execution_server_reverse'],
                         data['is_pre_put'], data['is_post_put'], data['is_pre_get'], data['is_post_get'],
@@ -245,10 +248,9 @@ class UpdateGlobalRow(tables.Row):
     def get_data(self, request, id):
         response = api.fil_get_filter_metadata(request, id)
         data = json.loads(response.text)
-        filter = Filter(data['id'], data['filter_name'],
-                        data['filter_type'], data['dependencies'],
-                        data['interface_version'], data['object_metadata'],
-                        data['main'],
+        filter = Filter(data['id'], data['filter_name'], data['language'],
+                        data['filter_type'], None, None,
+                        data['object_metadata'], data['main'],
                         data['has_reverse'], data['execution_server'],
                         data['execution_server_reverse'],
                         data['is_pre_put'], data['is_post_put'], data['is_pre_get'], data['is_post_get'],
