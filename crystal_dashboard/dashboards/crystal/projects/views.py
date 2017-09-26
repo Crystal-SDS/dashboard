@@ -1,18 +1,14 @@
 import json
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
-from horizon.utils import memoized
-from horizon import views
 
 from models import CrystalProject
 
 from openstack_dashboard import api
-from openstack_dashboard.api import keystone
 from openstack_dashboard import policy
 
 from crystal_dashboard.dashboards.crystal.projects \
@@ -29,32 +25,6 @@ PROJECT_INFO_FIELDS = ("domain_id",
                        "crystal_enabled",)
 
 INDEX_URL = "horizon:crystal:projects:index"
-
-
-class TenantContextMixin(object):
-    @memoized.memoized_method
-    def get_object(self):
-        tenant_id = self.kwargs['tenant_id']
-        try:
-            project_info = api.keystone.tenant_get(self.request, tenant_id, admin=True)
-            crystal_enabled_response = crystal_api.is_crystal_project(self.request, tenant_id)
-            if crystal_enabled_response.status_code == 200:
-                crystal_enabled = True
-            else:
-                crystal_enabled = False
-            project = CrystalProject(project_info.id, project_info.name,
-                                     project_info.description, project_info.domain_id,
-                                     project_info.enabled, crystal_enabled)
-            return project
-        except Exception:
-            exceptions.handle(self.request,
-                              _('Unable to retrieve project information.'),
-                              redirect=reverse(INDEX_URL))
-
-    def get_context_data(self, **kwargs):
-        context = super(TenantContextMixin, self).get_context_data(**kwargs)
-        context['tenant'] = self.get_object()
-        return context
 
 
 class IndexView(tables.DataTableView):
@@ -136,42 +106,3 @@ class IndexView(tables.DataTableView):
                                      tenant.enabled, crystal_enabled)
             projects.append(project)
         return projects
-
-
-class DetailProjectView(views.HorizonTemplateView):
-    template_name = 'crystal/projects/detail.html'
-    page_title = "{{ project.name }}"
-
-    def get_context_data(self, **kwargs):
-        context = super(DetailProjectView, self).get_context_data(**kwargs)
-        project = self.get_data()
-        table = project_tables.TenantsTable(self.request)
-        context["project"] = project
-        context["url"] = reverse(INDEX_URL)
-        context["actions"] = table.render_row_actions(project)
-
-        if keystone.VERSIONS.active >= 3:
-            extra_info = getattr(settings, 'PROJECT_TABLE_EXTRA_INFO', {})
-            context['extras'] = dict(
-                (display_key, getattr(project, key, ''))
-                for key, display_key in extra_info.items())
-        return context
-
-    @memoized.memoized_method
-    def get_data(self):
-        try:
-            project_id = self.kwargs['project_id']
-            project_info = api.keystone.tenant_get(self.request, project_id, admin=True)
-            crystal_enabled_response = crystal_api.is_crystal_project(self.request, project_id)
-            if crystal_enabled_response.status_code == 200:
-                crystal_enabled = True
-            else:
-                crystal_enabled = False
-            project = CrystalProject(project_info.id, project_info.name,
-                                     project_info.description, project_info.domain_id,
-                                     project_info.enabled, crystal_enabled)
-        except Exception:
-            exceptions.handle(self.request,
-                              _('Unable to retrieve project details.'),
-                              redirect=reverse(INDEX_URL))
-        return project

@@ -2,6 +2,7 @@ class CrystalProject:
     """
     Project to use for crystal
     """
+
     def __init__(self, project_id, project_name, description, domain_name, enabled, crystal_enabled):
         """
 
