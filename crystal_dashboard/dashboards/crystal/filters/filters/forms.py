@@ -32,11 +32,10 @@ class UploadFilter(forms.SelfHandlingForm):
                                    ))
     """
     language = forms.CharField(max_length=255,
-                                     label=_("Language"),
-                                     initial='python',
-                                     widget=forms.HiddenInput(  # hidden
-                                          attrs={"ng-model": "language"}
-                                      ))
+                               label=_("Language"),
+                               initial='python',
+                               widget=forms.HiddenInput(  # hidden
+                                            attrs={"ng-model": "language"}))
 
     object_metadata = forms.CharField(max_length=255,
                                       label=_("Object Metadata"),
@@ -102,7 +101,7 @@ class UploadStorletFilter(forms.SelfHandlingForm):
                                        attrs={"ng-model": "dependencies"}
                                    ))
     """
-    
+
     language = forms.ChoiceField(label=_('Language'),
                              choices=[('java', _('Java')),('python', _('Python'))],
                              widget=forms.Select(attrs={
@@ -110,7 +109,7 @@ class UploadStorletFilter(forms.SelfHandlingForm):
                                 'data-slug': 'source'
                              })
                             )
-    
+
     object_metadata = forms.CharField(max_length=255,
                                       label=_("Object Metadata"),
                                       required=False,
@@ -247,14 +246,13 @@ class UploadGlobalFilter(UploadFilter):
 
     @staticmethod
     def handle(request, data):
-        print "ASDF"
         filter_file = data['filter_file']
         del data['filter_file']
         data['filter_type'] = 'global'
-                
+
         try:
             response = api.fil_create_filter(request, data)
-            
+
             if 200 <= response.status_code < 300:
                 filter_id = json.loads(response.text)["id"]
                 response = api.fil_upload_filter_data(request, filter_id, filter_file)
@@ -289,6 +287,11 @@ class UpdateFilter(forms.SelfHandlingForm):
     #                                label=_("Dependencies"),
     #                                required=False,
     #                                help_text=_("A comma separated list of dependencies"))
+    language = forms.CharField(max_length=255,
+                               label=_("Language"),
+                               initial='python',
+                               widget=forms.HiddenInput(  # hidden
+                                            attrs={"ng-model": "language"}))
 
     object_metadata = forms.CharField(max_length=255,
                                       label=_("Object Metadata"),
