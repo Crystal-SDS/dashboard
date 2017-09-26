@@ -41,17 +41,11 @@ class UpdateSLA(tables.LinkAction):
 
 class UpdateCell(tables.UpdateAction):
     def allowed(self, request, project, cell):
-        return cell.column.name in ["get_bandwidth", "put_bandwidth", "ssync_bandwidth"]
+        return cell.column.name in ["get_bandwidth", "put_bandwidth"]
 
     def update_cell(self, request, datum, id, cell_name, new_cell_value):
         try:
-            # updating changed value by new value
-            #response = api.bw_get_sla(request, id)
-            #response = api.bw_get_sla(request, "bandwidth", cell_name, id)
-            #data = json.loads(response.text)
-            #data[cell_name] = new_cell_value
-
-            slo_names_dict = {'get_bandwidth': 'get_bw', 'put_bandwidth': 'put_bw', 'ssync_bandwidth': 'ssync_bw'}
+            slo_names_dict = {'get_bandwidth': 'get_bw', 'put_bandwidth': 'put_bw'}
             api.fil_update_slo(request, 'bandwidth', slo_names_dict[cell_name], id, {'value': new_cell_value})
         except Conflict:
             # Returning a nice error message about name conflict. The message
@@ -70,11 +64,9 @@ class UpdateRow(tables.Row):
     def get_data(self, request, id):
         get_sla = api.fil_get_slo(request, 'bandwidth', 'get_bw', id)
         put_sla = api.fil_get_slo(request, 'bandwidth', 'put_bw', id)
-        ssync_sla = api.fil_get_slo(request, 'bandwidth', 'ssync_bw', id)
 
         get_sla_json = json.loads(get_sla.text)
         put_sla_json = json.loads(put_sla.text)
-        ssync_sla_json = json.loads(ssync_sla.text)
 
         storage_policies_dict = dict(common.get_storage_policy_list(request, common.ListOptions.by_id()))
         projects_dict = dict(common.get_project_list(request))
@@ -82,16 +74,10 @@ class UpdateRow(tables.Row):
         project_target, policy_id = get_sla_json['target'].split('#')  # target format is AUTH_X#Y where  X is the project_id and Y is the policy_id
         project_id = project_target.split('_')[1]
 
-        sla = SLA(project_id, projects_dict[str(project_id)], policy_id, storage_policies_dict[str(policy_id)], get_sla_json['value'],
-                  put_sla_json['value'], ssync_sla_json['value'])
+        sla = SLA(project_id, projects_dict[str(project_id)], policy_id,
+                  storage_policies_dict[str(policy_id)], get_sla_json['value'],
+                  put_sla_json['value'])
         return sla
-
-
-        # response = api.bw_get_sla(request, id)
-        # data = json.loads(response.text)
-        #
-        # sla = SLA(data["project_id"], data["project_name"], data["policy_id"], data["policy_name"], data["bandwidth"])
-        # return sla
 
 
 class DeleteSLA(tables.DeleteAction):
@@ -116,10 +102,9 @@ class DeleteSLA(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         try:
-            #response = api.bw_delete_sla(request, obj_id)
             success = True
             error_msg = ''
-            for slo_name in ['get_bw', 'put_bw', 'ssync_bw']:
+            for slo_name in ['get_bw', 'put_bw']:
                 response = api.fil_delete_slo(request, 'bandwidth', slo_name, obj_id)
                 if 200 <= response.status_code < 300:
                     pass
@@ -145,7 +130,6 @@ class SLAsTable(tables.DataTable):
     policy_name = tables.Column("policy_name", verbose_name=_("Storage Policy (Ring)"))
     get_bandwidth = tables.Column("get_bw", verbose_name=_("GET BW"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     put_bandwidth = tables.Column("put_bw", verbose_name=_("PUT BW"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    ssync_bandwidth = tables.Column("ssync_bw", verbose_name=_("SSYNC BW"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:
         name = "slas"

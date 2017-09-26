@@ -48,12 +48,10 @@ class UpdateView(forms.ModalFormView):
         try:
             get_sla = api.fil_get_slo(self.request, 'bandwidth', 'get_bw', sla_id)
             put_sla = api.fil_get_slo(self.request, 'bandwidth', 'put_bw', sla_id)
-            ssync_sla = api.fil_get_slo(self.request, 'bandwidth', 'ssync_bw', sla_id)
 
             obj = {"id": sla_id,
                    "get_bandwidth": json.loads(get_sla.text)['value'],
-                   "put_bandwidth": json.loads(put_sla.text)['value'],
-                   "ssync_bandwidth": json.loads(ssync_sla.text)['value']}
+                   "put_bandwidth": json.loads(put_sla.text)['value']}
             return obj
 
         except Exception:

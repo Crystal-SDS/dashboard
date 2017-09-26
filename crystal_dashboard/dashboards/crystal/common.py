@@ -6,7 +6,7 @@ from swiftclient import ClientException
 from horizon import exceptions
 from openstack_dashboard.api import keystone
 from openstack_dashboard.api import swift
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import crystal as crystal_api
 
 
 # List Options
@@ -61,9 +61,9 @@ def get_filter_list(request):
     :param request: the request which the dashboard is using
     :return: list with filters
     """
-    
+
     try:
-        response = api.fil_list_filters(request)
+        response = crystal_api.fil_list_filters(request)
         if 200 <= response.status_code < 300:
             response_text = response.text
         else:
@@ -74,8 +74,8 @@ def get_filter_list(request):
 
     filters_list = []
     filters = json.loads(response_text)
-    
-    # Iterate filters    
+
+    # Iterate filters
     for filter_ in filters:
         print filter_
         filters_list.append((filter_['id'], filter_['filter_name']))
@@ -102,7 +102,7 @@ def get_dsl_filter_list(request):
     :return: list with dsl filters
     """
     try:
-        response = api.dsl_get_all_filters(request)
+        response = crystal_api.dsl_get_all_filters(request)
         if 200 <= response.status_code < 300:
             response_text = response.text
         else:
@@ -140,7 +140,7 @@ def get_object_type_list(request):
     :return: list with object types
     """
     try:
-        response = api.dsl_get_all_object_types(request)
+        response = crystal_api.dsl_get_all_object_types(request)
         if 200 <= response.status_code < 300:
             response_text = response.text
         else:
@@ -166,7 +166,31 @@ def get_project_list_choices(request):
     :param request: the request which the dashboard is using
     :return: tuple with project choices
     """
-    return ('', 'Select one'), ('Projects', get_project_list(request))
+    return ('', 'Select one'), ('Projects', get_project_list_crystal_enabled(request))
+
+
+def get_project_list_crystal_enabled(request):
+    """
+    Get a list of projects
+
+    :param request: the request which the dashboard is using
+    :return: list with projects
+    """
+    try:
+        # admin = True (all projects), admin = False (user projects)
+        response_text = keystone.tenant_list(request, admin=True)
+        enabled_crystal_projects = json.loads(crystal_api.list_projects_crystal_enabled(request).text)
+    except Exception as exc:
+        response_text = '[]'
+        exceptions.handle(request, _(exc.message))
+
+    projects_list = []
+    projects = response_text[0]
+    # Iterate projects
+    for project in projects:
+        if project.id in enabled_crystal_projects:
+            projects_list.append((project.id, project.name))
+    return projects_list
 
 
 def get_project_list(request):
@@ -187,9 +211,8 @@ def get_project_list(request):
     projects = response_text[0]
     # Iterate projects
     for project in projects:
-        projects_list.append((project.__dict__['_info']['id'], project.__dict__['_info']['name']))
+        projects_list.append((project.id, project.name))
     return projects_list
-
 
 # Container
 # =========
@@ -244,7 +267,7 @@ def get_storage_policy_list(request, by_attribute):
     :return: list with storage policies
     """
     try:
-        response = api.swift_list_storage_policies(request)
+        response = crystal_api.swift_list_storage_policies(request)
         if 200 <= response.status_code < 300:
             response_text = response.text
         else:
