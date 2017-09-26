@@ -263,6 +263,7 @@ class StorletFilterTable(tables.DataTable):
     # filter_type = tables.Column('filter_type', verbose_name=_("Type"))
     interface_version = tables.Column('interface_version', verbose_name=_("Interface Version"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     #dependencies = tables.Column('dependencies', verbose_name=_("Dependencies"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
+    language = tables.Column('language', verbose_name=_("Language"))
     main = tables.Column('main', verbose_name=_("Main"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     is_pre_put = tables.Column('is_pre_put', verbose_name=_("Put"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     is_post_get = tables.Column('is_post_get', verbose_name=_("Get"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)

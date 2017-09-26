@@ -61,6 +61,7 @@ def get_filter_list(request):
     :param request: the request which the dashboard is using
     :return: list with filters
     """
+    
     try:
         response = api.fil_list_filters(request)
         if 200 <= response.status_code < 300:
@@ -73,8 +74,10 @@ def get_filter_list(request):
 
     filters_list = []
     filters = json.loads(response_text)
-    # Iterate filters
+    
+    # Iterate filters    
     for filter_ in filters:
+        print filter_
         filters_list.append((filter_['id'], filter_['filter_name']))
     return filters_list
 

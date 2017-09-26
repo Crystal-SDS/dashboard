@@ -31,6 +31,12 @@ class UploadFilter(forms.SelfHandlingForm):
                                        attrs={"ng-model": "dependencies"}
                                    ))
     """
+    language = forms.CharField(max_length=255,
+                                     label=_("Language"),
+                                     initial='python',
+                                     widget=forms.HiddenInput(  # hidden
+                                          attrs={"ng-model": "language"}
+                                      ))
 
     object_metadata = forms.CharField(max_length=255,
                                       label=_("Object Metadata"),
@@ -96,6 +102,15 @@ class UploadStorletFilter(forms.SelfHandlingForm):
                                        attrs={"ng-model": "dependencies"}
                                    ))
     """
+    
+    language = forms.ChoiceField(label=_('Language'),
+                             choices=[('java', _('Java')),('python', _('Python'))],
+                             widget=forms.Select(attrs={
+                                'class': 'switchable',
+                                'data-slug': 'source'
+                             })
+                            )
+    
     object_metadata = forms.CharField(max_length=255,
                                       label=_("Object Metadata"),
                                       required=False,
@@ -232,14 +247,14 @@ class UploadGlobalFilter(UploadFilter):
 
     @staticmethod
     def handle(request, data):
+        print "ASDF"
         filter_file = data['filter_file']
         del data['filter_file']
-
         data['filter_type'] = 'global'
-
+                
         try:
             response = api.fil_create_filter(request, data)
-
+            
             if 200 <= response.status_code < 300:
                 filter_id = json.loads(response.text)["id"]
                 response = api.fil_upload_filter_data(request, filter_id, filter_file)
@@ -332,6 +347,15 @@ class UpdateStorletFilter(UpdateFilter):
                                         label=_("Interface Version"),
                                         required=False,
                                         help_text=_("Interface Version"))
+    
+    language = forms.ChoiceField(label=_('Language'),
+                             choices=[('java', _('Java')),('python', _('Python'))],
+                             widget=forms.Select(attrs={
+                                'class': 'switchable',
+                                'data-slug': 'source'
+                             })
+                            )
+    
     is_pre_put = forms.BooleanField(required=False, label="PUT")
     is_post_get = forms.BooleanField(required=False, label="GET")
     is_post_put = forms.BooleanField(required=False, widget=forms.HiddenInput)
