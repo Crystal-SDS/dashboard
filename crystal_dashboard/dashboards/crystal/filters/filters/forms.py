@@ -21,6 +21,14 @@ class UploadNativeFilter(forms.SelfHandlingForm):
                                widget=forms.HiddenInput(  # hidden
                                             attrs={"ng-model": "language"}))
 
+    dependencies = forms.CharField(max_length=255,
+                                   label=_("Dependencies"),
+                                   required=False,
+                                   help_text=_("A comma separated list of dependencies"),
+                                   widget=forms.HiddenInput(
+                                       attrs={"ng-model": "dependencies"}
+                                   ))
+
     main = forms.CharField(max_length=255,
                            label=_("Main Class"),
                            help_text=_("The name of the class that implements the Filters API."),
