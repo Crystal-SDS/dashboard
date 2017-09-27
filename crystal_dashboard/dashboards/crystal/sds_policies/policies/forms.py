@@ -35,7 +35,7 @@ class CreateDSLPolicy(forms.SelfHandlingForm):
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
-class CreateSimplePolicy(forms.SelfHandlingForm):
+class CreateStaticPolicy(forms.SelfHandlingForm):
     target_choices = []
     target_id = forms.ChoiceField(choices=target_choices,
                                   label=_("Project"),
@@ -106,8 +106,7 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        # TODO: GET FROM REDIS ONLY THE CRYSTAL ENABLED PROJECTS
-        self.target_choices = common.get_project_list_choices(request)
+        self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request)]
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
 
         # Obtain list of dsl filters
@@ -116,7 +115,7 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
         self.object_type_choices = common.get_object_type_choices(request)
 
         # Initialization
-        super(CreateSimplePolicy, self).__init__(request, *args, **kwargs)
+        super(CreateStaticPolicy, self).__init__(request, *args, **kwargs)
 
         # Overwrite target_id input form
         self.fields['target_id'] = forms.ChoiceField(choices=self.target_choices,

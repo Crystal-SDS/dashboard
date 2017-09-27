@@ -18,10 +18,10 @@ class MyStaticPolicyFilterAction(tables.FilterAction):
     name = "my_static_policy_filter"
 
 
-class CreateSimplePolicy(tables.LinkAction):
-    name = "create_simple"
+class CreateStaticPolicy(tables.LinkAction):
+    name = "create_static_policy"
     verbose_name = _("Create Policy")
-    url = "horizon:crystal:sds_policies:policies:create_simple_policy"
+    url = "horizon:crystal:sds_policies:policies:create_static_policy"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -180,7 +180,7 @@ class StaticPoliciesTable(tables.DataTable):
     class Meta:
         name = "static_policies"
         verbose_name = _("Static Policies")
-        table_actions = (MyStaticPolicyFilterAction, CreateSimplePolicy, CreatePolicyDSL, DeleteMultipleStaticPolicies,)
+        table_actions = (MyStaticPolicyFilterAction, CreateStaticPolicy, CreatePolicyDSL, DeleteMultipleStaticPolicies,)
         row_actions = (UpdateStaticPolicy, DeleteStaticPolicy,)
         row_class = UpdateRow
         hidden_title = False

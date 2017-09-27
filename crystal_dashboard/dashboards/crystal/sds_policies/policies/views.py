@@ -14,18 +14,18 @@ from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal.sds_policies.policies import forms as policies_forms
 
 
-class CreateSimplePolicyView(forms.ModalFormView):
-    form_class = policies_forms.CreateSimplePolicy
-    form_id = "create_simple_policy_form"
+class CreateStaticPolicyView(forms.ModalFormView):
+    form_class = policies_forms.CreateStaticPolicy
+    form_id = "create_static_policy_form"
 
-    modal_header = _("Create a Policy (Simple)")
-    modal_id = "create_simple_policy_modal"
+    modal_header = _("Create a Static Policy")
+    modal_id = "create_static_policy_modal"
     submit_label = _("Create")
-    submit_url = reverse_lazy("horizon:crystal:sds_policies:policies:create_simple_policy")
-    template_name = 'crystal/sds_policies/policies/create_simple_policy.html'
+    submit_url = reverse_lazy("horizon:crystal:sds_policies:policies:create_static_policy")
+    template_name = 'crystal/sds_policies/policies/create_static_policy.html'
     content_object_name = 'policy'
     success_url = reverse_lazy('horizon:crystal:sds_policies:index')
-    page_title = _("Create a Policy (Simple)")
+    page_title = _("Create a Static Policy")
 
 
 @csrf_exempt
@@ -46,7 +46,7 @@ def get_container_by_project(request):
                 else:
                     # If the project does not contain some containers
                     container_response = '<option value="">None</option>'
-            except Exception as exc:
+            except:
                 # If get_container_list raises an exception
                 container_response = '<option value="">None</option>'
         else:

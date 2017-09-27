@@ -37,7 +37,7 @@ class CreateSLA(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.project_choices = common.get_project_list_choices(request)
+        self.project_choices = [('', 'Select one'), common.get_project_list_choices(request)]
         # Obtain list of storage policies
         self.storage_policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_id())
 

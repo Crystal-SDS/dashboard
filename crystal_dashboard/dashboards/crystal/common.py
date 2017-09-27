@@ -166,7 +166,7 @@ def get_project_list_choices(request):
     :param request: the request which the dashboard is using
     :return: tuple with project choices
     """
-    return ('', 'Select one'), ('Projects', get_project_list_crystal_enabled(request))
+    return ('Projects', get_project_list_crystal_enabled(request))
 
 
 def get_project_list_crystal_enabled(request):
