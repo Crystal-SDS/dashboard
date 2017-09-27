@@ -15,6 +15,13 @@ class UploadNativeFilter(forms.SelfHandlingForm):
                                   required=True,
                                   allow_empty_file=False)
 
+    main = forms.CharField(max_length=255,
+                           label=_("Main Class"),
+                           help_text=_("The name of the class that implements the Filters API."),
+                           widget=forms.TextInput(
+                               attrs={"ng-model": "main", "not-blank": ""}
+                           ))
+
     language = forms.CharField(max_length=255,
                                label=_("Language"),
                                initial='python',
@@ -28,13 +35,6 @@ class UploadNativeFilter(forms.SelfHandlingForm):
                                    widget=forms.HiddenInput(
                                        attrs={"ng-model": "dependencies"}
                                    ))
-
-    main = forms.CharField(max_length=255,
-                           label=_("Main Class"),
-                           help_text=_("The name of the class that implements the Filters API."),
-                           widget=forms.TextInput(
-                               attrs={"ng-model": "main", "not-blank": ""}
-                           ))
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -105,12 +105,20 @@ class UploadStorletFilter(forms.SelfHandlingForm):
                                   required=True,
                                   allow_empty_file=False)
 
-    interface_version = forms.CharField(max_length=255,
+    main = forms.CharField(max_length=255,
+                           label=_("Main Class"),
+                           help_text=_("The name of the class that implements the Filters API."),
+                           widget=forms.TextInput(
+                               attrs={"ng-model": "main", "not-blank": ""}
+                           ))
+
+    interface_version = forms.CharField(max_length=10,
                                         label=_("Interface Version"),
+                                        initial='1.0',
                                         required=True,
                                         help_text=_("Interface Version"),
                                         widget=forms.TextInput(
-                                            attrs={"ng-model": "interface_version", "not-blank": ""}
+                                            attrs={"ng-model": "interface_version"}
                                         ))
 
     dependencies = forms.CharField(max_length=255,
@@ -126,13 +134,6 @@ class UploadStorletFilter(forms.SelfHandlingForm):
                                  widget=forms.Select(attrs={
                                      'class': 'switchable',
                                      'data-slug': 'source'}))
-
-    main = forms.CharField(max_length=255,
-                           label=_("Main Class"),
-                           help_text=_("The name of the class that implements the Filters API."),
-                           widget=forms.TextInput(
-                               attrs={"ng-model": "main", "not-blank": ""}
-                           ))
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -202,22 +203,15 @@ class UpdateFilter(forms.SelfHandlingForm):
     filter_file = forms.FileField(label=_("File"),
                                   required=False,
                                   allow_empty_file=False)
+    main = forms.CharField(max_length=255,
+                           label=_("Main Class"),
+                           help_text=_("The name of the class that implements the Filters API."))
 
     language = forms.CharField(max_length=255,
                                label=_("Language"),
                                initial='python',
                                widget=forms.HiddenInput(  # hidden
                                             attrs={"ng-model": "language"}))
-
-    object_metadata = forms.CharField(max_length=255,
-                                      label=_("Object Metadata"),
-                                      required=False,
-                                      help_text=_("Currently, not in use, but must appear. Use the value 'no'"),
-                                      widget=forms.HiddenInput)
-
-    main = forms.CharField(max_length=255,
-                           label=_("Main Class"),
-                           help_text=_("The name of the class that implements the Filters API."))
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -262,9 +256,9 @@ class UpdateFilter(forms.SelfHandlingForm):
 
 
 class UpdateStorletFilter(UpdateFilter):
-    interface_version = forms.CharField(max_length=255,
+    interface_version = forms.CharField(max_length=10,
                                         label=_("Interface Version"),
-                                        required=False,
+                                        required=True,
                                         help_text=_("Interface Version"))
 
     # dependencies = forms.CharField(max_length=255,
