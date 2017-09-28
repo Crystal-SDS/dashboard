@@ -10,7 +10,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from models import StaticPolicy
-from crystal_dashboard.api import swift as api
+from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal import common
 
 

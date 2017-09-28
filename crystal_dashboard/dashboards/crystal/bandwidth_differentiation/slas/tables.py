@@ -71,10 +71,9 @@ class UpdateRow(tables.Row):
         storage_policies_dict = dict(common.get_storage_policy_list(request, common.ListOptions.by_id()))
         projects_dict = dict(common.get_project_list(request))
 
-        project_target, policy_id = get_sla_json['target'].split('#')  # target format is AUTH_X#Y where  X is the project_id and Y is the policy_id
-        project_id = project_target.split('_')[1]
+        project_target, policy_id = get_sla_json['target'].split('#')
 
-        sla = SLA(project_id, projects_dict[str(project_id)], policy_id,
+        sla = SLA(project_target, projects_dict[str(project_target)], policy_id,
                   storage_policies_dict[str(policy_id)], get_sla_json['value'],
                   put_sla_json['value'])
         return sla

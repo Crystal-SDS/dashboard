@@ -4,7 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from crystal_dashboard.api import swift as api
+from crystal_dashboard.api import policies as api
+from crystal_dashboard.api import filters as filters_api
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
@@ -145,9 +146,10 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
     def handle(request, data):
         try:
             if data['container_id'] != '':
-                response = api.fil_deploy_filter_with_container(request, data['filter_id'], data['target_id'], data['container_id'], data)
+                response = filters_api.fil_deploy_filter_with_container(request, data['filter_id'], data['target_id'],
+                                                                        data['container_id'], data)
             else:
-                response = api.fil_deploy_filter(request, data['filter_id'], data['target_id'], data)
+                response = filters_api.fil_deploy_filter(request, data['filter_id'], data['target_id'], data)
 
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully created static policy'))

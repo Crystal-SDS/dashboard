@@ -36,8 +36,8 @@ class SLAsTab(tabs.TableTab):
         tmp_slos = {}
         for slo in slos:
             if slo['dsl_filter'] == 'bandwidth':
-                project_target, policy_id = slo['target'].split('#')  # target format is AUTH_X#Y where  X is the project_id and Y is the policy_id
-                project_id = project_target.split('_')[1]
+                project_target, policy_id = slo['target'].split('#')
+                project_id = project_target
                 if project_id not in tmp_slos:
                     tmp_slos[project_id] = {}
                 if policy_id not in tmp_slos[project_id]:

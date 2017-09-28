@@ -59,7 +59,7 @@ class CreateSLA(forms.SelfHandlingForm):
     def handle(request, data):
 
         try:
-            target = 'AUTH_' + data['project_id'] + '#' + data['policy_id']
+            target = data['project_id'] + '#' + data['policy_id']
             data_get = {'dsl_filter': 'bandwidth', 'slo_name': 'get_bw', 'target': target, 'value': data['get_bandwidth']}
             data_put = {'dsl_filter': 'bandwidth', 'slo_name': 'put_bw', 'target': target, 'value': data['put_bandwidth']}
             response_get = api.fil_add_slo(request, data_get)

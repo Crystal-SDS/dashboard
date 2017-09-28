@@ -1,5 +1,3 @@
-import json
-
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -11,6 +9,8 @@ from horizon import forms
 from horizon import messages
 from horizon import tables
 from models import Filter
+import json
+
 from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
