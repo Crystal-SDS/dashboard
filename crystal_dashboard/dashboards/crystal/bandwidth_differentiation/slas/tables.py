@@ -11,7 +11,7 @@ from horizon import forms
 from horizon import messages
 from horizon import tables
 from models import SLA
-from crystal_dashboard.api import bandwidth_differentiation as api
+from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 

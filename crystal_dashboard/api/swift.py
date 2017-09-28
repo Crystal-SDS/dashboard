@@ -1,20 +1,19 @@
-# encoding: utf-8
 from __future__ import unicode_literals
-
 from django.conf import settings
-from swiftclient import client
 import six.moves.urllib.parse as urlparse
 from horizon.utils.memoized import memoized  # noqa
+from openstack_dashboard.api.swift import swift_api
+from openstack_dashboard.api.swift import Container
+from openstack_dashboard.api.swift import GLOBAL_READ_ACL
+from openstack_dashboard.api import base
 from oslo_utils import timeutils
 import requests
 import json
-import urllib
 
 
 @memoized
-def sds_controller_api(request):
+def get_token(request):
     return request.user.token.id
-
 
 
 # -----------------------------------------------------------------------------
@@ -22,7 +21,7 @@ def sds_controller_api(request):
 # Swift - Regions
 #
 def swift_list_regions(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
@@ -36,7 +35,7 @@ def swift_list_regions(request):
 
 
 def new_region(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions"
@@ -50,7 +49,7 @@ def new_region(request, data):
 
 
 def delete_region(request, region_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions/" + str(region_id)
@@ -63,7 +62,7 @@ def delete_region(request, region_id):
 
 
 def update_region(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions/" + str(data['region_id'])
@@ -76,7 +75,7 @@ def update_region(request, data):
 
 
 def get_region(request, region_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions/" + str(region_id)
@@ -92,7 +91,7 @@ def get_region(request, region_id):
 # Swift - Zones
 #
 def swift_list_zones(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
@@ -106,7 +105,7 @@ def swift_list_zones(request):
 
 
 def new_zone(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones"
@@ -120,7 +119,7 @@ def new_zone(request, data):
 
 
 def delete_zone(request, zone_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones/" + str(zone_id)
@@ -133,7 +132,7 @@ def delete_zone(request, zone_id):
 
 
 def update_zone(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones/" + str(data['zone_id'])
@@ -146,7 +145,7 @@ def update_zone(request, data):
 
 
 def get_zone(request, zone_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones/" + str(zone_id)
@@ -162,7 +161,7 @@ def get_zone(request, zone_id):
 # Swift - Nodes
 #
 def swift_get_all_nodes(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes"
@@ -175,7 +174,7 @@ def swift_get_all_nodes(request):
 
 
 def swift_get_node_detail(request, server_type, node_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(server_type) + "/" + str(node_id)
@@ -188,7 +187,7 @@ def swift_get_node_detail(request, server_type, node_id):
 
 
 def swift_update_node(request, server_type, node_id, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(server_type) + "/" + str(node_id)
@@ -201,7 +200,7 @@ def swift_update_node(request, server_type, node_id, data):
 
 
 def swift_restart_node(request, server_type, node_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + '/swift/nodes/' + str(server_type) + "/" + str(node_id) + '/restart'
@@ -217,7 +216,7 @@ def swift_restart_node(request, server_type, node_id):
 # Swift - Storage Policies
 #
 def swift_new_storage_policy(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policies"
@@ -235,7 +234,7 @@ def load_swift_policies(request, data):
 
 
 def swift_list_storage_policies(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
@@ -247,15 +246,10 @@ def swift_list_storage_policies(request):
     r = requests.get(url, headers=headers)
     return r
 
+
 #
 # Swift - Containers
 #
-from openstack_dashboard.api.swift import swift_api
-from openstack_dashboard.api.swift import Container
-from openstack_dashboard.api.swift import GLOBAL_READ_ACL
-from openstack_dashboard.api import base
-
-
 def swift_get_container(request, container_name, with_data=True):
     if with_data:
         headers, data = swift_api(request).get_object(container_name, "")

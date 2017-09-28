@@ -1,18 +1,13 @@
-# encoding: utf-8
 from __future__ import unicode_literals
-
 from django.conf import settings
-from swiftclient import client
 import six.moves.urllib.parse as urlparse
 from horizon.utils.memoized import memoized  # noqa
-from oslo_utils import timeutils
 import requests
 import json
-import urllib
 
 
 @memoized
-def sds_controller_api(request):
+def get_token(request):
     return request.user.token.id
 
 
@@ -21,7 +16,7 @@ def sds_controller_api(request):
 # Filters
 #
 def fil_create_filter(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/"
@@ -34,7 +29,7 @@ def fil_create_filter(request, data):
 
 
 def fil_upload_filter_data(request, filter_id, in_memory_file):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(filter_id) + "/data"
@@ -48,7 +43,7 @@ def fil_upload_filter_data(request, filter_id, in_memory_file):
 
 
 def fil_download_filter_data(request, filter_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(filter_id) + "/data"
@@ -60,7 +55,7 @@ def fil_download_filter_data(request, filter_id):
 
 
 def fil_delete_filter(request, filter_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(filter_id)
@@ -73,7 +68,7 @@ def fil_delete_filter(request, filter_id):
 
 
 def fil_get_filter_metadata(request, filter_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(filter_id)
@@ -86,7 +81,7 @@ def fil_get_filter_metadata(request, filter_id):
 
 
 def fil_list_filters(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/"
@@ -99,7 +94,7 @@ def fil_list_filters(request):
 
 
 def fil_update_filter_metadata(request, filter_id, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(filter_id)
@@ -112,7 +107,7 @@ def fil_update_filter_metadata(request, filter_id, data):
 
 
 def fil_deploy_filter(request, filter_id, account_id, parameters):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(account_id) + "/deploy/" + str(filter_id)
@@ -126,7 +121,7 @@ def fil_deploy_filter(request, filter_id, account_id, parameters):
 
 
 def fil_deploy_filter_with_container(request, filter_id, account_id, container_id, parameters):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(account_id) + "/" + str(container_id) + "/deploy/" + str(filter_id)
@@ -139,7 +134,7 @@ def fil_deploy_filter_with_container(request, filter_id, account_id, container_i
 
 
 def fil_undeploy_filter(request, filter_id, account_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/" + str(account_id) + "/undeploy/" + str(filter_id)
@@ -155,7 +150,7 @@ def fil_undeploy_filter(request, filter_id, account_id):
 # Filters - Dependencies
 #
 def fil_create_dependency(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies"
@@ -168,7 +163,7 @@ def fil_create_dependency(request, data):
 
 
 def fil_upload_dependency_data(request, dependency_id, in_memory_file):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies/" + str(dependency_id) + "/data"
@@ -181,7 +176,7 @@ def fil_upload_dependency_data(request, dependency_id, in_memory_file):
 
 
 def fil_delete_dependency(request, dependecy_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies/" + str(dependecy_id)
@@ -194,7 +189,7 @@ def fil_delete_dependency(request, dependecy_id):
 
 
 def fil_get_dependency_metadata(request, dependecy_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies/" + str(dependecy_id)
@@ -207,7 +202,7 @@ def fil_get_dependency_metadata(request, dependecy_id):
 
 
 def fil_list_dependencies(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies"
@@ -220,7 +215,7 @@ def fil_list_dependencies(request):
 
 
 def fil_update_dependency_metadata(request, dependency_id, version, permissions):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies/" + str(dependency_id)
@@ -235,7 +230,7 @@ def fil_update_dependency_metadata(request, dependency_id, version, permissions)
 
 
 def fil_deploy_dependency(request, dependency_id, account_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies/" + str(account_id) + "/deploy/" + str(dependency_id)
@@ -248,7 +243,7 @@ def fil_deploy_dependency(request, dependency_id, account_id):
 
 
 def fil_undeploy_dependency(request, dependency_id, account_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies/" + str(account_id) + "/undeploy/" + str(dependency_id)
@@ -261,7 +256,7 @@ def fil_undeploy_dependency(request, dependency_id, account_id):
 
 
 def fil_list_deployed_dependencies(request, account_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dependencies/" + str(account_id) + "/deploy"
@@ -277,7 +272,7 @@ def fil_list_deployed_dependencies(request, account_id):
 # DSL Mapping
 #
 def dsl_add_filter(request, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl"
@@ -290,7 +285,7 @@ def dsl_add_filter(request, data):
 
 
 def dsl_get_all_filters(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl"
@@ -303,7 +298,7 @@ def dsl_get_all_filters(request):
 
 
 def dsl_update_filter(request, name, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl/" + str(name)
@@ -316,7 +311,7 @@ def dsl_update_filter(request, name, data):
 
 
 def dsl_get_filter_metadata(request, name):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl/" + str(name)
@@ -329,7 +324,7 @@ def dsl_get_filter_metadata(request, name):
 
 
 def dsl_delete_filter(request, name):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl/" + str(name)

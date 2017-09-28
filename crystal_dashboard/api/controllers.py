@@ -1,21 +1,14 @@
-# encoding: utf-8
 from __future__ import unicode_literals
-
 from django.conf import settings
-from swiftclient import client
 import six.moves.urllib.parse as urlparse
 from horizon.utils.memoized import memoized  # noqa
-from oslo_utils import timeutils
 import requests
 import json
-import urllib
 
 
 @memoized
-def sds_controller_api(request):
+def get_token(request):
     return request.user.token.id
-
-
 
 
 # -----------------------------------------------------------------------------
@@ -23,10 +16,10 @@ def sds_controller_api(request):
 # Global Controllers
 #
 def dsl_add_global_controller(request, data, in_memory_file):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/global_controllers/data"
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/data"
 
     headers["X-Auth-Token"] = str(token)
     # Content-Type header will be set to multipart by django because a file is uploaded
@@ -39,11 +32,11 @@ def dsl_add_global_controller(request, data, in_memory_file):
 
 
 def dsl_get_all_global_controllers(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/global_controllers"
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/"
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -53,11 +46,11 @@ def dsl_get_all_global_controllers(request):
 
 
 def dsl_update_global_controller(request, controller_id, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/global_controller/" + str(controller_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/" + str(controller_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -67,11 +60,11 @@ def dsl_update_global_controller(request, controller_id, data):
 
 
 def dsl_get_global_controller(request, controller_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/global_controller/" + str(controller_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/" + str(controller_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -81,11 +74,11 @@ def dsl_get_global_controller(request, controller_id):
 
 
 def dsl_delete_global_controller(request, controller_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/controller/global_controller/" + str(controller_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/" + str(controller_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"

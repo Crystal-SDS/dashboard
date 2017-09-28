@@ -1,20 +1,14 @@
-# encoding: utf-8
 from __future__ import unicode_literals
-
 from django.conf import settings
-from swiftclient import client
 import six.moves.urllib.parse as urlparse
 from horizon.utils.memoized import memoized  # noqa
-from oslo_utils import timeutils
 import requests
 import json
-import urllib
 
 
 @memoized
-def sds_controller_api(request):
+def get_token(request):
     return request.user.token.id
-
 
 
 # -----------------------------------------------------------------------------
@@ -22,7 +16,7 @@ def sds_controller_api(request):
 # Crystal Projects
 #
 def list_projects_crystal_enabled(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
 
     headers = {}
 
@@ -36,7 +30,7 @@ def list_projects_crystal_enabled(request):
 
 def is_crystal_project(request, project_id):
 
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/" + str(project_id)
@@ -48,7 +42,7 @@ def is_crystal_project(request, project_id):
 
 
 def enable_crystal(request, project_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/" + str(project_id)
@@ -60,7 +54,7 @@ def enable_crystal(request, project_id):
 
 
 def disable_crystal(request, project_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/" + str(project_id)
@@ -75,7 +69,7 @@ def disable_crystal(request, project_id):
 # Project Groups
 #
 def dsl_create_tenants_group(request, name, tenants_list):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/"
@@ -91,7 +85,7 @@ def dsl_create_tenants_group(request, name, tenants_list):
 
 
 def dsl_get_all_tenants_groups(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/"
@@ -104,7 +98,7 @@ def dsl_get_all_tenants_groups(request):
 
 
 def dsl_list_tenants_group(request, group_name):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
@@ -117,7 +111,7 @@ def dsl_list_tenants_group(request, group_name):
 
 
 def dsl_add_tenant_group_member(request, group_name, tenant_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
@@ -133,7 +127,7 @@ def dsl_add_tenant_group_member(request, group_name, tenant_id):
 
 
 def dsl_delete_tenants_group(request, group_name):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
@@ -146,7 +140,7 @@ def dsl_delete_tenants_group(request, group_name):
 
 
 def dsl_delete_tenant_group_member(request, group_name, tenant_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name) + "/projects/" + str(tenant_id)

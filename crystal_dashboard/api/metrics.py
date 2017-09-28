@@ -1,20 +1,14 @@
-# encoding: utf-8
 from __future__ import unicode_literals
-
 from django.conf import settings
-from swiftclient import client
 import six.moves.urllib.parse as urlparse
 from horizon.utils.memoized import memoized  # noqa
-from oslo_utils import timeutils
 import requests
 import json
-import urllib
 
 
 @memoized
-def sds_controller_api(request):
+def get_token(request):
     return request.user.token.id
-
 
 
 # -----------------------------------------------------------------------------
@@ -22,7 +16,7 @@ def sds_controller_api(request):
 # Metrics
 #
 def mtr_add_metric_module_metadata(request, data, in_memory_file):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/data"
@@ -38,7 +32,7 @@ def mtr_add_metric_module_metadata(request, data, in_memory_file):
 
 
 def mtr_get_all_metric_modules(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/"
@@ -51,7 +45,7 @@ def mtr_get_all_metric_modules(request):
 
 
 def mtr_update_metric_module(request, metric_module_id, data):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/" + str(metric_module_id)
@@ -64,7 +58,7 @@ def mtr_update_metric_module(request, metric_module_id, data):
 
 
 def mtr_get_metric_module(request, metric_module_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/" + str(metric_module_id)
@@ -77,7 +71,7 @@ def mtr_get_metric_module(request, metric_module_id):
 
 
 def mtr_delete_metric_module(request, metric_module_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/" + str(metric_module_id)
@@ -90,7 +84,7 @@ def mtr_delete_metric_module(request, metric_module_id):
 
 
 def mtr_download_metric_module_data(request, metric_module_id):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/" + str(metric_module_id) + "/data"
@@ -102,7 +96,7 @@ def mtr_download_metric_module_data(request, metric_module_id):
 
 
 def dsl_add_workload_metric(request, name, network_location, metric_type):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/activated"
@@ -117,7 +111,7 @@ def dsl_add_workload_metric(request, name, network_location, metric_type):
 
 
 def dsl_get_all_workload_metrics(request):
-    token = sds_controller_api(request)
+    token = get_token(request)
     headers = {}
 
     url = settings.IOSTACK_CONTROLLER_URL + "/metrics/activated"

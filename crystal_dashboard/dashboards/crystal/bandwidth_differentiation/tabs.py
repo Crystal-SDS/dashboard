@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from crystal_dashboard.api import bandwidth_differentiation as api
+from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.bandwidth_differentiation.slas import models as slas_models

@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
-from crystal_dashboard.api import bandwidth_differentiation as api
+from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal.bandwidth_differentiation.slas import forms as slas_forms
 
 
