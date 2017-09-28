@@ -95,22 +95,7 @@ def mtr_download_metric_module_data(request, metric_module_id):
     return r
 
 
-def dsl_add_workload_metric(request, name, network_location, metric_type):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/metrics/activated"
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    parameters = {"name": str(name), "network_location": str(network_location), "type": str(metric_type)}
-
-    r = requests.post(url, json.dumps(parameters), headers=headers)
-    return r
-
-
-def dsl_get_all_workload_metrics(request):
+def get_activated_workload_metrics(request):
     token = get_token(request)
     headers = {}
 

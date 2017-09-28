@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import tabs
 from crystal_dashboard.api import policies as api
+from crystal_dashboard.api import metrics as metrics_api
+
 from crystal_dashboard.dashboards.crystal.sds_policies.metrics import models as metrics_models
 from crystal_dashboard.dashboards.crystal.sds_policies.metrics import tables as metrics_tables
 from crystal_dashboard.dashboards.crystal.sds_policies.policies import models as policies_models
@@ -96,7 +98,7 @@ class MetricTab(tabs.TableTab):
 
     def get_workload_metrics_data(self):
         try:
-            response = api.dsl_get_all_workload_metrics(self.request)
+            response = metrics_api.get_activated_workload_metrics(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
             else:
