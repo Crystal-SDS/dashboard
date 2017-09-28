@@ -15,7 +15,7 @@ def get_token(request):
 #
 # Global Controllers
 #
-def dsl_add_global_controller(request, data, in_memory_file):
+def add_controller(request, data, in_memory_file):
     token = get_token(request)
     headers = {}
 
@@ -31,7 +31,7 @@ def dsl_add_global_controller(request, data, in_memory_file):
     return r
 
 
-def dsl_get_all_global_controllers(request):
+def get_all_controllers(request):
     token = get_token(request)
 
     headers = {}
@@ -45,7 +45,7 @@ def dsl_get_all_global_controllers(request):
     return r
 
 
-def dsl_update_global_controller(request, controller_id, data):
+def update_controller(request, controller_id, data):
     token = get_token(request)
 
     headers = {}
@@ -59,7 +59,7 @@ def dsl_update_global_controller(request, controller_id, data):
     return r
 
 
-def dsl_get_global_controller(request, controller_id):
+def get_controller(request, controller_id):
     token = get_token(request)
 
     headers = {}
@@ -73,7 +73,7 @@ def dsl_get_global_controller(request, controller_id):
     return r
 
 
-def dsl_delete_global_controller(request, controller_id):
+def delete_controller(request, controller_id):
     token = get_token(request)
 
     headers = {}

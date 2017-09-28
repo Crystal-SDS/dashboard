@@ -1,15 +1,13 @@
-import json
-
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 from keystoneclient.exceptions import Conflict
-
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from models import Controller
+import json
 from crystal_dashboard.api import controllers as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
@@ -21,14 +19,14 @@ class UpdateCell(tables.UpdateAction):
     def update_cell(self, request, datum, id, cell_name, new_cell_value):
         try:
             # updating changed value by new value
-            response = api.dsl_get_global_controller(request, id)
+            response = api.get_controller(request, id)
             data = json.loads(response.text)
             data[cell_name] = new_cell_value
-            api.dsl_update_global_controller(request, id, data)
+            api.update_controller(request, id, data)
         except Conflict:
             # Returning a nice error message about name conflict. The message
             # from exception is not that clear for the user
-            message = _("Cant change value")
+            message = _("Can't change value")
             raise ValidationError(message)
         except Exception:
             exceptions.handle(request, ignore=True)
@@ -40,7 +38,7 @@ class UpdateRow(tables.Row):
     ajax = True
 
     def get_data(self, request, id):
-        response = api.dsl_get_global_controller(request, id)
+        response = api.get_controller(request, id)
         data = json.loads(response.text)
 
         controller = Controller(data["id"], data["controller_name"], data["class_name"], data["enabled"])
@@ -69,7 +67,7 @@ class DeleteController(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         try:
-            response = api.dsl_delete_global_controller(request, obj_id)
+            response = api.delete_controller(request, obj_id)
             if 200 <= response.status_code < 300:
                 pass
                 # messages.success(request, _("Successfully deleted controller: %s") % obj_id)
@@ -110,7 +108,7 @@ class EnableController(tables.BatchAction):
 
     def action(self, request, datum_id):
         data = {'enabled': True}
-        api.dsl_update_global_controller(request, datum_id, data)
+        api.update_controller(request, datum_id, data)
 
 
 class EnableMultipleControllers(EnableController):
@@ -143,7 +141,7 @@ class DisableController(tables.BatchAction):
             count
         )
 
-    name = "disable_Controller"
+    name = "disable_dontroller"
     success_url = "horizon:crystal:controllers:index"
 
     def allowed(self, request, instance):
@@ -151,7 +149,7 @@ class DisableController(tables.BatchAction):
 
     def action(self, request, datum_id):
         data = {'enabled': False}
-        api.dsl_update_global_controller(request, datum_id, data)
+        api.update_controller(request, datum_id, data)
 
 
 class DisableMultipleControllers(DisableController):
@@ -167,29 +165,29 @@ class DisableMultipleControllers(DisableController):
     name = "disable_multiple_metric_modules"
 
 
-class MyGETControllerFilterAction(tables.FilterAction):
-    name = "mygetfilter"
+class MyControllerFilterAction(tables.FilterAction):
+    name = "mycontrollerfilter"
 
 
-class CreateGETController(tables.LinkAction):
-    name = "create_get"
+class CreateController(tables.LinkAction):
+    name = "create_controller"
     verbose_name = _("Create Controller")
-    url = "horizon:crystal:controllers:controllers:create_get_controller"
+    url = "horizon:crystal:controllers:controllers:create_controller"
     classes = ("ajax-modal",)
     icon = "plus"
 
 
-class ControllersGETTable(tables.DataTable):
-    # id = tables.Column("id", verbose_name=_("ID"))
+class ControllersTable(tables.DataTable):
+    id = tables.Column("id", verbose_name=_("ID"))
     controller_name = tables.Column("controller_name", verbose_name=_("Name"))
     class_name = tables.Column("class_name", verbose_name=_("Class name"))
     enabled = tables.Column("enabled", verbose_name=_("Enabled"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
                             update_action=UpdateCell)
 
     class Meta:
-        name = "get_controllers"
-        verbose_name = _("GET Controllers")
+        name = "controllers"
+        verbose_name = _("Controllers")
         table_actions_menu = (EnableMultipleControllers, DisableMultipleControllers,)
-        table_actions = (MyGETControllerFilterAction, CreateGETController, DeleteMultipleControllers,)
+        table_actions = (MyControllerFilterAction, CreateController, DeleteMultipleControllers,)
         row_actions = (EnableController, DisableController, DeleteController,)
         row_class = UpdateRow

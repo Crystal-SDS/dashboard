@@ -3,9 +3,9 @@ from crystal_dashboard.dashboards.crystal import dashboard
 import horizon
 
 
-class BandwidthDifferentiation(horizon.Panel):
+class Controllers(horizon.Panel):
     name = _("Controllers")
     slug = 'controllers'
 
 
-dashboard.CrystalController.register(BandwidthDifferentiation)
+dashboard.CrystalController.register(Controllers)

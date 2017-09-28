@@ -8,7 +8,7 @@ from crystal_dashboard.api import controllers as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 
-class CreateGETController(forms.SelfHandlingForm):
+class CreateController(forms.SelfHandlingForm):
     controller_file = forms.FileField(label=_("File"), required=True, allow_empty_file=False)
     class_name = forms.CharField(max_length=255,
                                  label=_('Class Name'),
@@ -19,7 +19,7 @@ class CreateGETController(forms.SelfHandlingForm):
     enabled = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kwargs):
-        super(CreateGETController, self).__init__(request, *args, **kwargs)
+        super(CreateController, self).__init__(request, *args, **kwargs)
 
     @staticmethod
     def handle(request, data):
@@ -28,9 +28,7 @@ class CreateGETController(forms.SelfHandlingForm):
         del data['controller_file']
 
         try:
-            data['dsl_filter'] = 'bandwidth'
-            data['type'] = 'get'
-            response = api.dsl_add_global_controller(request, data, controller_file)
+            response = api.add_controller(request, data, controller_file)
             if 200 <= response.status_code < 300:
                 messages.success(request, _("Controller successfully created."))
                 return data
@@ -40,4 +38,3 @@ class CreateGETController(forms.SelfHandlingForm):
             redirect = reverse("horizon:crystal:controllers:index")
             error_message = "Unable to create controller.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
-
