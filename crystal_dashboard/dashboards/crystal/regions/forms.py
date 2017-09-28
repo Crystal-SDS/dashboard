@@ -6,7 +6,7 @@ from horizon import forms
 from horizon import messages
 
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 
 
 class CreateRegion(forms.SelfHandlingForm):

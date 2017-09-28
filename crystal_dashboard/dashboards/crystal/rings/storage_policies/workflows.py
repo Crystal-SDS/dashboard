@@ -5,7 +5,7 @@ from horizon import workflows
 from horizon import exceptions
 from django.core.urlresolvers import reverse
 import json
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal.nodes import models as nodes_models
 
 

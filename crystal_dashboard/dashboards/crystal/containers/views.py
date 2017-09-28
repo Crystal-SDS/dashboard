@@ -36,7 +36,7 @@ from horizon.utils import memoized
 
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
-from crystal_dashboard.api import crystal as crystal_api
+from crystal_dashboard.api import swift as crystal_api
 from crystal_dashboard.dashboards.crystal.containers \
     import browsers as project_browsers
 from crystal_dashboard.dashboards.crystal.containers \

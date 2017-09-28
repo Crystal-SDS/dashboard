@@ -5,7 +5,7 @@ from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 from horizon import exceptions
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 
 
 class MyFilterAction(tables.FilterAction):

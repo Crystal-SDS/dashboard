@@ -1,6 +1,6 @@
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import tables as storagepolicies_tables
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import models as storage_policies_models
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import tabs

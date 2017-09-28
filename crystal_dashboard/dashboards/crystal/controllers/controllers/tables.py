@@ -10,7 +10,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from models import Controller
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import controllers as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 
@@ -193,62 +193,3 @@ class ControllersGETTable(tables.DataTable):
         table_actions = (MyGETControllerFilterAction, CreateGETController, DeleteMultipleControllers,)
         row_actions = (EnableController, DisableController, DeleteController,)
         row_class = UpdateRow
-        hidden_title = False
-
-
-class MyPUTControllerFilterAction(tables.FilterAction):
-    name = "myputfilter"
-
-
-class CreatePUTController(tables.LinkAction):
-    name = "create_put"
-    verbose_name = _("Create Controller")
-    url = "horizon:crystal:controllers:controllers:create_put_controller"
-    classes = ("ajax-modal",)
-    icon = "plus"
-
-
-class ControllersPUTTable(tables.DataTable):
-    # id = tables.Column("id", verbose_name=_("ID"))
-    controller_name = tables.Column("controller_name", verbose_name=_("Name"))
-    class_name = tables.Column("class_name", verbose_name=_("Class name"))
-    enabled = tables.Column("enabled", verbose_name=_("Enabled"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
-                            update_action=UpdateCell)
-
-    class Meta:
-        name = "put_controllers"
-        verbose_name = _("PUT Controllers")
-        table_actions_menu = (EnableMultipleControllers, DisableMultipleControllers,)
-        table_actions = (MyPUTControllerFilterAction, CreatePUTController, DeleteMultipleControllers,)
-        row_actions = (EnableController, DisableController, DeleteController,)
-        row_class = UpdateRow
-        hidden_title = False
-
-
-class MyReplicationControllerFilterAction(tables.FilterAction):
-    name = "myreplicationfilter"
-
-
-class CreateReplicationController(tables.LinkAction):
-    name = "create_replication"
-    verbose_name = _("Create Controller")
-    url = "horizon:crystal:controllers:controllers:create_replication_controller"
-    classes = ("ajax-modal",)
-    icon = "plus"
-
-
-class ControllersReplicationTable(tables.DataTable):
-    # id = tables.Column("id", verbose_name=_("ID"))
-    controller_name = tables.Column("controller_name", verbose_name=_("Name"))
-    class_name = tables.Column("class_name", verbose_name=_("Class name"))
-    enabled = tables.Column("enabled", verbose_name=_("Enabled"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
-                            update_action=UpdateCell)
-
-    class Meta:
-        name = "replication_controllers"
-        verbose_name = _("Replication Controllers")
-        table_actions_menu = (EnableMultipleControllers, DisableMultipleControllers,)
-        table_actions = (MyReplicationControllerFilterAction, CreateReplicationController, DeleteMultipleControllers,)
-        row_actions = (EnableController, DisableController, DeleteController,)
-        row_class = UpdateRow
-        hidden_title = False

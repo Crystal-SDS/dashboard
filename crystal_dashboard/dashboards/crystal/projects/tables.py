@@ -20,7 +20,7 @@ from horizon import tables
 from models import CrystalProject
 from openstack_dashboard import api
 
-from crystal_dashboard.api import crystal as crystal_api
+from crystal_dashboard.api import projects as crystal_api
 
 
 class EnableProject(tables.BatchAction):

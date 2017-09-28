@@ -7,7 +7,7 @@ from horizon import messages
 import json
 
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 
 
 class CreateECStoragePolicy(forms.SelfHandlingForm):

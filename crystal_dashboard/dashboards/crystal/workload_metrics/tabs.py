@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import metrics as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.workload_metrics import models as wm_models
 from crystal_dashboard.dashboards.crystal.workload_metrics import tables as wm_tables

@@ -9,7 +9,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tabs
 from horizon.utils import memoized
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import metrics as api
 from crystal_dashboard.dashboards.crystal.workload_metrics import forms as wm_forms
 from crystal_dashboard.dashboards.crystal.workload_metrics import tabs as wm_tabs
 

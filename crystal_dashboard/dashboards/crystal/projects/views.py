@@ -15,7 +15,7 @@ from crystal_dashboard.dashboards.crystal.projects \
     import tables as project_tables
 from openstack_dashboard.utils import identity
 
-from crystal_dashboard.api import crystal as crystal_api
+from crystal_dashboard.api import projects as crystal_api
 
 PROJECT_INFO_FIELDS = ("domain_id",
                        "domain_name",

@@ -8,7 +8,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import messages
 from horizon import tables
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.sds_policies.object_types.models import ObjectType
 

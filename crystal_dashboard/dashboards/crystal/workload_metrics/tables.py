@@ -10,7 +10,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from models import MetricModule
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import metrics as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 

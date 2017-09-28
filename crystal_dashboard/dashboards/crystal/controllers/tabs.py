@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import controllers as api
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.controllers.controllers import models as controllers_models
@@ -12,7 +12,7 @@ from crystal_dashboard.dashboards.crystal.controllers.controllers import tables 
 
 
 class ControllersTab(tabs.TableTab):
-    table_classes = (controllers_tables.ControllersGETTable, controllers_tables.ControllersPUTTable, controllers_tables.ControllersReplicationTable,)
+    table_classes = (controllers_tables.ControllersGETTable,)
     name = _("Controllers")
     slug = "controllers_table"
     # template_name = "horizon/common/_detail_table.html"

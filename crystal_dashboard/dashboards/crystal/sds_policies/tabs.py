@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal.sds_policies.metrics import models as metrics_models
 from crystal_dashboard.dashboards.crystal.sds_policies.metrics import tables as metrics_tables
 from crystal_dashboard.dashboards.crystal.sds_policies.policies import models as policies_models

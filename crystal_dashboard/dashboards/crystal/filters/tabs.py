@@ -1,4 +1,4 @@
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.filters.dependencies import models as dependency_models
 from crystal_dashboard.dashboards.crystal.filters.dependencies import tables as dependency_tables

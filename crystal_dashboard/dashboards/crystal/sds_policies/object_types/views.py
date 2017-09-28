@@ -13,7 +13,7 @@ from horizon import exceptions
 
 from crystal_dashboard.dashboards.crystal.sds_policies.object_types \
     import forms as ot_forms
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 
 
 class CreateObjectTypeView(forms.ModalFormView):

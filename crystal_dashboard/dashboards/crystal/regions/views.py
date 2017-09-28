@@ -8,7 +8,7 @@ from horizon.utils import memoized
 
 from django.core.urlresolvers import reverse
 from crystal_dashboard.dashboards.crystal.regions import forms as region_forms
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.regions.models import Region
 import json
