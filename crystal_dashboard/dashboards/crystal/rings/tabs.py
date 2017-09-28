@@ -15,7 +15,7 @@ class StoragePolicies(tabs.TableTab):
 
     def get_storagepolicies_data(self):
         try:
-            response = api.list_storage_nodes(self.request)
+            response = api.swift_list_storage_policies(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
                 print 'strobj', strobj
@@ -29,7 +29,7 @@ class StoragePolicies(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ret.append(storage_policies_models.StorageNode(inst['id'], inst['name'], inst['location'], inst['type']))
+            ret.append(storage_policies_models.StorageNode(inst['id'], inst['name'], inst['policy_type']))
         return ret
 
 

@@ -65,7 +65,7 @@ class DeleteController(tables.DeleteAction):
         )
 
     name = "delete_controller"
-    success_url = "horizon:crystal:bandwidth_differentiation:index"
+    success_url = "horizon:crystal:controllers:index"
 
     def delete(self, request, obj_id):
         try:
@@ -76,7 +76,7 @@ class DeleteController(tables.DeleteAction):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:crystal:bandwidth_differentiation:index")
+            redirect = reverse("horizon:crystal:controllers:index")
             error_message = "Unable to remove controller.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
@@ -103,7 +103,7 @@ class EnableController(tables.BatchAction):
         )
 
     name = "enable_Controller"
-    success_url = "horizon:crystal:bandwidth_differentiation:index"
+    success_url = "horizon:crystal:controllers:index"
 
     def allowed(self, request, instance):
         return (instance is None) or (instance.enabled in ("False", False))
@@ -144,7 +144,7 @@ class DisableController(tables.BatchAction):
         )
 
     name = "disable_Controller"
-    success_url = "horizon:crystal:bandwidth_differentiation:index"
+    success_url = "horizon:crystal:controllers:index"
 
     def allowed(self, request, instance):
         return (instance is None) or (instance.enabled in ("True", True))
@@ -174,7 +174,7 @@ class MyGETControllerFilterAction(tables.FilterAction):
 class CreateGETController(tables.LinkAction):
     name = "create_get"
     verbose_name = _("Create Controller")
-    url = "horizon:crystal:bandwidth_differentiation:controllers:create_get_controller"
+    url = "horizon:crystal:controllers:controllers:create_get_controller"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -203,7 +203,7 @@ class MyPUTControllerFilterAction(tables.FilterAction):
 class CreatePUTController(tables.LinkAction):
     name = "create_put"
     verbose_name = _("Create Controller")
-    url = "horizon:crystal:bandwidth_differentiation:controllers:create_put_controller"
+    url = "horizon:crystal:controllers:controllers:create_put_controller"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -232,7 +232,7 @@ class MyReplicationControllerFilterAction(tables.FilterAction):
 class CreateReplicationController(tables.LinkAction):
     name = "create_replication"
     verbose_name = _("Create Controller")
-    url = "horizon:crystal:bandwidth_differentiation:controllers:create_replication_controller"
+    url = "horizon:crystal:controllers:controllers:create_replication_controller"
     classes = ("ajax-modal",)
     icon = "plus"
 

@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import forms
-from crystal_dashboard.dashboards.crystal.bandwidth_differentiation.controllers import forms as controllers_forms
+from crystal_dashboard.dashboards.crystal.controllers.controllers import forms as controllers_forms
 
 
 class CreateGETView(forms.ModalFormView):
@@ -11,10 +11,10 @@ class CreateGETView(forms.ModalFormView):
 
     modal_header = _("Create Controller")
     submit_label = _("Create Controller")
-    submit_url = reverse_lazy("horizon:crystal:bandwidth_differentiation:controllers:create_get_controller")
-    template_name = "crystal/bandwidth_differentiation/controllers/create.html"
+    submit_url = reverse_lazy("horizon:crystal:controllers:controllers:create_get_controller")
+    template_name = "crystal/controllers/controllers/create.html"
     context_object_name = "controller"
-    success_url = reverse_lazy("horizon:crystal:bandwidth_differentiation:index")
+    success_url = reverse_lazy("horizon:crystal:controllers:index")
     page_title = _("Create Controller")
 
 
@@ -24,10 +24,10 @@ class CreatePUTView(forms.ModalFormView):
 
     modal_header = _("Create Controller")
     submit_label = _("Create Controller")
-    submit_url = reverse_lazy("horizon:crystal:bandwidth_differentiation:controllers:create_put_controller")
-    template_name = "crystal/bandwidth_differentiation/controllers/create.html"
+    submit_url = reverse_lazy("horizon:crystal:controllers:controllers:create_put_controller")
+    template_name = "crystal/controllers/controllers/create.html"
     context_object_name = "controller"
-    success_url = reverse_lazy("horizon:crystal:bandwidth_differentiation:index")
+    success_url = reverse_lazy("horizon:crystal:controllers:index")
     page_title = _("Create Controller")
 
 
@@ -37,8 +37,8 @@ class CreateReplicationView(forms.ModalFormView):
 
     modal_header = _("Create Controller")
     submit_label = _("Create Controller")
-    submit_url = reverse_lazy("horizon:crystal:bandwidth_differentiation:controllers:create_replication_controller")
-    template_name = "crystal/bandwidth_differentiation/controllers/create.html"
+    submit_url = reverse_lazy("horizon:crystal:controllers:controllers:create_replication_controller")
+    template_name = "crystal/controllers/controllers/create.html"
     context_object_name = "controller"
-    success_url = reverse_lazy("horizon:crystal:bandwidth_differentiation:index")
+    success_url = reverse_lazy("horizon:crystal:controllers:index")
     page_title = _("Create Controller")

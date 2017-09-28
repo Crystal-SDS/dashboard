@@ -11,7 +11,7 @@ class SwiftCluster(horizon.PanelGroup):
 class SDSManagement(horizon.PanelGroup):
     name = _("SDS Management")
     slug = "sds_management"
-    panels = ('projects', 'filters', 'workload_metrics', 'sds_policies', 'bandwidth_differentiation',)
+    panels = ('projects', 'filters', 'workload_metrics', 'sds_policies', 'bandwidth_differentiation', 'controllers')
 
 
 class Monitoring(horizon.PanelGroup):

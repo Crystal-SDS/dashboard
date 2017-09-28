@@ -37,7 +37,7 @@ class CreateGETController(forms.SelfHandlingForm):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:crystal:bandwidth_differentiation:index")
+            redirect = reverse("horizon:crystal:controllers:index")
             error_message = "Unable to create controller.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
@@ -71,7 +71,7 @@ class CreatePUTController(forms.SelfHandlingForm):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:crystal:bandwidth_differentiation:index")
+            redirect = reverse("horizon:crystal:controllers:index")
             error_message = "Unable to create controller.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
@@ -105,6 +105,6 @@ class CreateReplicationController(forms.SelfHandlingForm):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:crystal:bandwidth_differentiation:index")
+            redirect = reverse("horizon:crystal:controllers:index")
             error_message = "Unable to create controller.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)

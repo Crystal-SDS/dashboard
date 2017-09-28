@@ -28,14 +28,6 @@ class StoragePolicyInfoAction(workflows.Action):
                                     attrs={"ng-model": "policy_id", "not-blank": ""}
                                 ), 
                                 required=False)
-    
-    storage_node = forms.CharField(max_length=255,
-                                   label=_("Storage Node"),
-                                   help_text=_(
-                                       "Example: r1z1-STORAGE_NODE_MANAGEMENT_INTERFACE_IP_ADDRESS:6000/DEVICE_NAME DEVICE_WEIGHT"),
-                                   widget=forms.TextInput(
-                                       attrs={"ng-model": "storage_node", "not-blank": ""}
-                                   ))
 
     replicas = forms.CharField(max_length=255,
                                label=_("Num. Replicas"),
@@ -101,16 +93,17 @@ class UpdateProjectMembersAction(workflows.MembershipAction):
             exceptions.handle(self.request, e.message)
 
         nodes = json.loads(strobj)
+
+        nodes_list = [(node['ip'], node['name']) for node in nodes]
         
         for node in nodes:
             field_name = node['name'] + ":" + node['ip']
             label = node['name']
             self.fields[field_name] = forms.MultipleChoiceField(required=False,
                                                                 label=label)
+            self.fields[field_name].choices = nodes_list
+            self.fields[field_name].initial = []
             
-        
-            
-
     class Meta(object):
         name = _("Nodes")
         slug = "projectmembers"

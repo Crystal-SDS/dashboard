@@ -23,13 +23,6 @@ class CreateECStoragePolicy(forms.SelfHandlingForm):
                                 widget=forms.TextInput(
                                     attrs={"ng-model": "policy_id", "not-blank": ""}
                                 ))
-    storage_node = forms.CharField(max_length=255,
-                                   label=_("Storage Node"),
-                                   help_text=_(
-                                       "Example: r1z1-STORAGE_NODE_MANAGEMENT_INTERFACE_IP_ADDRESS:6000/DEVICE_NAME DEVICE_WEIGHT"),
-                                   widget=forms.TextInput(
-                                       attrs={"ng-model": "storage_node", "not-blank": ""}
-                                   ))
 
     ec_type = forms.CharField(max_length=255,
                               label=_("EC Type"),
