@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import forms
 
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.jobs import forms as jobs_forms
+from crystal_dashboard.dashboards.crystal.analytics_jobs.jobs import forms as jobs_forms
 
 
 class SubmitJobView(forms.ModalFormView):

@@ -6,8 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 
-from crystal_dashboard.api import sds_controller as api
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.analyzers import forms as analyzers_forms
+from crystal_dashboard.api import analytics as api
+from crystal_dashboard.dashboards.crystal.analytics_jobs.analyzers import forms as analyzers_forms
 
 
 class CreateAnalyzerView(forms.ModalFormView):

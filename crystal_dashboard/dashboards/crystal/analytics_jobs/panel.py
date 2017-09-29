@@ -13,7 +13,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 import horizon
-from crystal_dashboard.dashboards.sdscontroller import dashboard
+from crystal_dashboard.dashboards.crystal import dashboard
 
 
 class AnalyticsJobs(horizon.Panel):
@@ -21,4 +21,4 @@ class AnalyticsJobs(horizon.Panel):
     slug = "analytics_jobs"
 
 
-dashboard.SDSController.register(AnalyticsJobs)
+dashboard.CrystalController.register(AnalyticsJobs)

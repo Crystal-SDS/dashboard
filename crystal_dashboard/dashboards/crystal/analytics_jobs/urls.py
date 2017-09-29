@@ -14,10 +14,10 @@ from django.conf.urls import include
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-import crystal_dashboard.dashboards.sdscontroller.analytics_jobs.views as views
+import crystal_dashboard.dashboards.crystal.analytics_jobs.views as views
 
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.analyzers import urls as analyzers_urls
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.jobs import urls as jobs_urls
+from crystal_dashboard.dashboards.crystal.analytics_jobs.analyzers import urls as analyzers_urls
+from crystal_dashboard.dashboards.crystal.analytics_jobs.jobs import urls as jobs_urls
 
 
 urlpatterns = patterns('',

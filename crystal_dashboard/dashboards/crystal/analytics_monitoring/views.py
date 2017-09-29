@@ -3,7 +3,7 @@ from horizon import views
 
 
 class IndexView(views.APIView):
-    template_name = 'sdscontroller/analytics_monitoring/index.html'
+    template_name = 'crystal/analytics_monitoring/index.html'
 
     def get_data(self, request, context, *args, **kwargs):
         # Add data to the context here...
@@ -12,7 +12,7 @@ class IndexView(views.APIView):
 
 
 class HistoryServerView(views.APIView):
-    template_name = 'sdscontroller/analytics_monitoring/history_server.html'
+    template_name = 'crystal/analytics_monitoring/history_server.html'
 
     def get_data(self, request, context, *args, **kwargs):
         # Add data to the context here...

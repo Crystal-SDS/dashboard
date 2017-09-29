@@ -4,13 +4,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from crystal_dashboard.api import sds_controller as api
-from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import analytics as api
+from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.jobs import models as job_models
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.jobs import tables as job_tables
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.analyzers import models as analyzer_models
-from crystal_dashboard.dashboards.sdscontroller.analytics_jobs.analyzers import tables as analyzer_tables
+from crystal_dashboard.dashboards.crystal.analytics_jobs.jobs import models as job_models
+from crystal_dashboard.dashboards.crystal.analytics_jobs.jobs import tables as job_tables
+from crystal_dashboard.dashboards.crystal.analytics_jobs.analyzers import models as analyzer_models
+from crystal_dashboard.dashboards.crystal.analytics_jobs.analyzers import tables as analyzer_tables
 
 
 class JobsTab(tabs.TableTab):

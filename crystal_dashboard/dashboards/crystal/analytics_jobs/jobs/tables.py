@@ -6,8 +6,8 @@ from horizon import exceptions
 from horizon import messages
 from horizon import tables
 
-from crystal_dashboard.api import sds_controller as api
-from crystal_dashboard.dashboards.sdscontroller import exceptions as sdsexception
+from crystal_dashboard.api import analytics as api
+from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 class MyFilterAction(tables.FilterAction):
     name = "myfilter"

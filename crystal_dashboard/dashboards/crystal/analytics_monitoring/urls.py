@@ -13,7 +13,7 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 
-import crystal_dashboard.dashboards.sdscontroller.analytics_monitoring.views as views
+import crystal_dashboard.dashboards.crystal.analytics_monitoring.views as views
 
 
 urlpatterns = patterns(
