@@ -20,7 +20,6 @@ from crystal_dashboard.dashboards.crystal.analytics_jobs.jobs import urls as job
 
 
 urlpatterns = [
-    '',
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'analyzers/', include(analyzers_urls, namespace="analyzers")),
     url(r'jobs/', include(jobs_urls, namespace="jobs")),
