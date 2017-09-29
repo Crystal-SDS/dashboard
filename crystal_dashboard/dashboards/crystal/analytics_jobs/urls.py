@@ -11,7 +11,6 @@
 # under the License.
 
 from django.conf.urls import include
-from django.conf.urls import patterns
 from django.conf.urls import url
 
 import crystal_dashboard.dashboards.crystal.analytics_jobs.views as views
@@ -20,9 +19,10 @@ from crystal_dashboard.dashboards.crystal.analytics_jobs.analyzers import urls a
 from crystal_dashboard.dashboards.crystal.analytics_jobs.jobs import urls as jobs_urls
 
 
-urlpatterns = patterns('',
-                       url(r'^$', views.IndexView.as_view(), name='index'),
-                       url(r'analyzers/', include(analyzers_urls, namespace="analyzers")),
-                       url(r'jobs/', include(jobs_urls, namespace="jobs")),
+urlpatterns = [
+    '',
+    url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'analyzers/', include(analyzers_urls, namespace="analyzers")),
+    url(r'jobs/', include(jobs_urls, namespace="jobs")),
 
-)
+]
