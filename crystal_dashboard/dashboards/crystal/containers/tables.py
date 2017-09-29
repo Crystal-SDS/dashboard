@@ -27,7 +27,7 @@ from horizon import tables
 
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
-from crystal_dashboard.api import crystal as crystal_api
+from crystal_dashboard.api import swift as crystal_api
 from crystal_dashboard.dashboards.crystal.containers import utils
 
 LOG = logging.getLogger(__name__)

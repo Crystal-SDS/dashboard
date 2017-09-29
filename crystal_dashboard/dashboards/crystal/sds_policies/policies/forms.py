@@ -4,7 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import policies as api
+from crystal_dashboard.api import filters as filters_api
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
@@ -35,7 +36,7 @@ class CreateDSLPolicy(forms.SelfHandlingForm):
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
-class CreateSimplePolicy(forms.SelfHandlingForm):
+class CreateStaticPolicy(forms.SelfHandlingForm):
     target_choices = []
     target_id = forms.ChoiceField(choices=target_choices,
                                   label=_("Project"),
@@ -99,15 +100,14 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
         })
     )
 
-    params = forms.CharField(max_length=255,
+    params = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows': 4}),
                              label=_("Parameters"),
                              required=False,
-                             help_text=_("Parameters list."))
+                             help_text=_("CSV Parameters list.Ex: param1=value1, param2=value2"))
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        # TODO: GET FROM REDIS ONLY THE CRYSTAL ENABLED PROJECTS
-        self.target_choices = common.get_project_list_choices(request)
+        self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request)]
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
 
         # Obtain list of dsl filters
@@ -116,7 +116,7 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
         self.object_type_choices = common.get_object_type_choices(request)
 
         # Initialization
-        super(CreateSimplePolicy, self).__init__(request, *args, **kwargs)
+        super(CreateStaticPolicy, self).__init__(request, *args, **kwargs)
 
         # Overwrite target_id input form
         self.fields['target_id'] = forms.ChoiceField(choices=self.target_choices,
@@ -146,9 +146,10 @@ class CreateSimplePolicy(forms.SelfHandlingForm):
     def handle(request, data):
         try:
             if data['container_id'] != '':
-                response = api.fil_deploy_filter_with_container(request, data['filter_id'], data['target_id'], data['container_id'], data)
+                response = filters_api.fil_deploy_filter_with_container(request, data['filter_id'], data['target_id'],
+                                                                        data['container_id'], data)
             else:
-                response = api.fil_deploy_filter(request, data['filter_id'], data['target_id'], data)
+                response = filters_api.fil_deploy_filter(request, data['filter_id'], data['target_id'], data)
 
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully created static policy'))
@@ -207,7 +208,7 @@ class UpdatePolicy(forms.SelfHandlingForm):
                                       label=_("Execution Order"),
                                       help_text=_("The order in which the policy will be executed."))
 
-    params = forms.CharField(max_length=255,
+    params = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows': 4}),
                              label=_("Parameters"),
                              required=False,
                              help_text=_("Parameters list."))

@@ -11,7 +11,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tabs
 from horizon.utils import memoized
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal.nodes import forms as nodes_forms
 from crystal_dashboard.dashboards.crystal.nodes import tabs as nodes_tabs
 

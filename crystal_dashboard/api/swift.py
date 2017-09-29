@@ -1,0 +1,284 @@
+from __future__ import unicode_literals
+from django.conf import settings
+import six.moves.urllib.parse as urlparse
+from horizon.utils.memoized import memoized  # noqa
+from openstack_dashboard.api.swift import swift_api
+from openstack_dashboard.api.swift import Container
+from openstack_dashboard.api.swift import GLOBAL_READ_ACL
+from openstack_dashboard.api import base
+from oslo_utils import timeutils
+import requests
+import json
+
+
+@memoized
+def get_token(request):
+    return request.user.token.id
+
+
+# -----------------------------------------------------------------------------
+#
+# Swift - Regions
+#
+def swift_list_regions(request):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+def new_region(request, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.post(url, json.dumps(data), headers=headers)
+
+    return r
+
+
+def delete_region(request, region_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions/" + str(region_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.delete(url, headers=headers)
+    return r
+
+
+def update_region(request, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions/" + str(data['region_id'])
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
+
+
+def get_region(request, region_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/regions/" + str(region_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+#
+# Swift - Zones
+#
+def swift_list_zones(request):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+def new_zone(request, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.post(url, json.dumps(data), headers=headers)
+
+    return r
+
+
+def delete_zone(request, zone_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones/" + str(zone_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.delete(url, headers=headers)
+    return r
+
+
+def update_zone(request, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones/" + str(data['zone_id'])
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
+
+
+def get_zone(request, zone_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/zones/" + str(zone_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+#
+# Swift - Nodes
+#
+def swift_get_all_nodes(request):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+def swift_get_node_detail(request, server_type, node_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(server_type) + "/" + str(node_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+def swift_update_node(request, server_type, node_id, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/nodes/" + str(server_type) + "/" + str(node_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
+
+
+def swift_restart_node(request, server_type, node_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + '/swift/nodes/' + str(server_type) + "/" + str(node_id) + '/restart'
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, headers=headers)
+    return r
+
+
+#
+# Swift - Storage Policies
+#
+def swift_new_storage_policy(request, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policies"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.post(url, json.dumps(data), headers=headers)
+    return r
+
+
+# TODO
+def load_swift_policies(request, data):
+    return {}
+
+
+def swift_list_storage_policies(request):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policies"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+#
+# Swift - Containers
+#
+def swift_get_container(request, container_name, with_data=True):
+    if with_data:
+        headers, data = swift_api(request).get_object(container_name, "")
+    else:
+        data = None
+        headers = swift_api(request).head_container(container_name)
+    timestamp = None
+    is_public = False
+    public_url = None
+    try:
+        is_public = GLOBAL_READ_ACL in headers.get('x-container-read', '')
+        if is_public:
+            swift_endpoint = base.url_for(request,
+                                          'object-store',
+                                          endpoint_type='publicURL')
+            parameters = urlparse.quote(container_name.encode('utf8'))
+            public_url = swift_endpoint + '/' + parameters
+        ts_float = float(headers.get('x-timestamp'))
+        timestamp = timeutils.iso8601_from_timestamp(ts_float)
+    except Exception:
+        pass
+    container_info = {
+        'name': container_name,
+        'container_object_count': headers.get('x-container-object-count'),
+        'container_bytes_used': headers.get('x-container-bytes-used'),
+        'timestamp': timestamp,
+        'data': data,
+        'is_public': is_public,
+        'public_url': public_url,
+        'storage_policy': headers.get('x-storage-policy')
+    }
+    return Container(container_info)

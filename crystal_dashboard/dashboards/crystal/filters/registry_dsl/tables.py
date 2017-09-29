@@ -11,7 +11,7 @@ from horizon import forms
 from horizon import messages
 from horizon import tables
 from models import Filter
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 

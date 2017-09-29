@@ -4,7 +4,7 @@ import horizon
 
 
 class Rings(horizon.Panel):
-    name = _("Storage Policies (Rings)")
+    name = _("Storage Policies")
     slug = "rings"
 
 

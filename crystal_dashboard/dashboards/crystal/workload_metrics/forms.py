@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import metrics as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 
@@ -27,8 +27,9 @@ class UploadMetricModule(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('proxy', _('Proxy Server')),
-            ('object', _('Object Storage Servers'))
+            ('proxy', _('Proxy Servers')),
+            # ('object', _('Object Storage Servers')),
+            ('proxy/object', _('Proxy & Object Storage Servers'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -72,7 +73,8 @@ class UpdateMetricModule(forms.SelfHandlingForm):
         label=_('Execution Server'),
         choices=[
             ('proxy', _('Proxy Server')),
-            ('object', _('Object Storage Servers'))
+            # ('object', _('Object Storage Servers')),
+            ('proxy/object', _('Proxy & Object Storage Servers'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -91,7 +93,6 @@ class UpdateMetricModule(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             metric_module_id = self.initial['id']
-            # print "\n#################\n", request, "\n#################\n", data, "\n#################\n"
             response = api.mtr_update_metric_module(request, metric_module_id, data)
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully metric module updated.'))

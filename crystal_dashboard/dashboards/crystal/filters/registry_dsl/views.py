@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal.filters.registry_dsl import forms as policies_forms
 
 

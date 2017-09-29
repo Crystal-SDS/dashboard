@@ -10,7 +10,7 @@ from django.utils.translation import ungettext_lazy
 
 from horizon import tables
 from horizon import exceptions
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 
@@ -58,6 +58,8 @@ class RestartProxyAction(tables.BatchAction):
         else:
             exceptions.handle(request)
 
+class RestartMultipleProxyNodes(RestartProxyAction):
+    name = "restart_multiple_proxy_nodes"
 
 class DeleteProxyNodeAction(tables.DeleteAction):
     @staticmethod
@@ -108,7 +110,7 @@ class ProxysTable(tables.DataTable):
     class Meta:
         name = "proxys"
         verbose_name = _("Proxys")
-        table_actions = (MyProxyFilterAction,)
+        table_actions = (MyProxyFilterAction, RestartMultipleProxyNodes,)
         row_actions = (UpdateProxyAction, RestartProxyAction, DeleteProxyNodeAction)
         hidden_title = False
 
@@ -174,6 +176,10 @@ class RestartStorageNodeAction(tables.BatchAction):
             exceptions.handle(request)
 
 
+class RestartMultipleStorageNodes(RestartStorageNodeAction):
+    name = "restart_multiple_storage_nodes"
+
+
 class DeleteStorageNodeAction(tables.DeleteAction):
     @staticmethod
     def action_present(count):
@@ -225,6 +231,6 @@ class StorageNodesTable(tables.DataTable):
     class Meta:
         name = "storagenodes"
         verbose_name = _("Storage Nodes")
-        table_actions = (MyStorageNodeFilterAction,)
+        table_actions = (MyStorageNodeFilterAction, RestartMultipleStorageNodes)
         row_actions = (UpdateStorageNodeAction, RestartStorageNodeAction, DeleteStorageNodeAction)
         hidden_title = False

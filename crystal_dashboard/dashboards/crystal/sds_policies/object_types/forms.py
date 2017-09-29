@@ -9,7 +9,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import messages
 
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 

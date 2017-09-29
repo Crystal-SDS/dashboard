@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal.filters.filters import forms as filters_forms
 
 
@@ -36,19 +36,6 @@ class UploadNativeView(forms.ModalFormView):
     context_object_name = 'filter'
     success_url = reverse_lazy('horizon:crystal:filters:index')
     page_title = _("Upload Native Filter")
-
-
-class UploadGlobalView(forms.ModalFormView):
-    form_class = filters_forms.UploadGlobalFilter
-    form_id = "upload_filter_form"
-
-    modal_header = _("Upload Global Native Filter")
-    submit_label = _("Upload Global Native Filter")
-    submit_url = reverse_lazy('horizon:crystal:filters:filters:upload_global')
-    template_name = "crystal/filters/filters/upload_global.html"
-    context_object_name = 'filter'
-    success_url = reverse_lazy('horizon:crystal:filters:index')
-    page_title = _("Upload Global Native Filter")
 
 
 def download_filter(request, filter_id):
@@ -112,10 +99,5 @@ class UpdateStorletView(UpdateView):
 class UpdateNativeView(UpdateView):
     form_class = filters_forms.UpdateNativeFilter
     submit_url = "horizon:crystal:filters:filters:update_native"
-
-
-class UpdateGlobalView(UpdateView):
-    form_class = filters_forms.UpdateGlobalFilter
-    submit_url = "horizon:crystal:filters:filters:update_global"
 
 classes = ("ajax-modal",)

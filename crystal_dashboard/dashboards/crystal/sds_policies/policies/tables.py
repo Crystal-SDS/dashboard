@@ -10,7 +10,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from models import StaticPolicy
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal import common
 
 
@@ -18,10 +18,10 @@ class MyStaticPolicyFilterAction(tables.FilterAction):
     name = "my_static_policy_filter"
 
 
-class CreateSimplePolicy(tables.LinkAction):
-    name = "create_simple"
+class CreateStaticPolicy(tables.LinkAction):
+    name = "create_static_policy"
     verbose_name = _("Create Policy")
-    url = "horizon:crystal:sds_policies:policies:create_simple_policy"
+    url = "horizon:crystal:sds_policies:policies:create_static_policy"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -175,12 +175,12 @@ class StaticPoliciesTable(tables.DataTable):
     execution_server = tables.Column('execution_server', verbose_name="Execution Server", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
     execution_server_reverse = tables.Column('execution_server_reverse', verbose_name="Execution Server Reverse", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
     execution_order = tables.Column('execution_order', verbose_name="Execution Order", form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    params = tables.Column('params', verbose_name="Params", form_field=forms.CharField(max_length=255, required=False), update_action=UpdateCell)
+    params = tables.Column('params', verbose_name="Parameters", form_field=forms.CharField(max_length=300, required=False), update_action=UpdateCell)
 
     class Meta:
         name = "static_policies"
         verbose_name = _("Static Policies")
-        table_actions = (MyStaticPolicyFilterAction, CreateSimplePolicy, CreatePolicyDSL, DeleteMultipleStaticPolicies,)
+        table_actions = (MyStaticPolicyFilterAction, CreateStaticPolicy, CreatePolicyDSL, DeleteMultipleStaticPolicies,)
         row_actions = (UpdateStaticPolicy, DeleteStaticPolicy,)
         row_class = UpdateRow
         hidden_title = False

@@ -4,7 +4,7 @@ from django.utils.translation import ungettext_lazy
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 
@@ -28,10 +28,10 @@ class CreateECStoragePolicy(tables.LinkAction):
     icon = "plus"
 
 
-class BindStorageNode(tables.LinkAction):
-    name = "bind_storage_node"
-    verbose_name = _("Register Storage Node")
-    url = "horizon:crystal:rings:storage_policies:bind_storage_node"
+class LoadSwiftPolicies(tables.LinkAction):
+    name = "load_swift_policies"
+    verbose_name = _("Load Swift Policies")
+    url = "horizon:crystal:rings:storage_policies:load_swift_policies"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -77,10 +77,9 @@ class StoragePolicyTable(tables.DataTable):
 
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
-    location = tables.Column('location', verbose_name=_("Location"))
     type = tables.Column('type', verbose_name=_("Type"))
 
     class Meta:
         name = "storagepolicies"
         verbose_name = _("Storage Policies")
-        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, BindStorageNode, DeleteMultipleStorageNodes,)
+        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies, DeleteMultipleStorageNodes,)

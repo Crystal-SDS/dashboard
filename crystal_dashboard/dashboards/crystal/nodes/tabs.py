@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.nodes import models as nodes_models
 from crystal_dashboard.dashboards.crystal.nodes import tables as nodes_tables
@@ -34,7 +34,7 @@ class Nodes(tabs.TableTab):
         nodes = json.loads(strobj)
         for node in nodes:
             if node['type'] == 'proxy':
-                ret.append(nodes_models.ProxyNode(node['name'], node['ip'], node['region_id'], node['zone_id'], node['ssh_access'], node['last_ping']))
+                ret.append(nodes_models.ProxyNode(node['name'], node['ip'], node['region_name'], node['zone_name'], node['ssh_access'], node['last_ping']))
         return ret
 
     def get_storagenodes_data(self):
@@ -54,7 +54,7 @@ class Nodes(tabs.TableTab):
         nodes = json.loads(strobj)
         for node in nodes:
             if node['type'] == 'object':
-                ret.append(nodes_models.StorageNode(node['name'], node['ip'], node['region_id'], node['zone_id'], node['ssh_access'], node['last_ping'], node['devices']))
+                ret.append(nodes_models.StorageNode(node['name'], node['ip'], node['region_name'], node['zone_name'], node['ssh_access'], node['last_ping'], node['devices']))
         return ret
 
 

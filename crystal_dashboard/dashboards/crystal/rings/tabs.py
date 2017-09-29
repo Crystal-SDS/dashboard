@@ -1,6 +1,6 @@
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import tables as storagepolicies_tables
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import models as storage_policies_models
-from crystal_dashboard.api import crystal as api
+from crystal_dashboard.api import swift as api
 from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import tabs
@@ -15,7 +15,7 @@ class StoragePolicies(tabs.TableTab):
 
     def get_storagepolicies_data(self):
         try:
-            response = api.list_storage_nodes(self.request)
+            response = api.swift_list_storage_policies(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
                 print 'strobj', strobj
@@ -29,7 +29,7 @@ class StoragePolicies(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ret.append(storage_policies_models.StorageNode(inst['id'], inst['name'], inst['location'], inst['type']))
+            ret.append(storage_policies_models.StorageNode(inst['id'], inst['name'], inst['policy_type']))
         return ret
 
 
