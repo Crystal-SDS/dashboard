@@ -32,7 +32,7 @@ class ControllersTab(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ctrl = controllers_models.Controller(inst['id'], inst['controller_name'],
+            ctrl = controllers_models.Controller(inst['id'], inst['controller_name'], inst['description'],
                                                  inst['class_name'], inst['enabled'])
             ret.append(ctrl)
         return ret
