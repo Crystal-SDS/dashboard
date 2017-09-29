@@ -16,7 +16,7 @@ class MyFilterAction(tables.FilterAction):
 class SubmitJob(tables.LinkAction):
     name = "submit"
     verbose_name = _("Submit Job")
-    url = "horizon:sdscontroller:analytics_jobs:jobs:submit_job"
+    url = "horizon:crystal:analytics_jobs:jobs:submit_job"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -34,11 +34,11 @@ class ClearJobs(tables.Action):
             response = api.anj_clear_job_history(request)
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully cleared history.'))
-                return shortcuts.redirect("horizon:sdscontroller:analytics_jobs:index")
+                return shortcuts.redirect("horizon:crystal:analytics_jobs:index")
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-             redirect = reverse("horizon:sdscontroller:analytics_jobs:index")
+             redirect = reverse("horizon:crystal:analytics_jobs:index")
              error_message = "Unable to create group.\t %s" % ex.message
              exceptions.handle(request, _(error_message), redirect=redirect)
 

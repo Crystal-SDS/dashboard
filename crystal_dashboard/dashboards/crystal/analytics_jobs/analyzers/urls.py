@@ -3,7 +3,7 @@ from django.conf.urls import url
 
 from crystal_dashboard.dashboards.crystal.analytics_jobs.analyzers import views
 
-VIEWS_MOD = 'openstack_dashboard.dashboards.sdscontroller.analytics_jobs.analyzers.views'
+VIEWS_MOD = 'crystal_dashboard.dashboards.crystal.analytics_jobs.analyzers.views'
 
 urlpatterns = patterns(
     VIEWS_MOD,

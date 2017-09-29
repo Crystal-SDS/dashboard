@@ -14,7 +14,7 @@ class MyFilterAction(tables.FilterAction):
 class CreateAnalyzer(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Analyzer")
-    url = "horizon:sdscontroller:analytics_jobs:analyzers:create_analyzer"
+    url = "horizon:crystal:analytics_jobs:analyzers:create_analyzer"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -25,7 +25,7 @@ class DownloadAnalyzer(tables.LinkAction):
     icon = "download"
 
     def get_link_url(self, datum=None):
-        base_url = reverse('horizon:sdscontroller:analytics_jobs:analyzers:download_analyzer', kwargs={'analyzer_id': datum.id})
+        base_url = reverse('horizon:crystal:analytics_jobs:analyzers:download_analyzer', kwargs={'analyzer_id': datum.id})
         return base_url
 
 
@@ -47,7 +47,7 @@ class DeleteAnalyzer(tables.DeleteAction):
         )
 
     name = "delete_analyzer"
-    success_url = "horizon:sdscontroller:analytics_jobs:index"
+    success_url = "horizon:crystal:analytics_jobs:index"
 
     def delete(self, request, obj_id):
         try:
@@ -58,7 +58,7 @@ class DeleteAnalyzer(tables.DeleteAction):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:sdscontroller:analytics_jobs:index")
+            redirect = reverse("horizon:crystal:analytics_jobs:index")
             error_message = "Unable to remove analyzer.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 

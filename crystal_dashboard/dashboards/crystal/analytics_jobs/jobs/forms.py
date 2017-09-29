@@ -38,7 +38,8 @@ class SubmitJob(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.tenant_choices = common.get_project_list_choices(request)
+
+        self.tenant_choices = [('', 'Select one'), common.get_project_list_choices(request)]
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
         self.analyzer_choices = common.get_anj_analyzer_list_choices(request)
 
@@ -58,10 +59,10 @@ class SubmitJob(forms.SelfHandlingForm):
                                                         required=False)
 
         # Overwrite filter_id input form
-        self.fields['analyzer_id'] = forms.ChoiceField(choices = self.analyzer_choices,
+        self.fields['analyzer_id'] = forms.ChoiceField(choices=self.analyzer_choices,
                                                        label=_('Analyzer'),
                                                        help_text=_("The analyzer assigned to the submitted job."),
-                                                       required = True,)
+                                                       required=True,)
 
 
     @staticmethod
@@ -78,6 +79,6 @@ class SubmitJob(forms.SelfHandlingForm):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:sdscontroller:analytics_jobs:index")
+            redirect = reverse("horizon:crystal:analytics_jobs:index")
             error_message = "Unable to submit job.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)

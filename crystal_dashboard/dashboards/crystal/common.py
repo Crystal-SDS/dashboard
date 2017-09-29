@@ -10,6 +10,7 @@ from crystal_dashboard.api import filters as api_filters
 from crystal_dashboard.api import projects as api_projects
 from crystal_dashboard.api import swift as api_swift
 from crystal_dashboard.api import policies as api_policies
+from crystal_dashboard.api import analytics as api_analytics
 
 
 # List Options
@@ -307,7 +308,7 @@ def get_anj_analyzer_list(request):
     :return: list with analyzers
     """
     try:
-        response = api.anj_list_analyzers(request)
+        response = api_analytics.anj_list_analyzers(request)
         if 200 <= response.status_code < 300:
             response_text = response.text
         else:

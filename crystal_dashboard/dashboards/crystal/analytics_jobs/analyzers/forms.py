@@ -49,6 +49,6 @@ class CreateAnalyzer(forms.SelfHandlingForm):
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
-            redirect = reverse("horizon:sdscontroller:analytics_jobs:index")
+            redirect = reverse("horizon:crystal:analytics_jobs:index")
             error_message = "Unable to create analyzer.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
