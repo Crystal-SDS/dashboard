@@ -16,7 +16,6 @@ import crystal_dashboard.dashboards.crystal.analytics_monitoring.views as views
 
 
 urlpatterns = [
-    '',
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^history$', views.HistoryServerView.as_view(), name='history'),
 
