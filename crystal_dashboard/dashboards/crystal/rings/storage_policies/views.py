@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 from horizon import forms
 from horizon import workflows
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import forms as storage_policies_forms
-from crystal_dashboard.dashboards.crystal.rings.storage_policies.workflows import  CreateStoragePolicyClass
+from crystal_dashboard.dashboards.crystal.rings.storage_policies.workflows import CreateStoragePolicyClass
 
 
 # class CreateStoragePolicy(forms.ModalFormView):
@@ -44,7 +44,7 @@ class CreateECStoragePolicy(forms.ModalFormView):
     form_id = "create_ec_storage_policy_form"
 
     modal_header = _("Create a EC Storage Policy")
-    submit_label = _("Create a EC Storage Policy")
+    submit_label = _("Create Storage Policy")
     submit_url = reverse_lazy('horizon:crystal:rings:storage_policies:create_ec_storage_policy')
     template_name = "crystal/rings/storage_policies/create_ec_storage_policy.html"
     context_object_name = 'storage_policy'

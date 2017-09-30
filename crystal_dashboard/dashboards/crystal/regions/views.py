@@ -16,7 +16,7 @@ import json
 
 class IndexView(tables.DataTableView):
     # A very simple class-based view...
-    table_class = region_tables.StoragePolicyTable
+    table_class = region_tables.RegionsTable
     template_name = "crystal/regions/index.html"
     page_title = _("Regions")
 
@@ -45,8 +45,8 @@ class CreateRegion(forms.ModalFormView):
     form_id = "create_region_form"
 
     modal_header = _("Create a Region")
-    submit_label = _("Create a Region")
-    submit_url = reverse_lazy('horizon:crystal:regions:create_region')
+    submit_label = _("Create Region")
+    submit_url = reverse_lazy('horizon:crystal:regions:create')
     template_name = "crystal/regions/create_region.html"
     context_object_name = 'create_region'
     success_url = reverse_lazy('horizon:crystal:regions:index')
@@ -56,13 +56,13 @@ class CreateRegion(forms.ModalFormView):
 class UpdateRegion(forms.ModalFormView):
     form_class = region_forms.UpdateRegion
     form_id = "update_region_form"
-    modal_header = _("Update Region")
+    modal_header = _("Update a Region")
     submit_label = _("Update Region")
     submit_url = "horizon:crystal:regions:update"
     template_name = "crystal/regions/update_region.html"
     context_object_name = 'region'
     success_url = reverse_lazy('horizon:crystal:regions:index')
-    page_title = _("Update Region")
+    page_title = _("Update a Region")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateRegion, self).get_context_data(**kwargs)

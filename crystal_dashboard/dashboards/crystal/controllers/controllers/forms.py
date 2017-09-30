@@ -11,17 +11,17 @@ from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 class CreateController(forms.SelfHandlingForm):
     controller_file = forms.FileField(label=_("File"), required=True, allow_empty_file=False)
     class_name = forms.CharField(max_length=255,
-                                 label=_('Class Name'),
+                                 label=_('Main Class'),
                                  help_text=_('The class name of the controller to be created.'),
                                  widget=forms.TextInput(
                                      attrs={'ng-model': 'name', 'not-blank': ''}
                                  ))
-    
+
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-    
+
     enabled = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kwargs):
@@ -46,22 +46,21 @@ class CreateController(forms.SelfHandlingForm):
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
-
 class UpdateController(forms.SelfHandlingForm):
 
     controller_file = forms.FileField(label=_("File"),
-                                  required=False,
-                                  allow_empty_file=False)
-    
+                                      required=False,
+                                      allow_empty_file=False)
+
     class_name = forms.CharField(max_length=255,
                                  label=_('Class Name'),
                                  help_text=_('The class name of the controller to be created.'))
-    
+
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-    
+
     enabled = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kwargs):

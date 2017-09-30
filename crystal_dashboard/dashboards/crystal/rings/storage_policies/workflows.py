@@ -118,9 +118,10 @@ class UpdateProjectMembers(workflows.UpdateMembersStep):
 
 
 class CreateStoragePolicyClass(workflows.Workflow):
-    default_steps = (StoragePolicyInfo,UpdateProjectMembers,)
+    default_steps = (StoragePolicyInfo, UpdateProjectMembers,)
     name = "Create Storage Policy"
     slug = "CreateStoragePolicy"
+    submit_label = _("Create Storage Policy")
     success_url = 'horizon:crystal:rings:index'
 
     def handle(self, request, data):

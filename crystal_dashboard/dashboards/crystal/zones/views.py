@@ -1,13 +1,13 @@
-from crystal_dashboard.dashboards.crystal.zones import tables as zone_tables
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from horizon import tables
 from horizon import forms
 from horizon import exceptions
 from horizon.utils import memoized
-
 from django.core.urlresolvers import reverse
+
 from crystal_dashboard.dashboards.crystal.zones import forms as zone_forms
+from crystal_dashboard.dashboards.crystal.zones import tables as zone_tables
 from crystal_dashboard.api import swift as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.zones.models import Zone
@@ -16,7 +16,7 @@ import json
 
 class IndexView(tables.DataTableView):
     # A very simple class-based view...
-    table_class = zone_tables.StoragePolicyTable
+    table_class = zone_tables.ZonesTable
     template_name = "crystal/zones/index.html"
     page_title = _("Zones")
 
@@ -37,7 +37,7 @@ class IndexView(tables.DataTableView):
         zones = json.loads(strobj)
         for zone in zones:
             ret.append(Zone(zone['id'], zone['name'], zone['region_name'], zone['description']))
-            
+
         return ret
 
 
@@ -46,8 +46,8 @@ class CreateZone(forms.ModalFormView):
     form_id = "create_zone_form"
 
     modal_header = _("Create a Zone")
-    submit_label = _("Create a Zone")
-    submit_url = reverse_lazy('horizon:crystal:zones:create_zone')
+    submit_label = _("Create Zone")
+    submit_url = reverse_lazy('horizon:crystal:zones:create')
     template_name = "crystal/zones/create_zone.html"
     context_object_name = 'create_zone'
     success_url = reverse_lazy('horizon:crystal:zones:index')
@@ -57,13 +57,13 @@ class CreateZone(forms.ModalFormView):
 class UpdateZone(forms.ModalFormView):
     form_class = zone_forms.UpdateZone
     form_id = "update_zone_form"
-    modal_header = _("Update Zone")
+    modal_header = _("Update a Zone")
     submit_label = _("Update Zone")
     submit_url = "horizon:crystal:zones:update"
     template_name = "crystal/zones/update_zone.html"
     context_object_name = 'zone'
     success_url = reverse_lazy('horizon:crystal:zones:index')
-    page_title = _("Update Zone")
+    page_title = _("Update a Zone")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateZone, self).get_context_data(**kwargs)

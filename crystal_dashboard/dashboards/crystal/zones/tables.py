@@ -14,14 +14,14 @@ class MyFilterAction(tables.FilterAction):
 
 class CreateZone(tables.LinkAction):
     name = "create_zone"
-    verbose_name = _("Create new zone")
-    url = "horizon:crystal:zones:create_zone"
+    verbose_name = _("Create Zone")
+    url = "horizon:crystal:zones:create"
     classes = ("ajax-modal",)
     icon = "plus"
 
 
 class UpdateZoneAction(tables.LinkAction):
-    name = "update"
+    name = "update_zone"
     verbose_name = _("Edit")
     icon = "pencil"
     classes = ("ajax-modal", "btn-update",)
@@ -31,7 +31,7 @@ class UpdateZoneAction(tables.LinkAction):
         return base_url
 
 
-class DeleteProxyZoneAction(tables.DeleteAction):
+class DeleteZoneAction(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -64,7 +64,7 @@ class DeleteProxyZoneAction(tables.DeleteAction):
                               redirect=redirect)
 
 
-class StoragePolicyTable(tables.DataTable):
+class ZonesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
     region = tables.Column('region', verbose_name=_("Region"))
@@ -74,4 +74,4 @@ class StoragePolicyTable(tables.DataTable):
         name = "zones"
         verbose_name = _("Zones")
         table_actions = (CreateZone, MyFilterAction,)
-        row_actions = (UpdateZoneAction, DeleteProxyZoneAction,)
+        row_actions = (UpdateZoneAction, DeleteZoneAction,)

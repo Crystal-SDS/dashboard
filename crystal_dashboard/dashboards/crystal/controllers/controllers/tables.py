@@ -33,15 +33,16 @@ class UpdateCell(tables.UpdateAction):
             return False
         return True
 
+
 class UpdateController(tables.LinkAction):
     name = "update"
     verbose_name = _("Edit")
     icon = "pencil"
     classes = ("ajax-modal", "btn-update",)
-    
+
     def get_link_url(self, datum=None):
         base_url = reverse("horizon:crystal:controllers:controllers:update_controller", kwargs={'id': datum.id})
-        return base_url   
+        return base_url
 
 
 class UpdateRow(tables.Row):
@@ -188,9 +189,9 @@ class CreateController(tables.LinkAction):
 
 
 class ControllersTable(tables.DataTable):
-    id = tables.Column("id", verbose_name=_("ID"))
+    # id = tables.Column("id", verbose_name=_("ID"))
     controller_name = tables.Column("controller_name", verbose_name=_("Name"))
-    class_name = tables.Column("class_name", verbose_name=_("Class name"))
+    class_name = tables.Column("class_name", verbose_name=_("Main Class"))
     description = tables.Column("description", verbose_name=_("Description"))
     enabled = tables.Column("enabled", verbose_name=_("Enabled"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
                             update_action=UpdateCell)
@@ -200,5 +201,5 @@ class ControllersTable(tables.DataTable):
         verbose_name = _("Controllers")
         table_actions_menu = (EnableMultipleControllers, DisableMultipleControllers)
         table_actions = (MyControllerFilterAction, CreateController, DeleteMultipleControllers,)
-        row_actions = (EnableController, DisableController, DeleteController,UpdateController)
+        row_actions = (EnableController, DisableController, UpdateController, DeleteController)
         row_class = UpdateRow
