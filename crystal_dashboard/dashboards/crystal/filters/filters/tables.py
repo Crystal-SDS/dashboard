@@ -186,6 +186,8 @@ class StorletFilterTable(tables.DataTable):
     #id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('filter_name', verbose_name=_("Name"))
     # filter_type = tables.Column('filter_type', verbose_name=_("Type"))
+    dsl_name = tables.Column('dsl_name', verbose_name=_("DSL Name"))
+
     interface_version = tables.Column('interface_version', verbose_name=_("Version"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     #dependencies = tables.Column('dependencies', verbose_name=_("Dependencies"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     language = tables.Column('language', verbose_name=_("Language"))
@@ -208,6 +210,8 @@ class StorletFilterTable(tables.DataTable):
 class NativeFilterTable(tables.DataTable):
     #id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('filter_name', verbose_name=_("Name"))
+    dsl_name = tables.Column('dsl_name', verbose_name=_("DSL Name"))
+
     # filter_type = tables.Column('filter_type', verbose_name=_("Type"))
     #interface_version = tables.Column('interface_version', verbose_name=_("Interface Version"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     #dependencies = tables.Column('dependencies', verbose_name=_("Dependencies"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)

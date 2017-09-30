@@ -21,8 +21,3 @@
     <p>{% trans "Openstack Swift Storage Policies." %}</p>
 </div>
 {% endblock %}
-
-{% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans 'Create Storage Policy' %}" />
-  <a href="{% url 'horizon:crystal:rings:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
-{% endblock %}

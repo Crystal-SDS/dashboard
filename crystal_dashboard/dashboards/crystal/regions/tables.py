@@ -14,8 +14,8 @@ class MyFilterAction(tables.FilterAction):
 
 class CreateRegion(tables.LinkAction):
     name = "create_region"
-    verbose_name = _("Create new region")
-    url = "horizon:crystal:regions:create_region"
+    verbose_name = _("Create Region")
+    url = "horizon:crystal:regions:create"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -31,7 +31,7 @@ class UpdateRegionAction(tables.LinkAction):
         return base_url
 
 
-class DeleteProxyRegionAction(tables.DeleteAction):
+class DeleteRegionAction(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -64,7 +64,7 @@ class DeleteProxyRegionAction(tables.DeleteAction):
                               redirect=redirect)
 
 
-class StoragePolicyTable(tables.DataTable):
+class RegionsTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
     description = tables.Column('description', verbose_name=_("Description"))
@@ -73,4 +73,4 @@ class StoragePolicyTable(tables.DataTable):
         name = "regions"
         verbose_name = _("Regions")
         table_actions = (CreateRegion, MyFilterAction,)
-        row_actions = (UpdateRegionAction, DeleteProxyRegionAction,)
+        row_actions = (UpdateRegionAction, DeleteRegionAction,)
