@@ -6,9 +6,3 @@
 {% block modal-header %}
   {% blocktrans %}Edit Dependency{% endblocktrans %}
 {% endblock %}
-
-{% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Update Dependency" %}" />
-  <a href="{% url 'horizon:crystal:filters:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
-{% endblock %}
-
