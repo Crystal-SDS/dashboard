@@ -4,8 +4,6 @@ from crystal_dashboard.dashboards.crystal.filters.dependencies import models as 
 from crystal_dashboard.dashboards.crystal.filters.dependencies import tables as dependency_tables
 from crystal_dashboard.dashboards.crystal.filters.filters import models as filters_models
 from crystal_dashboard.dashboards.crystal.filters.filters import tables as filter_tables
-from crystal_dashboard.dashboards.crystal.filters.groups import models as group_models
-from crystal_dashboard.dashboards.crystal.filters.groups import tables as group_tables
 from crystal_dashboard.dashboards.crystal.filters.registry_dsl import models as registry_models
 from crystal_dashboard.dashboards.crystal.filters.registry_dsl import tables as registry_tables
 from django.utils.translation import ugettext_lazy as _
@@ -128,34 +126,8 @@ class Dependencies(tabs.TableTab):
         return ret
 
 
-class Groups(tabs.TableTab):
-    table_classes = (group_tables.GroupsTable,)
-    name = _("Groups")
-    slug = "groups_table"
-    template_name = "horizon/common/_detail_table.html"
-    preload = False
-
-    def get_groups_data(self):
-        ret = []
-        try:
-            response = api.dsl_get_all_tenants_groups(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
-            else:
-                error_message = 'Unable to get project groups.'
-                raise sdsexception.SdsException(error_message)
-
-            instances = eval(strobj)
-            for k, v in instances.items():
-                projects = ', '.join(v)
-                ret.append(group_models.Group(k, projects))
-        except Exception as e:
-            exceptions.handle(self.request, e.message)
-        return ret
-
-
 class FiltersTabs(tabs.TabGroup):
     slug = "filters_tabs"
-    tabs = (Filters, RegistryTab, Groups,)
+    tabs = (Filters, RegistryTab,)
     sticky = True
 

@@ -33,16 +33,16 @@ class EnableProject(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Enable",
-            u"Enable Projects",
+            u"Enable Crystal",
+            u"Enable Crystal Projects",
             count,
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Enabled",
-            u"Enabled Projects",
+            u"Enabled Crystal",
+            u"Enabled Crystal Projects",
             count,
         )
 
@@ -53,7 +53,6 @@ class EnableProject(tables.BatchAction):
         crystal_api.enable_crystal(request, project_id)
 
 
-
 class DisableProject(tables.BatchAction):
 
     name = "disable_project"
@@ -62,16 +61,16 @@ class DisableProject(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Disable",
-            u"Disable Projects",
+            u"Disable Crystal",
+            u"Disable Crystal Projects",
             count,
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Disabled",
-            u"Disabled Projects",
+            u"Disabled Crystal",
+            u"Disabled Crystal Projects",
             count,
         )
 
@@ -109,8 +108,8 @@ class UpdateRow(tables.Row):
         return project
 
 
-
 class TenantsTable(tables.DataTable):
+
     name = tables.WrappingColumn('name', verbose_name=_('Name'),
                                  form_field=forms.CharField(max_length=64))
     description = tables.Column(lambda obj: getattr(obj, 'description', None),
@@ -137,7 +136,6 @@ class TenantsTable(tables.DataTable):
                                         label=_('Crystal Enabled'),
                                         required=False)
                                     )
-
 
     class Meta(object):
         name = "tenants"
