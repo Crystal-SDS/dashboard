@@ -18,8 +18,3 @@
     <p><strong>{% trans "Filter:" %}</strong> {% trans "A Filter is the basic SDS-Controller entity." %}</p>
 </div>
 {% endblock %}
-
-{% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans 'Upload Filter' %}" />
-  <a href="{% url 'horizon:crystal:filters:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
-{% endblock %}

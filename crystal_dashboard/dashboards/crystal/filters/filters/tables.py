@@ -157,7 +157,7 @@ class UpdateStorletRow(tables.Row):
     def get_data(self, request, id):
         response = api.fil_get_filter_metadata(request, id)
         data = json.loads(response.text)
-        filter = Filter(data['id'], data['filter_name'], data['language'],
+        filter = Filter(data['id'], data['filter_name'], data['dsl_name'], data['language'],
                         data['filter_type'], data['dependencies'],
                         data['interface_version'],
                         data['main'],
@@ -173,7 +173,7 @@ class UpdateNativeRow(tables.Row):
     def get_data(self, request, id):
         response = api.fil_get_filter_metadata(request, id)
         data = json.loads(response.text)
-        filter = Filter(data['id'], data['filter_name'], data['language'],
+        filter = Filter(data['id'], data['filter_name'], data['dsl_name'], data['language'],
                         data['filter_type'], None, None,
                         data['main'],
                         data['has_reverse'], data['execution_server'],

@@ -18,10 +18,10 @@ from crystal_dashboard.dashboards.crystal.policies.object_types import models as
 from crystal_dashboard.dashboards.crystal.policies.object_types import tables as object_types_tables
 
 
-class PoliciesTab(tabs.TableTab):
-    table_classes = (policies_tables.StaticPoliciesTable, policies_tables.DynamicPoliciesTable,)
-    name = _("Policies")
-    slug = "policies_table"
+class StaticPoliciesTab(tabs.TableTab):
+    table_classes = (policies_tables.StaticPoliciesTable,)
+    name = _("Static Policies")
+    slug = "static_policies_table"
     template_name = "crystal/policies/policies/_detail.html"
     preload = False
 
@@ -45,6 +45,14 @@ class PoliciesTab(tabs.TableTab):
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
                 ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['execution_server_reverse'], inst['execution_order'], inst['params']))
         return ret
+
+
+class DynamicPoliciesTab(tabs.TableTab):
+    table_classes = (policies_tables.DynamicPoliciesTable,)
+    name = _("Dynamic Policies")
+    slug = "dynamic_policies_table"
+    template_name = "crystal/policies/policies/_detail.html"
+    preload = False
 
     def get_dynamic_policies_data(self):
         try:
@@ -164,5 +172,5 @@ class ActivatedMetricsTab(tabs.TableTab):
 
 class PoliciesGroupTabs(tabs.TabGroup):
     slug = "policies_group_tabs"
-    tabs = (PoliciesTab, SLOsTab, ObjectTypesTab, ActivatedMetricsTab,)
+    tabs = (StaticPoliciesTab, DynamicPoliciesTab, SLOsTab, ObjectTypesTab, ActivatedMetricsTab,)
     sticky = True

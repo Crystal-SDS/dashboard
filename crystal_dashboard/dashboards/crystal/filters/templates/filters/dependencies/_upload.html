@@ -21,8 +21,3 @@
     <p><strong>{% trans "Dependency:" %}</strong> {% trans "A Dependency is the basic SDS-Controller entity." %}</p>
 </div>
 {% endblock %}
-
-{% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Upload Dependency" %}" />
-  <a href="{% url 'horizon:crystal:filters:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
-{% endblock %}
