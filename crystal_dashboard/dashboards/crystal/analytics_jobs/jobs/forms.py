@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -29,11 +28,11 @@ class SubmitJob(forms.SelfHandlingForm):
                                   help_text=_("The project assigned to the submitted job."),
                                   required=True)
 
-    container_choices = [('', 'None')]
-    container_id = forms.CharField(label=_("Container"),
-                                   help_text=_("The container assigned to the submitted job."),
-                                   required=False,
-                                   widget=forms.Select(choices=container_choices))
+    # container_choices = [('', 'None')]
+    # container_id = forms.CharField(label=_("Container"),
+    #                                help_text=_("The container assigned to the submitted job."),
+    #                                required=False,
+    #                                widget=forms.Select(choices=container_choices))
     pushdown = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kwargs):
@@ -52,11 +51,11 @@ class SubmitJob(forms.SelfHandlingForm):
                                                      help_text=_("The project assigned to the submitted job."),
                                                      required=True)
 
-        # Overwrite contained_id input form
-        self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,
-                                                        label=_("Container"),
-                                                        help_text=_("The container assigned to the submitted job."),
-                                                        required=False)
+        # Overwrite container_id input form
+        # self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,
+        #                                                 label=_("Container"),
+        #                                                 help_text=_("The container assigned to the submitted job."),
+        #                                                 required=False)
 
         # Overwrite filter_id input form
         self.fields['analyzer_id'] = forms.ChoiceField(choices=self.analyzer_choices,
