@@ -6,8 +6,3 @@
 {% block modal-header %}
   {% blocktrans %}Edit Filter{% endblocktrans %}
 {% endblock %}
-
-{% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans 'Update Filter' %}" />
-  <a href="{% url 'horizon:crystal:filters:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
-{% endblock %}

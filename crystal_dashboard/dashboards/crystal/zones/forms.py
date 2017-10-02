@@ -47,29 +47,25 @@ class CreateZone(forms.SelfHandlingForm):
 
 
 class UpdateZone(forms.SelfHandlingForm):
-    
-    
+
     name = forms.CharField(max_length=255,
                            label=_("Name"),
                            help_text=_("The name of the new zone."))
 
-    regions = forms.ThemableChoiceField(label=_("Regions"))
-                           
+    regions = forms.ThemableChoiceField(label=_("Region"))
+
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-    
-        
+
     zone_id = forms.CharField(max_length=255,
-                             label=_("Zone ID"),
-                             widget=forms.HiddenInput())
+                              label=_("Zone ID"),
+                              widget=forms.HiddenInput())
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateZone, self).__init__(request, *args, **kwargs)
         self.fields['regions'].choices = [(region['id'], region['name']) for region in json.loads(api.swift_list_regions(self.request).text)]
-        
-        
 
     def handle(self, request, data):
         try:

@@ -14,6 +14,12 @@ class UploadNativeFilter(forms.SelfHandlingForm):
     filter_file = forms.FileField(label=_("File"),
                                   required=True,
                                   allow_empty_file=False)
+    
+    name = forms.CharField(max_length=255,
+                           label=_("DSL Name"),
+                           widget=forms.TextInput(
+                               attrs={"ng-model": "name", "not-blank": ""}
+                           ))
 
     main = forms.CharField(max_length=255,
                            label=_("Main Class"),
@@ -203,6 +209,10 @@ class UpdateFilter(forms.SelfHandlingForm):
     filter_file = forms.FileField(label=_("File"),
                                   required=False,
                                   allow_empty_file=False)
+    
+    dsl_name = forms.CharField(max_length=255,
+                           label=_("DSL Name"))
+    
     main = forms.CharField(max_length=255,
                            label=_("Main Class"),
                            help_text=_("The name of the class that implements the Filters API."))

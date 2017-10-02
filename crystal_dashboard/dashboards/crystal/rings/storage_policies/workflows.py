@@ -64,10 +64,7 @@ class StoragePolicyInfo(workflows.Step):
     
     contributes = ("name", "storage_node", "replicas", "partitions", "time",)
     
-    def contribute(self, data, context):    
-        print "CONTEXT", context
-        print "data", data
-        
+    def contribute(self, data, context):          
         context.update(data)
         return context
 
@@ -77,7 +74,11 @@ class UpdateProjectMembersAction(workflows.MembershipAction):
         super(UpdateProjectMembersAction, self).__init__(request,
                                                          *args,
                                                          **kwargs)
+        
         err_msg = _('Unable to retrieve nodes list. Please try again later.')
+        
+        self.fields['testing'] = forms.CharField(required=False)
+        self.fields['testing'].initial = 5
         
         try:
             self.response = api.swift_get_all_nodes(self.request)
@@ -93,16 +94,12 @@ class UpdateProjectMembersAction(workflows.MembershipAction):
             exceptions.handle(self.request, e.message)
 
         nodes = json.loads(strobj)
-
-        nodes_list = [(node['ip'], node['name']) for node in nodes]
-        
-        for node in nodes:
-            field_name = node['name'] + ":" + node['ip']
-            label = node['name']
-            self.fields[field_name] = forms.MultipleChoiceField(required=False,
-                                                                label=label)
-            self.fields[field_name].choices = nodes_list
-            self.fields[field_name].initial = []
+                
+        field_name = self.get_member_field_name('nodes')
+        self.fields[field_name] = forms.MultipleChoiceField(required=False,
+                                                                label='nodes')
+        self.fields[field_name].choices = [(ind, node['name']) for ind, node in enumerate(nodes)]
+        self.fields[field_name].initial = [] 
             
     class Meta(object):
         name = _("Nodes")
@@ -121,9 +118,10 @@ class UpdateProjectMembers(workflows.UpdateMembersStep):
 
 
 class CreateStoragePolicyClass(workflows.Workflow):
-    default_steps = (StoragePolicyInfo,UpdateProjectMembers,)
+    default_steps = (StoragePolicyInfo, UpdateProjectMembers,)
     name = "Create Storage Policy"
     slug = "CreateStoragePolicy"
+    submit_label = _("Create Storage Policy")
     success_url = 'horizon:crystal:rings:index'
 
     def handle(self, request, data):

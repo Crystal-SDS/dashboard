@@ -18,8 +18,3 @@
         <p><strong>{% trans "Controller:" %}</strong> {% trans "Controller." %}</p>
     </div>
 {% endblock %}
-
-{% block modal-footer %}
-    <input class="btn btn-primary pull-right" type="submit" value="{% trans 'Create Controller' %}"/>
-    <a href="{% url 'horizon:crystal:controllers:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
-{% endblock %}

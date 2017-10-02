@@ -1,6 +1,12 @@
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
+
+from crystal_dashboard.api import controllers as api
+import json
+
+from horizon import exceptions
 from horizon import forms
 from crystal_dashboard.dashboards.crystal.controllers.controllers import forms as controllers_forms
 
@@ -16,3 +22,40 @@ class CreateControllerView(forms.ModalFormView):
     context_object_name = "controller"
     success_url = reverse_lazy("horizon:crystal:controllers:index")
     page_title = _("Create Controller")
+
+
+
+class UpdateControllerView(forms.ModalFormView):
+    form_class = controllers_forms.UpdateController
+    submit_url = "horizon:crystal:controllers:controllers:update_controller"
+    form_id = "update_controller_form"
+    modal_header = _("Update A Controller")
+    submit_label = _("Update Controller")
+    template_name = "crystal/controllers/controllers/update.html"
+    context_object_name = 'controller'
+    success_url = reverse_lazy('horizon:crystal:controllers:index')
+    page_title = _("Update A Controller")
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateControllerView, self).get_context_data(**kwargs)
+        context['id'] = self.kwargs['id']
+        args = (self.kwargs['id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
+        return context
+
+    def _get_object(self, *args, **kwargs):
+        controller_id = self.kwargs['id']
+        try:
+            filter = api.get_controller(self.request, controller_id)
+            return filter
+        except Exception:
+            redirect = self.success_url
+            msg = _('Unable to retrieve controller details.')
+            exceptions.handle(self.request, msg, redirect=redirect)
+
+    def get_initial(self):
+        controller = self._get_object()
+        initial = json.loads(controller.text)
+        # initial = super(UpdateView, self).get_initial()
+        # initial['name'] = "my filter name"
+        return initial
