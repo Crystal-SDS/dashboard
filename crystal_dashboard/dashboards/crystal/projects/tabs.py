@@ -25,7 +25,7 @@ class Groups(tabs.TableTab):
     def get_groups_data(self):
         ret = []
         try:
-            response = crystal_api.dsl_get_all_tenants_groups(self.request)
+            response = crystal_api.get_all_project_groups(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
             else:
@@ -120,7 +120,7 @@ class Projects(tabs.TableTab):
 
         for tenant in tenants:
             if tenant.id in enabled_crystal_projects:
-                    crystal_enabled = True
+                crystal_enabled = True
             else:
                 crystal_enabled = False
             project = CrystalProject(tenant.id, tenant.name,

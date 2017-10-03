@@ -68,14 +68,9 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
-        choices=[
-            ('', _('Select one')),
-            ('Execution Servers', [
-                ('default', _('Default'), ),
-                ('proxy', _('Proxy Server')),
-                ('object', _('Object Storage Servers'))]
-             )
-        ],
+        choices=[('default', _('Default')),
+                 ('Proxy Node', _('Proxy Node')),
+                 ('Storage Node', _('Storage Node'))],
         initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -83,17 +78,12 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
         })
     )
 
-    execution_server_reverse = forms.ChoiceField(
-        label=_('Execution Server Reverse'),
-        choices=[
-            ('', _('Select one')),
-            ('none', _('None')),
-            ('Execution Servers', [
-                ('default', _('Default')),
-                ('proxy', _('Proxy Server')),
-                ('object', _('Object Storage Servers'))]
-             )
-        ],
+    reverse = forms.ChoiceField(
+        label=_('Reverse'),
+        choices=[('default', _('Default')),
+                 ('False', _('False')),
+                 ('Proxy Node', _('Proxy Node')),
+                 ('Storage Node', _('Storage Node'))],
         initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -147,10 +137,10 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
     def handle(request, data):
         try:
             if data['container_id'] != '':
-                response = filters_api.fil_deploy_filter_with_container(request, data['filter_id'], data['target_id'],
-                                                                        data['container_id'], data)
+                response = filters_api.deploy_filter_with_container(request, data['filter_id'], data['target_id'],
+                                                                    data['container_id'], data)
             else:
-                response = filters_api.fil_deploy_filter(request, data['filter_id'], data['target_id'], data)
+                response = filters_api.deploy_filter(request, data['filter_id'], data['target_id'], data)
 
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully created static policy'))
@@ -177,31 +167,23 @@ class UpdatePolicy(forms.SelfHandlingForm):
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
-        choices=[
-            ('', _('Select one')),
-            ('Execution Servers', [
-                ('default', _('Default'), ),
-                ('proxy', _('Proxy Server')),
-                ('object', _('Object Storage Servers'))]
-             )
-        ],
+        choices=[('default', _('Default')),
+                 ('Proxy Node', _('Proxy Node')),
+                 ('Storage Node', _('Storage Node'))],
+        initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
             'data-slug': 'source'
         })
     )
 
-    execution_server_reverse = forms.ChoiceField(
-        label=_('Execution Server Reverse'),
-        choices=[
-            ('', _('Select one')),
-            ('none', _('None')),
-            ('Execution Servers', [
-                ('default', _('Default'), ),
-                ('proxy', _('Proxy Server')),
-                ('object', _('Object Storage Servers'))]
-             )
-        ],
+    reverse = forms.ChoiceField(
+        label=_('Reverse'),
+        choices=[('default', _('Default')),
+                 ('False', _('False')),
+                 ('Proxy Node', _('Proxy Node')),
+                 ('Storage Node', _('Storage Node'))],
+        initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
             'data-slug': 'source'

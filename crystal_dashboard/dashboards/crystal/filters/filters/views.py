@@ -40,7 +40,7 @@ class UploadNativeView(forms.ModalFormView):
 
 def download_filter(request, filter_id):
     try:
-        filter_response = api.fil_download_filter_data(request, filter_id)
+        filter_response = api.download_filter_data(request, filter_id)
 
         # Generate response
         response = http.StreamingHttpResponse(filter_response.content)
@@ -76,7 +76,7 @@ class UpdateView(forms.ModalFormView):
     def _get_object(self, *args, **kwargs):
         filter_id = self.kwargs['filter_id']
         try:
-            filter = api.fil_get_filter_metadata(self.request, filter_id)
+            filter = api.get_filter_metadata(self.request, filter_id)
             return filter
         except Exception:
             redirect = self.success_url

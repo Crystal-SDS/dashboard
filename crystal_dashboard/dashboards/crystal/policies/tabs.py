@@ -41,9 +41,9 @@ class StaticPoliciesTab(tabs.TableTab):
         ret = []
         for inst in instances:
             if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['execution_server_reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params']))
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['execution_server_reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params']))
         return ret
 
 
