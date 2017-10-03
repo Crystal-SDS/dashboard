@@ -4,45 +4,10 @@ from crystal_dashboard.dashboards.crystal.filters.dependencies import models as 
 from crystal_dashboard.dashboards.crystal.filters.dependencies import tables as dependency_tables
 from crystal_dashboard.dashboards.crystal.filters.filters import models as filters_models
 from crystal_dashboard.dashboards.crystal.filters.filters import tables as filter_tables
-from crystal_dashboard.dashboards.crystal.filters.registry_dsl import models as registry_models
-from crystal_dashboard.dashboards.crystal.filters.registry_dsl import tables as registry_tables
 from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import tabs
 import json
-
-
-class RegistryTab(tabs.TableTab):
-    table_classes = (registry_tables.DslFilterTable,)
-    name = _("Registry DSL")
-    slug = "registry_table"
-    template_name = "horizon/common/_detail_table.html"
-    preload = False
-
-    def get_dsl_filters_data(self):
-        try:
-            response = api.dsl_get_all_filters(self.request)
-            if 200 <= response.status_code < 300:
-                strobj = response.text
-            else:
-                error_message = 'Unable to get filters.'
-                raise ValueError(error_message)
-        except Exception as e:
-            strobj = "[]"
-            exceptions.handle(self.request, e.message)
-
-        instances = json.loads(strobj)
-        ret = []
-        for inst in instances:
-            response = api.fil_get_filter_metadata(self.request, inst['identifier'])
-            if 200 <= response.status_code < 300:
-                strobj = response.text
-            else:
-                error_message = 'Unable to get filters.'
-                raise ValueError(error_message)
-            _filter = json.loads(strobj)
-            ret.append(registry_models.Filter(inst['identifier'], inst['name'], inst['activation_url'], inst['valid_parameters'], _filter['filter_name']))
-        return ret
 
 
 class NativeFilters(tabs.TableTab):
@@ -56,7 +21,7 @@ class NativeFilters(tabs.TableTab):
     def get_native_filters_data(self):
         try:
             if not self.response:
-                self.response = api.fil_list_filters(self.request)
+                self.response = api.list_filters(self.request)
             if 200 <= self.response.status_code < 300:
                 strobj = self.response.text
             else:
@@ -70,10 +35,9 @@ class NativeFilters(tabs.TableTab):
         ret = []
         for inst in instances:
             if inst['filter_type'] == 'native':
-                ret.append(filters_models.Filter(inst['id'], inst['filter_name'], inst['dsl_name'], inst['filter_type'], inst['language'], None,
-                                                 None, inst['main'], inst['has_reverse'],
-                                                 inst['execution_server'], inst['execution_server_reverse'],
-                                                 inst['is_pre_put'], inst['is_post_put'], inst['is_pre_get'], inst['is_post_get']))
+                ret.append(filters_models.Filter(inst['dsl_name'], inst['filter_name'], inst['dsl_name'], inst['filter_type'],
+                                                 inst['language'], inst['dependencies'], None, inst['main'],
+                                                 inst['execution_server'], inst['reverse'], inst['put'], inst['get']))
         return ret
 
 
@@ -88,7 +52,7 @@ class StorletFilters(tabs.TableTab):
     def get_storlet_filters_data(self):
         try:
             if not self.response:
-                self.response = api.fil_list_filters(self.request)
+                self.response = api.list_filters(self.request)
             if 200 <= self.response.status_code < 300:
                 strobj = self.response.text
             else:
@@ -102,10 +66,9 @@ class StorletFilters(tabs.TableTab):
         ret = []
         for inst in instances:
             if inst['filter_type'] == 'storlet':
-                ret.append(filters_models.Filter(inst['id'], inst['filter_name'], inst['dsl_name'], inst['filter_type'], inst['language'], inst['dependencies'],
-                                                 inst['interface_version'], inst['main'], inst['has_reverse'],
-                                                 inst['execution_server'], inst['execution_server_reverse'],
-                                                 inst['is_pre_put'], inst['is_post_put'], inst['is_pre_get'], inst['is_post_get']))
+                ret.append(filters_models.Filter(inst['dsl_name'], inst['filter_name'], inst['dsl_name'], inst['filter_type'],
+                                                 inst['language'], inst['dependencies'], inst['interface_version'], inst['main'],
+                                                 inst['execution_server'], inst['reverse'], inst['put'], inst['get']))
         return ret
 
 
@@ -118,7 +81,7 @@ class Dependencies(tabs.TableTab):
 
     def get_dependencies_data(self):
         try:
-            response = api.fil_list_dependencies(self.request)
+            response = api.list_dependencies(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
             else:
@@ -137,5 +100,5 @@ class Dependencies(tabs.TableTab):
 
 class FiltersTabs(tabs.TabGroup):
     slug = "filters_tabs"
-    tabs = (NativeFilters, StorletFilters, RegistryTab,)
+    tabs = (NativeFilters, StorletFilters,)
     sticky = True

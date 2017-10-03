@@ -15,7 +15,7 @@ def get_token(request):
 #
 # Filters
 #
-def fil_create_filter(request, data):
+def create_filter(request, data):
     token = get_token(request)
     headers = {}
 
@@ -28,7 +28,7 @@ def fil_create_filter(request, data):
     return r
 
 
-def fil_upload_filter_data(request, filter_id, in_memory_file):
+def upload_filter_data(request, filter_id, in_memory_file):
     token = get_token(request)
     headers = {}
 
@@ -42,7 +42,7 @@ def fil_upload_filter_data(request, filter_id, in_memory_file):
     return r
 
 
-def fil_download_filter_data(request, filter_id):
+def download_filter_data(request, filter_id):
     token = get_token(request)
     headers = {}
 
@@ -54,7 +54,7 @@ def fil_download_filter_data(request, filter_id):
     return r
 
 
-def fil_delete_filter(request, filter_id):
+def delete_filter(request, filter_id):
     token = get_token(request)
     headers = {}
 
@@ -67,7 +67,7 @@ def fil_delete_filter(request, filter_id):
     return r
 
 
-def fil_get_filter_metadata(request, filter_id):
+def get_filter_metadata(request, filter_id):
     token = get_token(request)
     headers = {}
 
@@ -80,7 +80,7 @@ def fil_get_filter_metadata(request, filter_id):
     return r
 
 
-def fil_list_filters(request):
+def list_filters(request):
     token = get_token(request)
     headers = {}
 
@@ -93,7 +93,7 @@ def fil_list_filters(request):
     return r
 
 
-def fil_update_filter_metadata(request, filter_id, data):
+def update_filter_metadata(request, filter_id, data):
     token = get_token(request)
     headers = {}
 
@@ -106,7 +106,7 @@ def fil_update_filter_metadata(request, filter_id, data):
     return r
 
 
-def fil_deploy_filter(request, filter_id, account_id, parameters):
+def deploy_filter(request, filter_id, account_id, parameters):
     token = get_token(request)
     headers = {}
 
@@ -120,7 +120,7 @@ def fil_deploy_filter(request, filter_id, account_id, parameters):
     return r
 
 
-def fil_deploy_filter_with_container(request, filter_id, account_id, container_id, parameters):
+def deploy_filter_with_container(request, filter_id, account_id, container_id, parameters):
     token = get_token(request)
     headers = {}
 
@@ -133,7 +133,7 @@ def fil_deploy_filter_with_container(request, filter_id, account_id, container_i
     return r
 
 
-def fil_undeploy_filter(request, filter_id, account_id):
+def undeploy_filter(request, filter_id, account_id):
     token = get_token(request)
     headers = {}
 
@@ -149,7 +149,7 @@ def fil_undeploy_filter(request, filter_id, account_id):
 #
 # Filters - Dependencies
 #
-def fil_create_dependency(request, data):
+def create_dependency(request, data):
     token = get_token(request)
     headers = {}
 
@@ -162,7 +162,7 @@ def fil_create_dependency(request, data):
     return r
 
 
-def fil_upload_dependency_data(request, dependency_id, in_memory_file):
+def upload_dependency_data(request, dependency_id, in_memory_file):
     token = get_token(request)
     headers = {}
 
@@ -175,7 +175,7 @@ def fil_upload_dependency_data(request, dependency_id, in_memory_file):
     return r
 
 
-def fil_delete_dependency(request, dependecy_id):
+def delete_dependency(request, dependecy_id):
     token = get_token(request)
     headers = {}
 
@@ -188,7 +188,7 @@ def fil_delete_dependency(request, dependecy_id):
     return r
 
 
-def fil_get_dependency_metadata(request, dependecy_id):
+def get_dependency_metadata(request, dependecy_id):
     token = get_token(request)
     headers = {}
 
@@ -201,7 +201,7 @@ def fil_get_dependency_metadata(request, dependecy_id):
     return r
 
 
-def fil_list_dependencies(request):
+def list_dependencies(request):
     token = get_token(request)
     headers = {}
 
@@ -214,7 +214,7 @@ def fil_list_dependencies(request):
     return r
 
 
-def fil_update_dependency_metadata(request, dependency_id, version, permissions):
+def update_dependency_metadata(request, dependency_id, version, permissions):
     token = get_token(request)
     headers = {}
 
@@ -229,7 +229,7 @@ def fil_update_dependency_metadata(request, dependency_id, version, permissions)
     return r
 
 
-def fil_deploy_dependency(request, dependency_id, account_id):
+def deploy_dependency(request, dependency_id, account_id):
     token = get_token(request)
     headers = {}
 
@@ -242,7 +242,7 @@ def fil_deploy_dependency(request, dependency_id, account_id):
     return r
 
 
-def fil_undeploy_dependency(request, dependency_id, account_id):
+def undeploy_dependency(request, dependency_id, account_id):
     token = get_token(request)
     headers = {}
 
@@ -255,7 +255,7 @@ def fil_undeploy_dependency(request, dependency_id, account_id):
     return r
 
 
-def fil_list_deployed_dependencies(request, account_id):
+def list_deployed_dependencies(request, account_id):
     token = get_token(request)
     headers = {}
 
@@ -265,72 +265,4 @@ def fil_list_deployed_dependencies(request, account_id):
     headers['Content-Type'] = "application/json"
 
     r = requests.get(url, headers=headers)
-    return r
-
-
-#
-# DSL Mapping
-#
-def dsl_add_filter(request, data):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl"
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    r = requests.post(url, json.dumps(data), headers=headers)
-    return r
-
-
-def dsl_get_all_filters(request):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl"
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    r = requests.get(url, headers=headers)
-    return r
-
-
-def dsl_update_filter(request, name, data):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl/" + str(name)
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    r = requests.put(url, json.dumps(data), headers=headers)
-    return r
-
-
-def dsl_get_filter_metadata(request, name):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl/" + str(name)
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    r = requests.get(url, headers=headers)
-    return r
-
-
-def dsl_delete_filter(request, name):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/filters/dsl/" + str(name)
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    r = requests.delete(url, headers=headers)
     return r

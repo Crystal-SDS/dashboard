@@ -3,7 +3,7 @@ class StaticPolicy:
         StaticPolicy class represents the policy data
     """
 
-    def __init__(self, static_policy_id, target_id, target_name, filter_name, object_type, object_size, execution_server, execution_server_reverse, execution_order, params):
+    def __init__(self, static_policy_id, target_id, target_name, filter_name, object_type, object_size, execution_server, reverse, execution_order, params):
         self.id = target_id + ':' + static_policy_id
         self.target_id = target_id
         self.target_name = target_name
@@ -11,7 +11,7 @@ class StaticPolicy:
         self.object_type = object_type
         self.object_size = object_size
         self.execution_server = execution_server
-        self.execution_server_reverse = execution_server_reverse
+        self.reverse = reverse
         self.execution_order = execution_order
         self.params = params
 

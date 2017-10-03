@@ -68,7 +68,7 @@ def disable_crystal(request, project_id):
 #
 # Project Groups
 #
-def dsl_create_tenants_group(request, name, tenants_list):
+def create_projects_group(request, name, tenants_list):
     token = get_token(request)
     headers = {}
 
@@ -84,7 +84,7 @@ def dsl_create_tenants_group(request, name, tenants_list):
     return r
 
 
-def dsl_get_all_tenants_groups(request):
+def get_all_project_groups(request):
     token = get_token(request)
     headers = {}
 
@@ -97,7 +97,7 @@ def dsl_get_all_tenants_groups(request):
     return r
 
 
-def dsl_list_tenants_group(request, group_name):
+def list_projects_group(request, group_name):
     token = get_token(request)
     headers = {}
 
@@ -110,7 +110,7 @@ def dsl_list_tenants_group(request, group_name):
     return r
 
 
-def dsl_add_tenant_group_member(request, group_name, tenant_id):
+def add_project_group_member(request, group_name, tenant_id):
     token = get_token(request)
     headers = {}
 
@@ -126,7 +126,7 @@ def dsl_add_tenant_group_member(request, group_name, tenant_id):
     return r
 
 
-def dsl_delete_tenants_group(request, group_name):
+def delete_project_group(request, group_name):
     token = get_token(request)
     headers = {}
 
@@ -139,7 +139,7 @@ def dsl_delete_tenants_group(request, group_name):
     return r
 
 
-def dsl_delete_tenant_group_member(request, group_name, tenant_id):
+def delete_project_group_member(request, group_name, tenant_id):
     token = get_token(request)
     headers = {}
 
