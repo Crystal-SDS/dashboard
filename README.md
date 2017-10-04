@@ -9,9 +9,9 @@ policies and rules for governance of cloud.
 ## Requirements
 
 * An [OpenStack Horizon](https://github.com/openstack/horizon) installation.
-* An [Elastic Stack](https://www.elastic.co/)(Elasticsearch, Logstash, Kibana) installation.
+* An [Elastic Stack](https://www.elastic.co/) (Elasticsearch, Logstash, Kibana) installation.
 
-# INSTALLATION
+## INSTALLATION
 
 To install the Crystal dashboard, clone the repository and run the installation command in the root directory:
 ```sh
