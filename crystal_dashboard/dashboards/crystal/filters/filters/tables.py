@@ -156,6 +156,7 @@ class UpdateStorletRow(tables.Row):
     def get_data(self, request, id):
         response = api.get_filter_metadata(request, id)
         data = json.loads(response.text)
+
         filter = Filter(data['dsl_name'], data['filter_name'], data['dsl_name'], data['language'],
                         data['filter_type'], data['dependencies'], data['interface_version'],
                         data['main'], data['execution_server'], data['reverse'], data['put'], data['get'])
@@ -168,6 +169,7 @@ class UpdateNativeRow(tables.Row):
     def get_data(self, request, id):
         response = api.get_filter_metadata(request, id)
         data = json.loads(response.text)
+
         filter = Filter(data['dsl_name'], data['filter_name'], data['dsl_name'], data['language'],
                         data['filter_type'], data['dependencies'], None,
                         data['main'], data['execution_server'], data['reverse'], data['put'], data['get'])
@@ -185,8 +187,8 @@ class StorletFilterTable(tables.DataTable):
     main = tables.Column('main', verbose_name=_("Main Class"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     put = tables.Column('put', verbose_name=_("Put"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     get = tables.Column('get', verbose_name=_("Get"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    execution_server = tables.Column('execution_server', verbose_name=_("Exec. Server"), form_field=forms.ChoiceField(choices=[('Proxy Node', _('Proxy Node')), ('Storage Node', _('Storage Node'))]), update_action=UpdateCell)
-    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('Proxy Node', _('Proxy Node')), ('Storage Node', _('Storage Node'))]), update_action=UpdateCell)
+    execution_server = tables.Column('execution_server', verbose_name=_("Exec. Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     valid_parameters = tables.Column('valid_parameters', verbose_name=_("Valid Parameters"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:
@@ -212,8 +214,8 @@ class NativeFilterTable(tables.DataTable):
     get = tables.Column('get', verbose_name=_("Get"), form_field=forms.ChoiceField(choices=[('False', _('False')),('Request', _('Input Stream (Request)')),('Response', _('Output Stream (Response)')),('Request/Response', _('Input/Output Streams (Request/Response)'))]),
                         update_action=UpdateCell)
 
-    execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"), form_field=forms.ChoiceField(choices=[('Proxy Node', _('Proxy Node')), ('Storage Node', _('Storage Node'))]), update_action=UpdateCell)
-    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('Proxy Node', _('Proxy Node')), ('Storage Node', _('Storage Node'))]), update_action=UpdateCell)
+    execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     valid_parameters = tables.Column('valid_parameters', verbose_name=_("Valid Parameters"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:

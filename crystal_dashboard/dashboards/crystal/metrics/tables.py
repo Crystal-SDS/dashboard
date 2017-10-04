@@ -20,7 +20,7 @@ class MyFilterAction(tables.FilterAction):
 
 class UploadMetricModule(tables.LinkAction):
     name = "upload_metric_module"
-    verbose_name = _("Upload Metric Module")
+    verbose_name = _("Upload Workload Metric")
     url = "horizon:crystal:metrics:upload_metric_module"
     classes = ("ajax-modal",)
     icon = "upload"
@@ -58,7 +58,7 @@ class DeleteMetricModule(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         try:
-            response = api.mtr_delete_metric_module(request, obj_id)
+            response = api.delete_metric_module(request, obj_id)
             if 200 <= response.status_code < 300:
                 pass
                 # messages.success(request, _('Successfully deleted metric module: %s') % obj_id)
@@ -99,7 +99,7 @@ class EnableMetricModule(tables.BatchAction):
 
     def action(self, request, datum_id):
         data = {'enabled': True}
-        api.mtr_update_metric_module(request, datum_id, data)
+        api.update_metric_module(request, datum_id, data)
 
 
 class EnableMultipleMetricModules(EnableMetricModule):
@@ -140,7 +140,7 @@ class DisableMetricModule(tables.BatchAction):
 
     def action(self, request, datum_id):
         data = {'enabled': False}
-        api.mtr_update_metric_module(request, datum_id, data)
+        api.update_metric_module(request, datum_id, data)
 
 
 class DisableMultipleMetricModules(DisableMetricModule):
@@ -176,7 +176,7 @@ class UpdateCell(tables.UpdateAction):
     def update_cell(self, request, datum, metric_module_id, cell_name, new_cell_value):
         try:
             # updating changed value by new value
-            response = api.mtr_get_metric_module(request, metric_module_id)
+            response = api.get_metric_module(request, metric_module_id)
             data = json.loads(response.text)
             # TODO: Check only the valid keys, delete the rest
             if 'id' in data:  # PUT does not allow this key
@@ -188,7 +188,7 @@ class UpdateCell(tables.UpdateAction):
                 new_cell_value = (new_cell_value == 'True')
 
             data[cell_name] = new_cell_value
-            api.mtr_update_metric_module(request, metric_module_id, data)
+            api.update_metric_module(request, metric_module_id, data)
         except Conflict:
             # Returning a nice error message about name conflict. The message
             # from exception is not that clear for the user
@@ -204,8 +204,9 @@ class UpdateRow(tables.Row):
     ajax = True
 
     def get_data(self, request, metric_module_id):
-        response = api.mtr_get_metric_module(request, metric_module_id)
+        response = api.get_metric_module(request, metric_module_id)
         data = json.loads(response.text)
+
         filter = MetricModule(data['id'], data['metric_name'], data['class_name'], data['out_flow'],
                               data['in_flow'], data['execution_server'], data['enabled'])
         return filter
@@ -215,12 +216,12 @@ class MetricTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     metric_name = tables.Column('metric_name', verbose_name=_("Metric Name"))
     class_name = tables.Column('class_name', verbose_name=_("Class Name"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    in_flow = tables.Column('in_flow', verbose_name=_("PUT"),
+    in_flow = tables.Column('in_flow', verbose_name=_("Put"),
                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    out_flow = tables.Column('out_flow', verbose_name=_("GET"),
+    out_flow = tables.Column('out_flow', verbose_name=_("Get"),
                              form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"),
-                                     form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('proxy/object', _('Proxy & Object Storage Servers'))]),
+                                     form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('proxy/object', _('Proxy & Storage Nodes'))]),
                                      update_action=UpdateCell)
     enabled = tables.Column('enabled',
                             verbose_name=_("Enabled"),

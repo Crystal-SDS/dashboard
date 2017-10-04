@@ -35,6 +35,14 @@ class NativeFilters(tabs.TableTab):
         ret = []
         for inst in instances:
             if inst['filter_type'] == 'native':
+                if inst['execution_server'] == 'proxy':
+                    inst['execution_server'] = 'Proxy Node'
+                elif inst['execution_server'] == 'object':
+                    inst['execution_server'] = 'Storage Node'
+                if inst['reverse'] == 'proxy':
+                    inst['reverse'] = 'Proxy Node'
+                elif inst['reverse'] == 'object':
+                    inst['reverse'] = 'Storage Node'
                 ret.append(filters_models.Filter(inst['dsl_name'], inst['filter_name'], inst['dsl_name'], inst['filter_type'],
                                                  inst['language'], inst['dependencies'], None, inst['main'],
                                                  inst['execution_server'], inst['reverse'], inst['put'], inst['get']))
@@ -66,6 +74,14 @@ class StorletFilters(tabs.TableTab):
         ret = []
         for inst in instances:
             if inst['filter_type'] == 'storlet':
+                if inst['execution_server'] == 'proxy':
+                    inst['execution_server'] = 'Proxy Node'
+                elif inst['execution_server'] == 'object':
+                    inst['execution_server'] = 'Storage Node'
+                if inst['reverse'] == 'proxy':
+                    inst['reverse'] = 'Proxy Node'
+                elif inst['reverse'] == 'object':
+                    inst['reverse'] = 'Storage Node'
                 ret.append(filters_models.Filter(inst['dsl_name'], inst['filter_name'], inst['dsl_name'], inst['filter_type'],
                                                  inst['language'], inst['dependencies'], inst['interface_version'], inst['main'],
                                                  inst['execution_server'], inst['reverse'], inst['put'], inst['get']))

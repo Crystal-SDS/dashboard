@@ -72,8 +72,8 @@ class UploadNativeFilter(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -85,8 +85,8 @@ class UploadNativeFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -174,8 +174,8 @@ class UploadStorletFilter(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -187,8 +187,8 @@ class UploadStorletFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -277,8 +277,8 @@ class UpdateNativeFilter(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -290,8 +290,8 @@ class UpdateNativeFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -363,8 +363,8 @@ class UpdateStorletFilter(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -376,8 +376,8 @@ class UpdateStorletFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('Proxy Node', _('Proxy Node')),
-            ('Storage Node', _('Storage Node'))
+            ('proxy', _('Proxy Node')),
+            ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
