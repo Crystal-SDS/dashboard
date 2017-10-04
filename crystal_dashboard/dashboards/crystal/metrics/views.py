@@ -27,18 +27,18 @@ class IndexView(tabs.TabbedTableView):
 class UploadView(forms.ModalFormView):
     form_class = wm_forms.UploadMetricModule
     form_id = "upload_metric_module_form"
-    modal_header = _("Upload Metric Module")
-    submit_label = _("Upload Metric Module")
+    modal_header = _("Upload Workload Metric")
+    submit_label = _("Upload Workload Metric")
     submit_url = reverse_lazy('horizon:crystal:metrics:upload_metric_module')
     template_name = "crystal/metrics/upload_metric_module.html"
     context_object_name = 'metric_module'
     success_url = reverse_lazy('horizon:crystal:metrics:index')
-    page_title = _("Upload Metric Module")
+    page_title = _("Upload Workload Metric")
 
 
 def download_metric_module(request, metric_module_id):
     try:
-        metric_module_response = api.mtr_download_metric_module_data(request, metric_module_id)
+        metric_module_response = api.download_metric_module_data(request, metric_module_id)
 
         # Generate response
         response = http.StreamingHttpResponse(metric_module_response.content)
@@ -55,13 +55,13 @@ def download_metric_module(request, metric_module_id):
 class UpdateView(forms.ModalFormView):
     form_class = wm_forms.UpdateMetricModule
     form_id = "update_metric_module_form"
-    modal_header = _("Update Metric Module")
-    submit_label = _("Update Metric Module")
+    modal_header = _("Update Workload Metric Module")
+    submit_label = _("Update Workload Metric")
     submit_url = "horizon:crystal:metrics:update_metric_module"
     template_name = "crystal/metrics/update_metric_module.html"
     context_object_name = 'metric_module'
     success_url = reverse_lazy('horizon:crystal:metrics:index')
-    page_title = _("Update Metric Module")
+    page_title = _("Update Workload Metric Module")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
@@ -75,7 +75,7 @@ class UpdateView(forms.ModalFormView):
     def _get_object(self, *args, **kwargs):
         metric_module_id = self.kwargs['metric_module_id']
         try:
-            metric_module = api.mtr_get_metric_module(self.request, metric_module_id)
+            metric_module = api.get_metric_module(self.request, metric_module_id)
             return metric_module
         except Exception:
             redirect = self.success_url

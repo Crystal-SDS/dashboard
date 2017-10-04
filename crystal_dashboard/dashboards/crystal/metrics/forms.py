@@ -27,9 +27,9 @@ class UploadMetricModule(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('proxy', _('Proxy Servers')),
+            ('proxy', _('Proxy Node')),
             # ('object', _('Object Storage Servers')),
-            ('proxy/object', _('Proxy & Object Storage Servers'))
+            ('proxy/object', _('Proxy & Storage Nodes'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -49,7 +49,7 @@ class UploadMetricModule(forms.SelfHandlingForm):
         del data['metric_module_file']
 
         try:
-            response = api.mtr_add_metric_module_metadata(request, data, metric_module_file)
+            response = api.add_metric_module_metadata(request, data, metric_module_file)
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Metric module was created and uploaded successfully.'))
                 return data
@@ -66,15 +66,15 @@ class UpdateMetricModule(forms.SelfHandlingForm):
                                  label=_("Class Name"),
                                  help_text=_("The main class of the metric module to be created."))
 
-    out_flow = forms.BooleanField(required=False)
-    in_flow = forms.BooleanField(required=False)
+    in_flow = forms.BooleanField(required=False, label='Put')
+    out_flow = forms.BooleanField(required=False, label='Get')
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
-            ('proxy', _('Proxy Server')),
+            ('proxy', _('Proxy Node')),
             # ('object', _('Object Storage Servers')),
-            ('proxy/object', _('Proxy & Object Storage Servers'))
+            ('proxy/object', _('Proxy & Storage Nodes'))
         ],
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -93,7 +93,7 @@ class UpdateMetricModule(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             metric_module_id = self.initial['id']
-            response = api.mtr_update_metric_module(request, metric_module_id, data)
+            response = api.update_metric_module(request, metric_module_id, data)
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully metric module updated.'))
                 return data

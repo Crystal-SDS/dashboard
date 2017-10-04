@@ -19,7 +19,7 @@ class WorkloadMetrics(tabs.TableTab):
 
     def get_metric_modules_data(self):
         try:
-            response = api.mtr_get_all_metric_modules(self.request)
+            response = api.get_all_metric_modules(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
             else:
@@ -32,6 +32,11 @@ class WorkloadMetrics(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
+            if inst['execution_server'] == 'proxy':
+                inst['execution_server'] = 'Proxy Node'
+            elif inst['execution_server'] == 'proxy/object':
+                inst['execution_server'] = 'Proxy & Storage Nodes'
+
             ret.append(wm_models.MetricModule(inst['id'], inst['metric_name'], inst['class_name'], inst['out_flow'], inst['in_flow'],
                                               inst['execution_server'], inst['enabled']))
         return ret

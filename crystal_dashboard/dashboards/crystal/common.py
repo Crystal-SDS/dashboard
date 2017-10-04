@@ -6,7 +6,7 @@ from swiftclient import ClientException
 from horizon import exceptions
 from openstack_dashboard.api import keystone
 from openstack_dashboard.api import swift
-from crystal_dashboard.api import filters as api_filters    
+from crystal_dashboard.api import filters as api_filters
 from crystal_dashboard.api import projects as api_projects
 from crystal_dashboard.api import swift as api_swift
 from crystal_dashboard.api import policies as api_policies
