@@ -207,10 +207,10 @@ class UploadStorletFilter(forms.SelfHandlingForm):
         data['filter_type'] = 'storlet'
 
         try:
+            filter_id = data['dsl_name']
             response = api.create_filter(request, data)
 
             if 200 <= response.status_code < 300:
-                filter_id = json.loads(response.text)["id"]
                 response = api.upload_filter_data(request, filter_id, filter_file)
 
                 if 200 <= response.status_code < 300:
@@ -393,7 +393,6 @@ class UpdateStorletFilter(forms.SelfHandlingForm):
         del data['filter_file']
 
         try:
-            print self.initial
             filter_id = self.initial['dsl_name']
 
             response = api.update_filter_metadata(request, filter_id, data)
