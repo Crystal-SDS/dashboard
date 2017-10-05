@@ -40,6 +40,14 @@ class StaticPoliciesTab(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
+            if inst['execution_server'] == 'proxy':
+                inst['execution_server'] = 'Proxy Node'
+            elif inst['execution_server'] == 'object':
+                inst['execution_server'] = 'Storage Node'
+            if inst['reverse'] == 'proxy':
+                inst['reverse'] = 'Proxy Node'
+            elif inst['reverse'] == 'object':
+                inst['reverse'] = 'Storage Node'
             if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
                 ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params']))
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':

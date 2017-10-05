@@ -172,8 +172,8 @@ class StaticPoliciesTable(tables.DataTable):
     filter_name = tables.Column('filter_name', verbose_name=_("Filter"))
     object_type = tables.Column('object_type', verbose_name="Object Type", form_field=forms.ChoiceField(required=False, choices=[]), update_action=UpdateCell)
     object_size = tables.Column('object_size', verbose_name=_("Object Size"), form_field=forms.CharField(required=False), update_action=UpdateCell)
-    execution_server = tables.Column('execution_server', verbose_name="Execution Server", form_field=forms.ChoiceField(choices=[('Proxy Node', _('Proxy Node')), ('Storage Node', _('Storage Node'))]), update_action=UpdateCell)
-    reverse = tables.Column('reverse', verbose_name="Reverse", form_field=forms.ChoiceField(choices=[('False', _('False')), ('Proxy Node', _('Proxy Node')), ('Storage Node', _('Storage Node'))]), update_action=UpdateCell)
+    execution_server = tables.Column('execution_server', verbose_name="Execution Server", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    reverse = tables.Column('reverse', verbose_name="Reverse", form_field=forms.ChoiceField(choices=[('False', _('False')), ('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     params = tables.Column('params', verbose_name="Parameters", form_field=forms.CharField(required=False), update_action=UpdateCell)
 
     class Meta:

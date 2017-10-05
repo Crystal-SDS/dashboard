@@ -69,8 +69,8 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[('default', _('Default')),
-                 ('Proxy Node', _('Proxy Node')),
-                 ('Storage Node', _('Storage Node'))],
+                 ('proxy', _('Proxy Node')),
+                 ('object', _('Storage Node'))],
         initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -82,8 +82,8 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[('default', _('Default')),
                  ('False', _('False')),
-                 ('Proxy Node', _('Proxy Node')),
-                 ('Storage Node', _('Storage Node'))],
+                 ('proxy', _('Proxy Node')),
+                 ('object', _('Storage Node'))],
         initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -168,8 +168,8 @@ class UpdatePolicy(forms.SelfHandlingForm):
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[('default', _('Default')),
-                 ('Proxy Node', _('Proxy Node')),
-                 ('Storage Node', _('Storage Node'))],
+                 ('proxy', _('Proxy Node')),
+                 ('object', _('Storage Node'))],
         initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
@@ -181,8 +181,8 @@ class UpdatePolicy(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[('default', _('Default')),
                  ('False', _('False')),
-                 ('Proxy Node', _('Proxy Node')),
-                 ('Storage Node', _('Storage Node'))],
+                 ('proxy', _('Proxy Node')),
+                 ('object', _('Storage Node'))],
         initial='default',
         widget=forms.Select(attrs={
             'class': 'switchable',
