@@ -106,9 +106,9 @@ class UploadNativeFilter(forms.SelfHandlingForm):
 
         try:
             response = api.create_filter(request, data)
+            filter_id = data['dsl_name']
 
             if 200 <= response.status_code < 300:
-                filter_id = json.loads(response.text)["id"]
                 response = api.upload_filter_data(request, filter_id, filter_file)
 
                 if 200 <= response.status_code < 300:
