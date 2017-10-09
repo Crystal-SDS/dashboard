@@ -17,13 +17,7 @@ class CreateECStoragePolicy(forms.SelfHandlingForm):
                            widget=forms.TextInput(
                                attrs={"ng-model": "name", "not-blank": ""}
                            ))
-    policy_id = forms.CharField(max_length=5,
-                                label=_("Policy ID"),
-                                help_text=_("The unique ID to identify the policy."),
-                                widget=forms.TextInput(
-                                    attrs={"ng-model": "policy_id", "not-blank": ""}
-                                ))
-
+    
     ec_type = forms.CharField(max_length=255,
                               label=_("EC Type"),
                               required=False,

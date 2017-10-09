@@ -21,8 +21,17 @@ class CreateController(forms.SelfHandlingForm):
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-
-    enabled = forms.BooleanField(required=False)
+    
+    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 2}),
+                                  label=_("valid_parameters"),
+                                  required=False)
+    
+    instances = forms.CharField(max_length=255,
+                               label=_("Instances"),
+                               initial=0,
+                               widget=forms.HiddenInput(  # hidden
+                                            attrs={"ng-model": "instances"}))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateController, self).__init__(request, *args, **kwargs)
@@ -55,14 +64,17 @@ class UpdateController(forms.SelfHandlingForm):
     class_name = forms.CharField(max_length=255,
                                  label=_('Class Name'),
                                  help_text=_('The class name of the controller to be created.'))
-
+    
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
 
-    enabled = forms.BooleanField(required=False)
-
+    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 2}),
+                                  label=_("valid_parameters"),
+                                  required=False)
+    
     def __init__(self, request, *args, **kwargs):
         super(UpdateController, self).__init__(request, *args, **kwargs)
 

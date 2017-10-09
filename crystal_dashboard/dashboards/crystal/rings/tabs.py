@@ -18,7 +18,6 @@ class StoragePolicies(tabs.TableTab):
             response = api.swift_list_storage_policies(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
-                print 'strobj', strobj
             else:
                 error_message = 'Unable to get storage nodes.'
                 raise ValueError(error_message)
@@ -29,7 +28,8 @@ class StoragePolicies(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ret.append(storage_policies_models.StorageNode(inst['id'], inst['name'], inst['policy_type']))
+            parameters = ', '.join([inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices']])
+            ret.append(storage_policies_models.StorageNode(inst['id'], inst['name'], inst['policy_type'], inst['default'], 'Parameters: ' + parameters))
         return ret
 
 
