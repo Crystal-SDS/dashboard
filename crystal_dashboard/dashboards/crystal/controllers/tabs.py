@@ -7,6 +7,7 @@ from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.controllers.controllers import models as controllers_models
 from crystal_dashboard.dashboards.crystal.controllers.controllers import tables as controllers_tables
 from crystal_dashboard.dashboards.crystal.controllers.instances import tables as instances_tables
+from crystal_dashboard.dashboards.crystal.controllers.instances import models as instances_models
 
 
 class ControllersTab(tabs.TableTab):
@@ -48,7 +49,9 @@ class InstancesTab(tabs.TableTab):
     response = None
 
     def get_instances_data(self):
-        return []
+        instances = json.loads(api.get_all_instances(self.request).text)
+        return [instances_models.Instance(instance['id'], instance['controller'], instance['parameters'], 
+                                          instance['description'], instance['status']) for instance in instances] 
 
 
 class ControllerTabs(tabs.TabGroup):

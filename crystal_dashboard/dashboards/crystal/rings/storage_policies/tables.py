@@ -47,7 +47,6 @@ class ManageDisksLink(tables.LinkAction):
     icon = "pencil"
     
     def get_link_url(self, datum=None):
-        print 'get link url', self.table.kwargs
         return reverse(self.url, args={'policy_id': self.datum.id})
     
     

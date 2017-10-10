@@ -10,18 +10,25 @@ from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 class CreateInstance(forms.SelfHandlingForm):
     
-    name = forms.CharField(max_length=255,
-                           label=_("Name"),
-                           widget=forms.TextInput(
-                               attrs={"ng-model": "name", "not-blank": ""}
-                           ))
-
     controller = forms.ThemableChoiceField(label=_("Controller"))
     
     parameters = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 2}),
                                   label=_("Parameters"),
                                   required=False)
+    
+    description = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 4}),
+                                  label=_("Description"),
+                                  required=False)
+    
+    status = forms.CharField(max_length=255,
+                               label=_("Status"),
+                               initial='stopped',
+                               widget=forms.HiddenInput(  # hidden
+                                            attrs={"ng-model": "status"}))
+    
+    
 
     def __init__(self, request, *args, **kwargs):
         super(CreateInstance, self).__init__(request, *args, **kwargs)

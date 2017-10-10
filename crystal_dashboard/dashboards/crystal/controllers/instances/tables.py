@@ -11,39 +11,7 @@ import json
 from crystal_dashboard.api import controllers as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
-
-class UpdateCell(tables.UpdateAction):
-    def allowed(self, request, controller, cell):
-        return cell.column.name == "enabled"
-
-    def update_cell(self, request, datum, id, cell_name, new_cell_value):
-        try:
-            # updating changed value by new value
-            response = api.get_controller(request, id)
-            data = json.loads(response.text)
-            data[cell_name] = new_cell_value
-            api.update_controller(request, id, data)
-        except Conflict:
-            # Returning a nice error message about name conflict. The message
-            # from exception is not that clear for the user
-            message = _("Can't change value")
-            raise ValidationError(message)
-        except Exception:
-            exceptions.handle(request, ignore=True)
-            return False
-        return True
-
-
-class UpdateRow(tables.Row):
-    ajax = True
-
-    def get_data(self, request, id):
-        response = api.get_controller(request, id)
-        data = json.loads(response.text)
-
-        controller = Controller(data["id"], data["controller_name"], data["class_name"], data["enabled"])
-        return controller
-
+    
 class DeleteInstance(tables.DeleteAction):
     @staticmethod
     def action_present(count):
@@ -93,15 +61,14 @@ class CreateInstance(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
 
-
 class InstancesTable(tables.DataTable):
     # id = tables.Column("id", verbose_name=_("ID"))
-    instance_name = tables.Column("instance_name", verbose_name=_("Name"))
     controller = tables.Column("controller", verbose_name=_("Controller"))
     parameters = tables.Column("parameters", verbose_name=_("Parameters"))
+    description = tables.Column("description", verbose_name=_("Description"))
+    status = tables.Column("status", verbose_name=_("Status"))
 
     class Meta:
         name = "instances"
         verbose_name = _("Instances")
         table_actions = (MyInstanceFilterAction, CreateInstance, DeleteMultipleInstances,)
-        row_class = UpdateRow
