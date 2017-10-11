@@ -79,6 +79,7 @@ class ManageDisksView(tables.DataTableView):
 
     def get_context_data(self, **kwargs):
         context = super(ManageDisksView, self).get_context_data(**kwargs)
+        context['policy_id'] = self.kwargs['policy_id']
         return context
 
     def get_data(self):
@@ -96,7 +97,7 @@ class ManageDisksView(tables.DataTableView):
         except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve devices.'))
-        return devices      
+        return devices
 
 class AddDisksView(forms.ModalFormMixin, tables.DataTableView):
     

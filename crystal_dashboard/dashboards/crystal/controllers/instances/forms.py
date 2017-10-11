@@ -52,36 +52,29 @@ class CreateInstance(forms.SelfHandlingForm):
 
 class UpdateInstance(forms.SelfHandlingForm):
 
-    instance_file = forms.FileField(label=_("File"),
-                                      required=False,
-                                      allow_empty_file=False)
-
-    class_name = forms.CharField(max_length=255,
-                                 label=_('Class Name'),
-                                 help_text=_('The class name of the instance to be created.'))
+    parameters = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 2}),
+                                  label=_("Parameters"),
+                                  required=False)
     
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-
-    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
-                                  attrs={'rows': 2}),
-                                  label=_("valid_parameters"),
-                                  required=False)
     
     def __init__(self, request, *args, **kwargs):
-        super(Update    , self).__init__(request, *args, **kwargs)
+        super(UpdateInstance, self).__init__(request, *args, **kwargs)
 
     def handle(self, request, data):
-        try:
-            response = api.update_instance(request, self.initial['id'], data)
-            if 200 <= response.status_code < 300:
-                messages.success(request, _('Successfully updated instance: %s') % self.initial['id'])
-                return data
-            else:
-                raise sdsexception.SdsException(response.text)
-        except Exception as ex:
-            redirect = reverse("horizon:crystal:controllers:index")
-            error_message = "Unable to update instance.\t %s" % ex.message
-            exceptions.handle(request, _(error_message), redirect=redirect)
+#         try:
+        print self.initial
+        response = api.update_instance(request, self.initial['id'], data)
+        if 200 <= response.status_code < 300:
+            messages.success(request, _('Successfully updated instance: %s') % self.initial['id'])
+            return data
+        else:
+            raise sdsexception.SdsException(response.text)
+#         except Exception as ex:
+#             redirect = reverse("horizon:crystal:controllers:index")
+#             error_message = "Unable to update instance.\t %s" % ex.message
+#             exceptions.handle(request, _(error_message), redirect=redirect)

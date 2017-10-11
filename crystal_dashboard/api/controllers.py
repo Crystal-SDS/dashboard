@@ -107,6 +107,18 @@ def get_all_instances(request):
     r = requests.get(url, headers=headers)
     return r
 
+def get_instance(request, instance_id):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/instance/" + str(instance_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
 
 def add_instance(request, data):
     token = get_token(request)
@@ -131,4 +143,17 @@ def delete_instance(request, instance_id):
     headers['Content-Type'] = "application/json"
 
     r = requests.delete(url, headers=headers)
+    return r
+
+def update_instance(request, instance_id, data):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/instance/" + str(instance_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(data), headers=headers)
     return r

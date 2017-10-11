@@ -46,8 +46,8 @@ class UpdateInstanceView(forms.ModalFormView):
     def _get_object(self, *args, **kwargs):
         instance_id = self.kwargs['id']
         try:
-            filter = api.get_instance(self.request, instance_id)
-            return filter
+            instance = api.get_instance(self.request, instance_id)
+            return instance
         except Exception:
             redirect = self.success_url
             msg = _('Unable to retrieve instance details.')
@@ -56,6 +56,5 @@ class UpdateInstanceView(forms.ModalFormView):
     def get_initial(self):
         instance = self._get_object()
         initial = json.loads(instance.text)
-        # initial = super(UpdateView, self).get_initial()
-        # initial['name'] = "my filter name"
+        initial['id'] = self.kwargs['id']
         return initial

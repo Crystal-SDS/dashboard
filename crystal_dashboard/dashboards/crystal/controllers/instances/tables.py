@@ -60,9 +60,69 @@ class CreateInstance(tables.LinkAction):
     url = "horizon:crystal:controllers:instances:create_instance"
     classes = ("ajax-modal",)
     icon = "plus"
+    
+class UpdateInstance(tables.LinkAction):
+    name = "update"
+    verbose_name = _("Edit")
+    icon = "pencil"
+    classes = ("ajax-modal", "btn-update",)
+
+    def get_link_url(self, datum=None):
+        base_url = reverse("horizon:crystal:controllers:instances:update_instance", kwargs={'id': datum.id})
+        return base_url
+    
+
+class StartInstance(tables.BatchAction):
+    
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Start",
+            u"Start Instance",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Start",
+            u"Start Instance",
+            count
+        )
+
+    name = "start_instance"
+    success_url = "horizon:crystal:controllers:index"
+
+    def action(self, request, datum_id):
+        pass
+    
+    
+class StopInstance(tables.BatchAction):
+    
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Stop",
+            u"Stop Instance",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Stop",
+            u"Stop Instance",
+            count
+        )
+
+    name = "stop_instance"
+    success_url = "horizon:crystal:controllers:index"
+
+    def action(self, request, datum_id):
+        pass
 
 class InstancesTable(tables.DataTable):
-    # id = tables.Column("id", verbose_name=_("ID"))
+    id = tables.Column("id", verbose_name=_("ID"))
     controller = tables.Column("controller", verbose_name=_("Controller"))
     parameters = tables.Column("parameters", verbose_name=_("Parameters"))
     description = tables.Column("description", verbose_name=_("Description"))
@@ -72,3 +132,4 @@ class InstancesTable(tables.DataTable):
         name = "instances"
         verbose_name = _("Instances")
         table_actions = (MyInstanceFilterAction, CreateInstance, DeleteMultipleInstances,)
+        row_actions = (StartInstance, StopInstance, UpdateInstance, DeleteInstance,)
