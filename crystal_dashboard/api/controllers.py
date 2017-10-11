@@ -107,6 +107,7 @@ def get_all_instances(request):
     r = requests.get(url, headers=headers)
     return r
 
+
 def get_instance(request, instance_id):
     token = get_token(request)
 
@@ -120,6 +121,7 @@ def get_instance(request, instance_id):
     r = requests.get(url, headers=headers)
     return r
 
+
 def add_instance(request, data):
     token = get_token(request)
     headers = {}
@@ -131,6 +133,7 @@ def add_instance(request, data):
 
     r = requests.post(url, json.dumps(data), headers=headers)
     return r
+
 
 def delete_instance(request, instance_id):
     token = get_token(request)
@@ -144,6 +147,7 @@ def delete_instance(request, instance_id):
 
     r = requests.delete(url, headers=headers)
     return r
+
 
 def update_instance(request, instance_id, data):
     token = get_token(request)
