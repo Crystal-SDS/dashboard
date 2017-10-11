@@ -79,5 +79,7 @@ class LaunchInstanceView(forms.ModalFormView):
         context['submit_url'] = reverse(self.submit_url, args=args)
         return context
     
-    def get_initial(self):        
-        return {'id': self.kwargs['id']}
+    def get_initial(self):
+        initial = json.loads(api.get_controller(self.request, self.kwargs['id']).text)
+        initial['id'] = self.kwargs['id']
+        return initial

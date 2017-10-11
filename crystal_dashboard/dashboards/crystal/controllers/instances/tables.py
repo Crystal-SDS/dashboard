@@ -92,9 +92,12 @@ class StartInstance(tables.BatchAction):
 
     name = "start_instance"
     success_url = "horizon:crystal:controllers:index"
+    
+    def allowed(self, request, instance):
+        return (instance is None) or (instance.status == "stopped")
 
     def action(self, request, datum_id):
-        pass
+        api.update_instance(request, datum_id, {'status': 'running'})
     
     
 class StopInstance(tables.BatchAction):
@@ -117,9 +120,13 @@ class StopInstance(tables.BatchAction):
 
     name = "stop_instance"
     success_url = "horizon:crystal:controllers:index"
+    
+    def allowed(self, request, instance):
+        return (instance is None) or (instance.status == "running")
 
     def action(self, request, datum_id):
-        pass
+        api.update_instance(request, datum_id, {'status': 'stopped'})
+
 
 class InstancesTable(tables.DataTable):
     id = tables.Column("id", verbose_name=_("ID"))

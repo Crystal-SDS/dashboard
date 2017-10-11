@@ -119,8 +119,8 @@ class ControllersTable(tables.DataTable):
     # id = tables.Column("id", verbose_name=_("ID"))
     controller_name = tables.Column("controller_name", verbose_name=_("Name"))
     class_name = tables.Column("class_name", verbose_name=_("Main Class"))
-    description = tables.Column("description", verbose_name=_("Description"))
     valid_parameters = tables.Column("valid_parameters", verbose_name=_("Valid Parameters"))
+    description = tables.Column("description", verbose_name=_("Description"))
     instances = tables.Column("instances", verbose_name=_("Instances"))
 
     class Meta:
