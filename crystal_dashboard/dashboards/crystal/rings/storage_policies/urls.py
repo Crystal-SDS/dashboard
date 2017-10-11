@@ -8,8 +8,8 @@ urlpatterns = [
         name='create_ec_storage_policy'),
     url(r'^load_swift_policies', views.LoadSwiftPolicies.as_view(),
         name='load_swift_policies'),
-    url(r'^disks/(?P<policy_id>[^/]+)/$', views.ManageDisksView.as_view(),
+    url(r'^(?P<policy_id>[^/]+)/disks/$', views.ManageDisksView.as_view(),
         name='disks'),
-    url(r'^add_disks', views.AddDisksView.as_view(),
+    url(r'^(?P<policy_id>[^/]+)/add_disks/$', views.AddDisksView.as_view(),
         name='add_disks'),
 ]

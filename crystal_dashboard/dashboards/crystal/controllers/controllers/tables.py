@@ -105,15 +105,17 @@ class CreateController(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
 
+
 class LaunchInstance(tables.LinkAction):
     name = "launch_instance"
-    verbose_name = _("Launch Instance")
+    verbose_name = _("Create Instance")
     classes = ("ajax-modal",)
     icon = "plus"
-    
+
     def get_link_url(self, datum=None):
         base_url = reverse("horizon:crystal:controllers:controllers:launch_instance", kwargs={'id': datum.id})
         return base_url
+
 
 class ControllersTable(tables.DataTable):
     # id = tables.Column("id", verbose_name=_("ID"))

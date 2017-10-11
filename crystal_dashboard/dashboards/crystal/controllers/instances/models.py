@@ -1,4 +1,3 @@
-from pickle import INST
 class Instance:
     """
         Instances class models.

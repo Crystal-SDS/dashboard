@@ -2,16 +2,13 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
-from keystoneclient.exceptions import Conflict
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
-from models import Instance
-import json
 from crystal_dashboard.api import controllers as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
-    
+
 class DeleteInstance(tables.DeleteAction):
     @staticmethod
     def action_present(count):
@@ -60,7 +57,8 @@ class CreateInstance(tables.LinkAction):
     url = "horizon:crystal:controllers:instances:create_instance"
     classes = ("ajax-modal",)
     icon = "plus"
-    
+
+
 class UpdateInstance(tables.LinkAction):
     name = "update"
     verbose_name = _("Edit")
@@ -70,10 +68,10 @@ class UpdateInstance(tables.LinkAction):
     def get_link_url(self, datum=None):
         base_url = reverse("horizon:crystal:controllers:instances:update_instance", kwargs={'id': datum.id})
         return base_url
-    
+
 
 class StartInstance(tables.BatchAction):
-    
+
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -92,16 +90,16 @@ class StartInstance(tables.BatchAction):
 
     name = "start_instance"
     success_url = "horizon:crystal:controllers:index"
-    
+
     def allowed(self, request, instance):
-        return (instance is None) or (instance.status == "stopped")
+        return (instance is None) or (instance.status == "Stopped")
 
     def action(self, request, datum_id):
-        api.update_instance(request, datum_id, {'status': 'running'})
-    
-    
+        api.update_instance(request, datum_id, {'status': 'Running'})
+
+
 class StopInstance(tables.BatchAction):
-    
+
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -120,12 +118,12 @@ class StopInstance(tables.BatchAction):
 
     name = "stop_instance"
     success_url = "horizon:crystal:controllers:index"
-    
+
     def allowed(self, request, instance):
-        return (instance is None) or (instance.status == "running")
+        return (instance is None) or (instance.status == "Running")
 
     def action(self, request, datum_id):
-        api.update_instance(request, datum_id, {'status': 'stopped'})
+        api.update_instance(request, datum_id, {'status': 'Stopped'})
 
 
 class InstancesTable(tables.DataTable):

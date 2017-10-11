@@ -1,6 +1,5 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
@@ -21,17 +20,17 @@ class CreateController(forms.SelfHandlingForm):
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-    
+
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 2}),
                                   label=_("valid_parameters"),
                                   required=False)
-    
+
     instances = forms.CharField(max_length=255,
-                               label=_("Instances"),
-                               initial=0,
-                               widget=forms.HiddenInput(  # hidden
-                                            attrs={"ng-model": "instances"}))
+                                label=_("Instances"),
+                                initial=0,
+                                widget=forms.HiddenInput(  # hidden
+                                        attrs={"ng-model": "instances"}))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateController, self).__init__(request, *args, **kwargs)
@@ -64,7 +63,7 @@ class UpdateController(forms.SelfHandlingForm):
     class_name = forms.CharField(max_length=255,
                                  label=_('Class Name'),
                                  help_text=_('The class name of the controller to be created.'))
-    
+
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
@@ -74,15 +73,15 @@ class UpdateController(forms.SelfHandlingForm):
                                   attrs={'rows': 2}),
                                   label=_("valid_parameters"),
                                   required=False)
-    
+
     def __init__(self, request, *args, **kwargs):
         super(UpdateController, self).__init__(request, *args, **kwargs)
 
     def handle(self, request, data):
-        
+
         controller_file = data['controller_file']
         del data['controller_file']
-        
+
         try:
             response = api.update_controller(request, self.initial['id'], data, controller_file)
             if 200 <= response.status_code < 300:
@@ -97,25 +96,22 @@ class UpdateController(forms.SelfHandlingForm):
 
 
 class LaunchInstance(forms.SelfHandlingForm):
-    
-        
+
     parameters = forms.CharField(widget=forms.widgets.Textarea(
-                                  attrs={'rows': 2}),
-                                  label=_("Parameters"),
-                                  required=False)
-    
+                                 attrs={'rows': 2}),
+                                 label=_("Parameters"),
+                                 required=False)
+
     description = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
-    
+
     status = forms.CharField(max_length=255,
-                               label=_("Status"),
-                               initial='stopped',
-                               widget=forms.HiddenInput(  # hidden
-                                            attrs={"ng-model": "status"}))
-    
-    
+                             label=_("Status"),
+                             initial='Stopped',
+                             widget=forms.HiddenInput(  # hidden
+                                    attrs={"ng-model": "status"}))
 
     def __init__(self, request, *args, **kwargs):
         super(LaunchInstance, self).__init__(request, *args, **kwargs)

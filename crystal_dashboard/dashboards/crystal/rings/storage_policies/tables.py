@@ -12,7 +12,6 @@ from crystal_dashboard.dashboards.crystal.rings.storage_policies import models a
 from crystal_dashboard.api import swift as api
 
 
-
 class MyFilterAction(tables.FilterAction):
     name = "myfilter"
 
@@ -40,21 +39,22 @@ class LoadSwiftPolicies(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
 
+
 class ManageDisksLink(tables.LinkAction):
     name = "users"
     verbose_name = _("Manage Disks")
     url = "horizon:crystal:rings:storage_policies:disks"
     icon = "pencil"
-    
+
     def get_link_url(self, datum=None):
         return reverse(self.url, kwargs={'policy_id': self.datum.id})
-    
-    
+
+
 class UpdateCell(tables.UpdateAction):
-    
+
     def allowed(self, request, project, cell):
         return True
-    
+
     def update_cell(self, request, datum, obj_id, cell_name, new_cell_value):
         try:
             print cell_name
@@ -63,8 +63,8 @@ class UpdateCell(tables.UpdateAction):
             exceptions.handle(request, ignore=True)
             return False
         return True
-    
-    
+
+
 class UpdateRow(tables.Row):
     ajax = True
 
@@ -75,8 +75,9 @@ class UpdateRow(tables.Row):
 
         parameters = ', '.join([inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices']])
         policy = storage_policies_models.StorageNode(obj_id, inst['name'], inst['policy_type'], inst['default'], 'Parameters: ' + parameters)
-        
+
         return policy
+
 
 class StoragePolicyTable(tables.DataTable):
 
@@ -86,7 +87,7 @@ class StoragePolicyTable(tables.DataTable):
     default = tables.Column('default', verbose_name=_("Default"),
                             form_field=forms.ChoiceField(choices=[('yes', _('yes')), ('no', _('no'))]), update_action=UpdateCell)
     parameters = tables.Column('parameters', verbose_name=_("Parameters"))
-    
+
     class Meta:
         name = "storagepolicies"
         verbose_name = _("Storage Policies")
@@ -119,10 +120,11 @@ class AddDisk(tables.LinkAction):
     url = "horizon:crystal:rings:storage_policies:add_disks"
     classes = ("ajax-modal",)
     icon = "plus"
-    
+
     def get_link_url(self, datum=None):
-        return reverse(self.url)
-    
+        return reverse(self.url, kwargs=self.table.kwargs)
+
+
 class DeleteDisk(tables.DeleteAction):
     @staticmethod
     def action_present(count):
@@ -150,9 +152,9 @@ class DeleteDisk(tables.DeleteAction):
 class ManageDisksTable(tables.DataTable):
     storage_node = tables.WrappingColumn('storage_node', verbose_name=_('Storage Node'))
     device = tables.Column('device', verbose_name="Device")
-    size_occuped = tables.Column('size_occuped', verbose_name="Size Occuped")
+    size_occupied = tables.Column('size_occupied', verbose_name="Size Occupied")
     size = tables.Column('size', verbose_name="Total Size")
-    
+
     class Meta(object):
         name = "diskstable"
         verbose_name = _("Disks")
@@ -179,14 +181,19 @@ class AddDisksAction(tables.BatchAction):
     name = "add"
     icon = "plus"
     requires_input = True
-    success_url = "horizon:crystal:rings:index"
+    success_url = "horizon:crystal:rings:storage_policies:disks"
 
     def action(self, request, obj_id):
-        pass
+        policy_id = self.table.kwargs['policy_id']
+        # TODO: Call controller to add disks
+
+    def get_success_url(self, request=None):
+        policy_id = self.table.kwargs.get('policy_id', None)
+        return reverse(self.success_url, args=[policy_id])
 
 
 class AddDisksTable(ManageDisksTable):
-    
+
     class Meta(object):
         name = "group_non_members"
         verbose_name = _("Non-Members")

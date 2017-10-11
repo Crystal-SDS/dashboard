@@ -1,14 +1,11 @@
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-
-
-from crystal_dashboard.api import controllers as api
-import json
-
 from horizon import exceptions
 from horizon import forms
+import json
 from crystal_dashboard.dashboards.crystal.controllers.instances import forms as instances_forms
+from crystal_dashboard.api import controllers as api
 
 
 class CreateInstanceView(forms.ModalFormView):
@@ -24,17 +21,16 @@ class CreateInstanceView(forms.ModalFormView):
     page_title = _("Create Instance")
 
 
-
 class UpdateInstanceView(forms.ModalFormView):
     form_class = instances_forms.UpdateInstance
     submit_url = "horizon:crystal:controllers:instances:update_instance"
     form_id = "update_instance_form"
-    modal_header = _("Update A Instance")
+    modal_header = _("Update an Instance")
     submit_label = _("Update Instance")
     template_name = "crystal/controllers/instances/update.html"
     context_object_name = 'instance'
     success_url = reverse_lazy('horizon:crystal:controllers:index')
-    page_title = _("Update A Instance")
+    page_title = _("Update an Instance")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateInstanceView, self).get_context_data(**kwargs)

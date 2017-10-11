@@ -11,18 +11,18 @@ from crystal_dashboard.dashboards.crystal.nodes import models as nodes_models
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import tables as node_tables
 
 
-
 INDEX_URL = "horizon:crystal:rings:index"
 
+
 class StoragePolicyInfoAction(workflows.Action):
-    
+
     name = forms.CharField(max_length=255,
                            label=_("Name"),
                            help_text=_("The name of the new policy."),
                            widget=forms.TextInput(
                                attrs={"ng-model": "name", "not-blank": ""}
                            ))
-    
+
     replicas = forms.CharField(max_length=255,
                                label=_("Num. Replicas"),
                                required=False,
@@ -47,7 +47,6 @@ class StoragePolicyInfoAction(workflows.Action):
                                attrs={"ng-model": "time", "not-blank": ""}
                            ))
 
-
     class Meta(object):
         name = _("Storage policy information")
         help_text = _("Create a storage policy")
@@ -55,16 +54,16 @@ class StoragePolicyInfoAction(workflows.Action):
 
 class StoragePolicyInfo(workflows.Step):
     action_class = StoragePolicyInfoAction
-    
+
     contributes = ("name", "storage_node", "replicas", "partitions", "time",)
-    
-    def contribute(self, data, context):          
+
+    def contribute(self, data, context):
         context.update(data)
         return context
 
 
 class UpdateProjectMembersAction(workflows.Action, tables.DataTableView):
-    
+
     template_name = "crystal/rings/storage_policies/add_node.html"
     ajax_template_name = "crystal/rings/storage_policies/_add_node.html"
     table_class = node_tables.NodesTable
@@ -76,7 +75,7 @@ class UpdateProjectMembersAction(workflows.Action, tables.DataTableView):
     def get_data(self):
         group_non_members = []
         return group_non_members
-    
+
     class Meta(object):
         name = _("Nodes")
         slug = "nodeselection"
@@ -85,7 +84,7 @@ class UpdateProjectMembersAction(workflows.Action, tables.DataTableView):
 class UpdateProjectMembers(workflows.Step):
     action_class = UpdateProjectMembersAction
 
-    def contribute(self, data, context):          
+    def contribute(self, data, context):
         return context
 
 
