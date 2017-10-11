@@ -67,7 +67,6 @@ class UpdateInstance(forms.SelfHandlingForm):
 
     def handle(self, request, data):
 #         try:
-        print self.initial
         response = api.update_instance(request, self.initial['id'], data)
         if 200 <= response.status_code < 300:
             messages.success(request, _('Successfully updated instance: %s') % self.initial['id'])
