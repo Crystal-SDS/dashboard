@@ -5,7 +5,8 @@ from horizon import tables
 
 class MyFilterAction(tables.FilterAction):
     name = "myfilter"
-    
+
+
 class CreateGroup(tables.LinkAction):
     name = "create_group"
     verbose_name = _("Create Group")
@@ -21,4 +22,4 @@ class GroupsTable(tables.DataTable):
     class Meta:
         name = "groups"
         verbose_name = _("Groups")
-        table_actions = (MyFilterAction,CreateGroup)
+        table_actions = (MyFilterAction, CreateGroup)
