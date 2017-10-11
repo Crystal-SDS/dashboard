@@ -59,3 +59,27 @@ class UpdateControllerView(forms.ModalFormView):
         # initial = super(UpdateView, self).get_initial()
         # initial['name'] = "my filter name"
         return initial
+    
+class LaunchInstanceView(forms.ModalFormView):
+    form_class = controllers_forms.LaunchInstance
+    form_id = "launch_instance_form"
+
+    modal_header = _("Launch Instance")
+    submit_label = _("Launch Instance")
+    submit_url = "horizon:crystal:controllers:controllers:launch_instance"
+    template_name = "crystal/controllers/controllers/create.html"
+    context_object_name = "controller"
+    success_url = reverse_lazy("horizon:crystal:controllers:index")
+    page_title = _("Launch Instance")
+
+    def get_context_data(self, **kwargs):
+        context = super(LaunchInstanceView, self).get_context_data(**kwargs)
+        context['id'] = self.kwargs['id']
+        args = (self.kwargs['id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
+        return context
+    
+    def get_initial(self):
+        initial = json.loads(api.get_controller(self.request, self.kwargs['id']).text)
+        initial['id'] = self.kwargs['id']
+        return initial

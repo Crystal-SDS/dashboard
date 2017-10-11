@@ -6,6 +6,8 @@ from crystal_dashboard.api import controllers as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.controllers.controllers import models as controllers_models
 from crystal_dashboard.dashboards.crystal.controllers.controllers import tables as controllers_tables
+from crystal_dashboard.dashboards.crystal.controllers.instances import tables as instances_tables
+from crystal_dashboard.dashboards.crystal.controllers.instances import models as instances_models
 
 
 class ControllersTab(tabs.TableTab):
@@ -33,12 +35,26 @@ class ControllersTab(tabs.TableTab):
         ret = []
         for inst in instances:
             ctrl = controllers_models.Controller(inst['id'], inst['controller_name'], inst['description'],
-                                                 inst['class_name'], inst['enabled'])
+                                                 inst['class_name'], inst['instances'], inst['valid_parameters'])
             ret.append(ctrl)
         return ret
 
 
+class InstancesTab(tabs.TableTab):
+    table_classes = (instances_tables.InstancesTable,)
+    name = _("Instances")
+    slug = "instances_table"
+    template_name = "crystal/controllers/instances/_detail.html"
+    preload = False
+    response = None
+
+    def get_instances_data(self):
+        instances = json.loads(api.get_all_instances(self.request).text)
+        return [instances_models.Instance(instance['id'], instance['controller'], instance['parameters'], 
+                                          instance['description'], instance['status']) for instance in instances] 
+
+
 class ControllerTabs(tabs.TabGroup):
     slug = "controllers_tabs"
-    tabs = (ControllersTab,)
+    tabs = (ControllersTab, InstancesTab,)
     sticky = True
