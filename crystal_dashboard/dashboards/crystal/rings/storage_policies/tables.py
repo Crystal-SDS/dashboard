@@ -42,8 +42,8 @@ class LoadSwiftPolicies(tables.LinkAction):
 
 class ManageDisksLink(tables.LinkAction):
     name = "users"
-    verbose_name = _("Manage Disks")
-    url = "horizon:crystal:rings:storage_policies:disks"
+    verbose_name = _("Manage Devices")
+    url = "horizon:crystal:rings:storage_policies:devices"
     icon = "pencil"
 
     def get_link_url(self, datum=None):
@@ -71,10 +71,8 @@ class UpdateRow(tables.Row):
     def get_data(self, request, obj_id):
         response = api.swift_storage_policy_detail(request, obj_id)
         inst = json.loads(response.text)
-        print inst
-
-        parameters = ', '.join([inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices']])
-        policy = storage_policies_models.StorageNode(obj_id, inst['name'], inst['policy_type'], inst['default'], 'Parameters: ' + parameters)
+        parameters = ', '.join([key.replace('_', ' ').title()+':'+inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices', 'deprecated', 'deployed']])
+        policy = storage_policies_models.StoragePolicy(inst['id'], inst['name'], inst['policy_type'], inst['default'], parameters, inst['deprecated'], inst['deployed'], inst['devices'])
 
         return policy
 
@@ -85,8 +83,11 @@ class StoragePolicyTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_("Name"))
     type = tables.Column('type', verbose_name=_("Type"))
     default = tables.Column('default', verbose_name=_("Default"),
-                            form_field=forms.ChoiceField(choices=[('yes', _('yes')), ('no', _('no'))]), update_action=UpdateCell)
+                            form_field=forms.ChoiceField(choices=[('yes', _('Yes')), ('no', _('No'))]), update_action=UpdateCell)
     parameters = tables.Column('parameters', verbose_name=_("Parameters"))
+    deprecated = tables.Column('deprecated', verbose_name=_("Deprecated"))
+    devices = tables.Column('devices', verbose_name=_("Devices"))
+    deployed = tables.Column('deployed', verbose_name=_("Deployed"))
 
     class Meta:
         name = "storagepolicies"
@@ -96,28 +97,10 @@ class StoragePolicyTable(tables.DataTable):
         row_class = UpdateRow
 
 
-class AddNodesLink(tables.LinkAction):
-    name = "add_user_link"
-    verbose_name = _("Add Users")
-    url = "horizon:crystal:rings:storage_policies:add_nodes"
-    classes = ("ajax-modal",)
-    icon = "plus"
-
-
-class NodesTable(tables.DataTable):
-    hostname = tables.WrappingColumn('hostname', verbose_name=_('Hostname'))
-    ip = tables.Column('ip', verbose_name="IP")
-
-    class Meta(object):
-        name = "nodestable"
-        verbose_name = _("Nodes")
-        table_actions = (MyFilterAction, AddNodesLink)
-
-
 class AddDisk(tables.LinkAction):
     name = "add_disk"
-    verbose_name = _("Add Disk")
-    url = "horizon:crystal:rings:storage_policies:add_disks"
+    verbose_name = _("Add Device")
+    url = "horizon:crystal:rings:storage_policies:add_devices"
     classes = ("ajax-modal",)
     icon = "plus"
 
@@ -157,7 +140,7 @@ class ManageDisksTable(tables.DataTable):
 
     class Meta(object):
         name = "diskstable"
-        verbose_name = _("Disks")
+        verbose_name = _("Devices")
         table_actions = (MyFilterAction, AddDisk, DeleteDisk)
 
 
@@ -165,23 +148,23 @@ class AddDisksAction(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Add Disk",
-            u"Add Disks",
+            u"Add Device",
+            u"Add Devices",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Added Disk",
-            u"Added Disks",
+            u"Added Device",
+            u"Added Devices",
             count
         )
 
     name = "add"
     icon = "plus"
     requires_input = True
-    success_url = "horizon:crystal:rings:storage_policies:disks"
+    success_url = "horizon:crystal:rings:storage_policies:devices"
 
     def action(self, request, obj_id):
         policy_id = self.table.kwargs['policy_id']
@@ -195,6 +178,6 @@ class AddDisksAction(tables.BatchAction):
 class AddDisksTable(ManageDisksTable):
 
     class Meta(object):
-        name = "group_non_members"
-        verbose_name = _("Non-Members")
+        name = "add_devices_table"
+        verbose_name = _("Devices")
         table_actions = (MyFilterAction, AddDisksAction,)

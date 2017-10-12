@@ -40,11 +40,11 @@ class GroupMembersAction(workflows.MembershipAction):
         err_msg = _('Unable to retrieve projects list. Please try again later.')
 
         default_role_field_name = self.get_default_role_field_name()
-        self.fields[default_role_field_name] = forms.CharField(required=False)
+        self.fields[default_role_field_name] = forms.CharField(required=True)
         self.fields[default_role_field_name].initial = 'member'
 
         field_name = self.get_member_field_name('member')
-        self.fields[field_name] = forms.MultipleChoiceField(required=False)
+        self.fields[field_name] = forms.MultipleChoiceField(required=True)
 
         # Fetch the projects crytsal-enabled list and add to policy options
         projects_crystal_enabled = []
