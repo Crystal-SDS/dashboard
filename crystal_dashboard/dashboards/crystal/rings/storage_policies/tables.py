@@ -129,7 +129,15 @@ class DeleteDisk(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         policy_id = self.table.kwargs['policy_id']
-        api.swift_remove_disk_storage_policy(request, policy_id, obj_id)
+        try:
+            response = api.swift_remove_disk_storage_policy(request, policy_id, obj_id)
+            if not 200 <= response.status_code < 300:
+                raise sdsexception.SdsException(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:rings:storage_policies:devices")
+            error_message = "Unable to remove disk.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+        
         
     def get_success_url(self, request=None):
         policy_id = self.table.kwargs.get('policy_id', None)
@@ -172,7 +180,14 @@ class AddDisksAction(tables.BatchAction):
 
     def action(self, request, obj_id):
         policy_id = self.table.kwargs['policy_id']
-        api.swift_add_disk_storage_policy(request, policy_id, obj_id)
+        try:
+            response = api.swift_add_disk_storage_policy(request, policy_id, obj_id)
+            if not 200 <= response.status_code < 300:
+                raise sdsexception.SdsException(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:rings:storage_policies:devices")
+            error_message = "Unable to add disk.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
 
     def get_success_url(self, request=None):
         policy_id = self.table.kwargs.get('policy_id', None)

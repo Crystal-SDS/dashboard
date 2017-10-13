@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
-
+from django import http
 from crystal_dashboard.api import controllers as api
 import json
 
@@ -83,3 +83,19 @@ class LaunchInstanceView(forms.ModalFormView):
         initial = json.loads(api.get_controller(self.request, self.kwargs['id']).text)
         initial['id'] = self.kwargs['id']
         return initial
+    
+    
+def download_controller(request, controller_id):
+    try:
+        controller_response = api.download_controller(request, controller_id)
+
+        # Generate response
+        response = http.StreamingHttpResponse(controller_response.content)
+        response['Content-Disposition'] = controller_response.headers['Content-Disposition']
+        response['Content-Type'] = controller_response.headers['Content-Type']
+        response['Content-Length'] = controller_response.headers['Content-Length']
+        return response
+
+    except Exception as exc:
+        redirect = reverse("horizon:crystal:controllers:index")
+        exceptions.handle(request, _(exc.message), redirect=redirect)

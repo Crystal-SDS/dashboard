@@ -90,6 +90,17 @@ def delete_controller(request, controller_id):
     return r
 
 
+def download_controller(request, controller_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/" + str(controller_id) + '/data'
+
+    headers["X-Auth-Token"] = str(token)
+
+    r = requests.get(url, headers=headers)
+    return r
+
 # -----------------------------------------------------------------------------
 #
 # Instances
