@@ -57,7 +57,6 @@ class UpdateCell(tables.UpdateAction):
 
     def update_cell(self, request, datum, obj_id, cell_name, new_cell_value):
         try:
-            print cell_name
             api.swift_edit_storage_policy(request, obj_id, {cell_name: new_cell_value})
         except Exception:
             exceptions.handle(request, ignore=True)
@@ -112,24 +111,29 @@ class DeleteDisk(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete Region",
-            u"Delete Regions",
+            u"Delete disk",
+            u"Delete disks",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Region deleted",
-            u"Regions deleted",
+            u"Disk deleted",
+            u"Disks deleted",
             count
         )
 
     name = "delete"
-    success_url = "horizon:crystal:rings:index"
+    success_url = "horizon:crystal:rings:storage_policies:devices"
 
-    def delete(self, request, region_id):
-        pass
+    def delete(self, request, obj_id):
+        policy_id = self.table.kwargs['policy_id']
+        api.swift_remove_disk_storage_policy(request, policy_id, obj_id)
+        
+    def get_success_url(self, request=None):
+        policy_id = self.table.kwargs.get('policy_id', None)
+        return reverse(self.success_url, args=[policy_id])
 
 
 class ManageDisksTable(tables.DataTable):
@@ -168,7 +172,7 @@ class AddDisksAction(tables.BatchAction):
 
     def action(self, request, obj_id):
         policy_id = self.table.kwargs['policy_id']
-        # TODO: Call controller to add disks
+        api.swift_add_disk_storage_policy(request, policy_id, obj_id)
 
     def get_success_url(self, request=None):
         policy_id = self.table.kwargs.get('policy_id', None)

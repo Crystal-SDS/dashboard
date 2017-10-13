@@ -67,13 +67,12 @@ class ManageDisksView(tables.DataTableView):
         policy_id = self.kwargs['policy_id']
         devices = []
         try:
-            # TODO retrieve ID
             storage_node = json.loads((api.swift_storage_policy_detail(self.request, policy_id)).text)
             for device in storage_node['devices']:
-                total = storage_node['devices'][device]['size']
-                occuped = (total - storage_node['devices'][device]['free'])
-                # TODO: Change the ID field
-                devices.append(models.Device(device, storage_node['name'], device, occuped, total))
+                total = device['size']
+                occuped = (total - device['free'])
+                node_name, device_name = device['id'].split(':')
+                devices.append(models.Device(device['id'], node_name, device_name, occuped, total))
 
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve devices.'))
@@ -92,15 +91,14 @@ class AddDisksView(forms.ModalFormMixin, tables.DataTableView):
         return context
 
     def get_data(self):
-        devices = []
+        devices_objects = []
         try:
-            storage_nodes = filter(lambda x: x['type'] == 'object', json.loads(api.swift_get_all_nodes(self.request).text))
-            for storage_node in storage_nodes:
-                for device in storage_node['devices']:
-                    total = storage_node['devices'][device]['size']
-                    occuped = (total - storage_node['devices'][device]['free'])
-                    # TODO: Change the ID field
-                    devices.append(models.Device(device, storage_node['name'], device, occuped, total))
+            devices = json.loads(api.swift_available_disks_storage_policy(self.request, self.kwargs['policy_id']).text)
+            for device in devices:
+                total = device['size']
+                occuped = (total - device['free'])
+                controller_name, device_name = device['id'].split(':')
+                devices_objects.append(models.Device(device['id'], controller_name, device_name, occuped, total))
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve devices.'))
-        return devices
+        return devices_objects

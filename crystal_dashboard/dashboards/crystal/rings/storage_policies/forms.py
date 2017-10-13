@@ -39,7 +39,11 @@ class CreateStoragePolicy(forms.SelfHandlingForm):
 
     deployed = forms.BooleanField(initial=False,
                                   widget=forms.HiddenInput(  # hidden
-                                    attrs={"ng-model": "deprecated"}))
+                                    attrs={"ng-model": "deployed"}))
+    
+    devices = forms.BooleanField(initial='[]',
+                                  widget=forms.HiddenInput(  # hidden
+                                    attrs={"ng-model": "devices"}))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateStoragePolicy, self).__init__(request, *args, **kwargs)
