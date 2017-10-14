@@ -75,9 +75,6 @@ class DeleteController(tables.DeleteAction):
 
     name = "delete_controller"
     success_url = "horizon:crystal:controllers:index"
-    
-    def allowed(self, request, controller):
-        return (controller is None) or (controller.instances in ['0', 0])
 
     def delete(self, request, obj_id):
         try:

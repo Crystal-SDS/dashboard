@@ -20,15 +20,14 @@ class UploadMetricModule(forms.SelfHandlingForm):
                                      attrs={"ng-model": "name", "not-blank": ""}
                                  ))
 
-    out_flow = forms.BooleanField(required=False)
-
-    in_flow = forms.BooleanField(required=False)
+    in_flow = forms.BooleanField(required=False, label='Put')
+    out_flow = forms.BooleanField(required=False, label='Get')
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
             ('proxy', _('Proxy Node')),
-            # ('object', _('Object Storage Servers')),
+            ('object', _('Storage Node')),
             ('proxy/object', _('Proxy & Storage Nodes'))
         ],
         widget=forms.Select(attrs={
@@ -73,7 +72,7 @@ class UpdateMetricModule(forms.SelfHandlingForm):
         label=_('Execution Server'),
         choices=[
             ('proxy', _('Proxy Node')),
-            # ('object', _('Object Storage Servers')),
+            ('object', _('Storage Node')),
             ('proxy/object', _('Proxy & Storage Nodes'))
         ],
         widget=forms.Select(attrs={

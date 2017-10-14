@@ -9,7 +9,7 @@ from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 
-class CreateSLA(forms.SelfHandlingForm):
+class CreateAccessControlPolicy(forms.SelfHandlingForm):
     project_choices = []
     project_id = forms.ChoiceField(choices=project_choices,
                                    label=_("Project"),
@@ -18,7 +18,7 @@ class CreateSLA(forms.SelfHandlingForm):
 
     policy_choices = []
     policy_id = forms.ChoiceField(choices=policy_choices,
-                                  label=_("Storage Policy"),
+                                  label=_("Storage Policy (Ring)"),
                                   help_text=_("The storage policy that you want to assign to the specific project."),
                                   required=True)
 
@@ -42,7 +42,7 @@ class CreateSLA(forms.SelfHandlingForm):
         self.storage_policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_id())
 
         # Initialization
-        super(CreateSLA, self).__init__(request, *args, **kwargs)
+        super(CreateAccessControlPolicy, self).__init__(request, *args, **kwargs)
 
         # Overwrite target_id input form
         self.fields['project_id'] = forms.ChoiceField(choices=self.project_choices,
@@ -76,7 +76,7 @@ class CreateSLA(forms.SelfHandlingForm):
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
-class UpdateSLA(forms.SelfHandlingForm):
+class UpdateAccessControlPolicy(forms.SelfHandlingForm):
     get_bandwidth = forms.CharField(max_length=255,
                                     label=_("GET Bandwidth"),
                                     required=False,
@@ -87,7 +87,7 @@ class UpdateSLA(forms.SelfHandlingForm):
                                     help_text=_("The PUT bandwidth that you want to assign to the specific project."))
 
     def __init__(self, request, *args, **kwargs):
-        super(UpdateSLA, self).__init__(request, *args, **kwargs)
+        super(UpdateAccessControlPolicy, self).__init__(request, *args, **kwargs)
 
     def handle(self, request, data):
         try:
