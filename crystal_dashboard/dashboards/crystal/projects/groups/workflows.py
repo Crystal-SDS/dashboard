@@ -8,6 +8,8 @@ from horizon import views
 from horizon import workflows
 from horizon import forms
 from crystal_dashboard.dashboards.crystal import common
+from crystal_dashboard.api import projects as api
+
 
 
 class CreateGroupInfoAction(workflows.Action):
@@ -93,5 +95,9 @@ class CreateGroup(workflows.Workflow):
                                           **kwargs)
 
     def handle(self, request, data):
-        print data
+        try:
+            api.create_projects_group(request, data)
+        except Exception:
+            exceptions.handle(request, _('Unable to create group.'))
+            return False
         return True

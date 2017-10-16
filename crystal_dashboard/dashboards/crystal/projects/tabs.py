@@ -31,11 +31,11 @@ class Groups(tabs.TableTab):
             else:
                 error_message = 'Unable to get project groups.'
                 raise sdsexception.SdsException(error_message)
-
-            instances = eval(strobj)
-            for k, v in instances.items():
-                projects = ', '.join(v)
-                ret.append(group_models.Group(k, projects))
+    
+            groups = json.loads(strobj)    
+            for group in groups:
+                projects = 'Projects: ' + ', '.join(group['attached_projects'])
+                ret.append(group_models.Group(group['id'], group['name'], projects))
         except Exception as e:
             exceptions.handle(self.request, e.message)
         return ret

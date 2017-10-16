@@ -68,7 +68,7 @@ def disable_crystal(request, project_id):
 #
 # Project Groups
 #
-def create_projects_group(request, name, tenants_list):
+def create_projects_group(request, data):
     token = get_token(request)
     headers = {}
 
@@ -77,10 +77,9 @@ def create_projects_group(request, name, tenants_list):
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
 
-    # parameters = {"name": str(name), "tenants": str(tenants_list)}
-    # r = requests.post(url, json.dumps(parameters), headers=headers)
+    data['attached_projects'] = json.dumps(data['attached_projects'])
 
-    r = requests.post(url, json.dumps(tenants_list), headers=headers)
+    r = requests.post(url, json.dumps(data), headers=headers)
     return r
 
 
@@ -97,11 +96,11 @@ def get_all_project_groups(request):
     return r
 
 
-def list_projects_group(request, group_name):
+def list_projects_group(request, group_id):
     token = get_token(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"

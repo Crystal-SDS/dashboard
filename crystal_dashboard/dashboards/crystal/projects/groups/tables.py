@@ -17,6 +17,7 @@ class CreateGroup(tables.LinkAction):
 
 class GroupsTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
+    name = tables.Column('name', verbose_name=_("Name"))
     tenants = tables.Column('projects', verbose_name=_("Projects"))
 
     class Meta:
