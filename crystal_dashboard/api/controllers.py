@@ -44,8 +44,20 @@ def get_all_controllers(request):
     r = requests.get(url, headers=headers)
     return r
 
+def update_controller_data(request, controller_id, in_memory_file):
+    token = get_token(request)
+    headers = {}
 
-def update_controller(request, controller_id, data, in_memory_file):
+    url = settings.IOSTACK_CONTROLLER_URL + "/controllers/" + str(controller_id) + "/data"
+
+    headers["X-Auth-Token"] = str(token)
+
+    files = {'file': (in_memory_file.name, in_memory_file.read())}
+
+    r = requests.put(url, files=files, headers=headers)
+    return r
+
+def update_controller_metadata(request, controller_id, data):
     token = get_token(request)
 
     headers = {}
@@ -53,12 +65,9 @@ def update_controller(request, controller_id, data, in_memory_file):
     url = settings.IOSTACK_CONTROLLER_URL + "/controllers/" + str(controller_id)
 
     headers["X-Auth-Token"] = str(token)
-    # Content-Type header will be set to multipart by django because a file is uploaded
+    headers['Content-Type'] = "application/json"
 
-    files = {'file': (in_memory_file.name, in_memory_file.read())}
-    data_to_send = {'metadata': json.dumps(data)}
-
-    r = requests.post(url, data_to_send, files=files, headers=headers)
+    r = requests.put(url, json.dumps(data), headers=headers)
     return r
 
 

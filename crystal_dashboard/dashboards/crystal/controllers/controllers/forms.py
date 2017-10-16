@@ -83,8 +83,15 @@ class UpdateController(forms.SelfHandlingForm):
         del data['controller_file']
 
         try:
-            response = api.update_controller(request, self.initial['id'], data, controller_file)
+            response = api.update_controller_metadata(request, self.initial['id'], data)
             if 200 <= response.status_code < 300:
+                try:
+                    if controller_file is not None:
+                        response = api.update_controller_data(request, self.initial['id'], controller_file)
+                        if response.status_code > 300:  # error
+                            raise sdsexception.SdsException(response.text)
+                except: 
+                    pass
                 messages.success(request, _('Successfully updated controller: %s') % self.initial['id'])
                 return data
             else:
