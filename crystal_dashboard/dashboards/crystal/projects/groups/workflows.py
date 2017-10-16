@@ -1,6 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
@@ -8,82 +7,74 @@ from horizon.utils import memoized
 from horizon import views
 from horizon import workflows
 from horizon import forms
-   
+from crystal_dashboard.dashboards.crystal import common
+from crystal_dashboard.api import projects as api
+
+
 
 class CreateGroupInfoAction(workflows.Action):
-    
 
     name = forms.CharField(label=_("Name"),
                            max_length=64)
 
     def __init__(self, request, *args, **kwargs):
         super(CreateGroupInfoAction, self).__init__(request,
-                                                      *args,
-                                                      **kwargs)
+                                                    *args,
+                                                    **kwargs)
 
     class Meta(object):
         name = _("Group Information")
         help_text = _("Create a group")
-    
-    
+
+
 class CreateGroupInfo(workflows.Step):
     action_class = CreateGroupInfoAction
 
     contributes = ("name",)
 
     def __init__(self, workflow):
-        super(CreateGroupInfo, self).__init__(workflow)            
+        super(CreateGroupInfo, self).__init__(workflow)
 
 
 class GroupMembersAction(workflows.MembershipAction):
     def __init__(self, request, *args, **kwargs):
-        super(GroupMembersAction, self).__init__(request,
-                                                         *args,
-                                                         **kwargs)
+        super(GroupMembersAction, self).__init__(request, *args, **kwargs)
         err_msg = _('Unable to retrieve projects list. Please try again later.')
-        # Use the domain_id from the project
 
-        if 'project_id' in self.initial:
-            project_id = self.initial['project_id']
+        default_role_field_name = self.get_default_role_field_name()
+        self.fields[default_role_field_name] = forms.CharField(required=True)
+        self.fields[default_role_field_name].initial = 'member'
 
-        default_role_name = self.get_default_role_field_name()
-        self.fields[default_role_name] = forms.CharField(required=False)
-        self.fields[default_role_name].initial = 0
-        
-        # Get list of available users
-        all_users = []
+        field_name = self.get_member_field_name('member')
+        self.fields[field_name] = forms.MultipleChoiceField(required=True)
+
+        # Fetch the projects crytsal-enabled list and add to policy options
+        projects_crystal_enabled = []
         try:
-            pass
+            projects_crystal_enabled = common.get_project_list_crystal_enabled(request)
         except Exception:
             exceptions.handle(request, err_msg)
-        users_list = [(user.id, user.name) for user in all_users]
-        users_list = [('1', 'A'), ('2', 'B'), ('3', 'C')]
-        role_list = [('1', 'A'), ('2', 'B')]
-        
-        for role in role_list:
-            field_name = self.get_member_field_name(role[0])
-            label = role[1]
-            self.fields[field_name] = forms.MultipleChoiceField(required=False,
-                                                                label=label)
-            self.fields[field_name].choices = users_list
-            self.fields[field_name].initial = []
-        
-        print self.fields
+
+        self.fields[field_name].choices = projects_crystal_enabled
 
     class Meta(object):
         name = _("Group projects")
         slug = 'group_projects'
-        
+
 
 class GroupMembers(workflows.UpdateMembersStep):
 
     action_class = GroupMembersAction
     show_roles = False
+    contributes = ("attached_projects",)
 
     def contribute(self, data, context):
+        if data:
+            member_field_name = self.get_member_field_name('member')
+            context['attached_projects'] = data.get(member_field_name, [])
         return context
-    
-    
+
+
 class CreateGroup(workflows.Workflow):
     slug = "create_group"
     name = _("Create Group")
@@ -96,13 +87,17 @@ class CreateGroup(workflows.Workflow):
 
     def __init__(self, request=None, context_seed=None, entry_point=None,
                  *args, **kwargs):
-        
-        super(CreateGroup, self).__init__(request=request,
-                                            context_seed=context_seed,
-                                            entry_point=entry_point,
-                                            *args,
-                                            **kwargs)
 
+        super(CreateGroup, self).__init__(request=request,
+                                          context_seed=context_seed,
+                                          entry_point=entry_point,
+                                          *args,
+                                          **kwargs)
 
     def handle(self, request, data):
+        try:
+            api.create_projects_group(request, data)
+        except Exception:
+            exceptions.handle(request, _('Unable to create group.'))
+            return False
         return True

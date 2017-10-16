@@ -221,7 +221,7 @@ class MetricTable(tables.DataTable):
     out_flow = tables.Column('out_flow', verbose_name=_("Get"),
                              form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"),
-                                     form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('proxy/object', _('Proxy & Storage Nodes'))]),
+                                     form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node')), ('proxy/object', _('Proxy & Storage Nodes'))]),
                                      update_action=UpdateCell)
     enabled = tables.Column('enabled',
                             verbose_name=_("Enabled"),

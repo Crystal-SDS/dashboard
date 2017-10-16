@@ -16,6 +16,8 @@ from crystal_dashboard.dashboards.crystal.policies.policies import models as pol
 from crystal_dashboard.dashboards.crystal.policies.policies import tables as policies_tables
 from crystal_dashboard.dashboards.crystal.policies.object_types import models as object_types_models
 from crystal_dashboard.dashboards.crystal.policies.object_types import tables as object_types_tables
+from crystal_dashboard.dashboards.crystal.policies.access_control import models as access_control_models
+from crystal_dashboard.dashboards.crystal.policies.access_control import tables as access_control_tables
 
 
 class StaticPoliciesTab(tabs.TableTab):
@@ -78,6 +80,51 @@ class DynamicPoliciesTab(tabs.TableTab):
         ret = []
         for inst in instances:
             ret.append(policies_models.DynamicPolicy(inst['id'], inst['target'], inst['condition'], inst['filter'], inst['object_type'], inst['object_size'], inst['transient'], inst['policy'], inst['alive']))
+        return ret
+
+
+class AccessControlTab(tabs.TableTab):
+    table_classes = (access_control_tables.AccessControlTable,)
+    name = _("Access Control")
+    slug = "access_control_table"
+    template_name = ("horizon/common/_detail_table.html")
+    preload = False
+
+    def get_access_control_policies_data(self):
+        try:
+            response = api.fil_get_all_slos(self.request)
+            if 200 <= response.status_code < 300:
+                strobj = response.text
+            else:
+                error_message = 'Unable to get instances.'
+                raise ValueError(error_message)
+        except Exception as e:
+            strobj = "[]"
+            exceptions.handle(self.request, e.message)
+
+        storage_policies_dict = dict(common.get_storage_policy_list(self.request, common.ListOptions.by_id()))
+        projects_dict = dict(common.get_project_list(self.request))
+
+        slos = json.loads(strobj)
+        tmp_slos = {}
+        for slo in slos:
+            if slo['dsl_filter'] == 'bandwidth':
+                project_target, policy_id = slo['target'].split('#')
+                project_id = project_target
+                if project_id not in tmp_slos:
+                    tmp_slos[project_id] = {}
+                if policy_id not in tmp_slos[project_id]:
+                    tmp_slos[project_id][policy_id] = {}
+                tmp_slos[project_id][policy_id][slo['slo_name']] = slo['value']
+
+        ret = []
+        for project_id in tmp_slos.keys():
+            for policy_id in tmp_slos[project_id].keys():
+                get_bw = tmp_slos[project_id][policy_id]['get_bw']
+                put_bw = tmp_slos[project_id][policy_id]['put_bw']
+                sla = access_control_models.AccessControlPolicy(project_id, projects_dict[str(project_id)], policy_id, storage_policies_dict[str(policy_id)], get_bw, put_bw)
+                ret.append(sla)
+
         return ret
 
 
@@ -180,5 +227,5 @@ class ActivatedMetricsTab(tabs.TableTab):
 
 class PoliciesGroupTabs(tabs.TabGroup):
     slug = "policies_group_tabs"
-    tabs = (StaticPoliciesTab, DynamicPoliciesTab, SLOsTab, ObjectTypesTab, ActivatedMetricsTab,)
+    tabs = (StaticPoliciesTab, DynamicPoliciesTab, AccessControlTab, SLOsTab, ObjectTypesTab, ActivatedMetricsTab,)
     sticky = True

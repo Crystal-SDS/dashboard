@@ -10,7 +10,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import messages
 from horizon import tables
-from models import SLA
+from models import AccessControlPolicy
 from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
@@ -20,22 +20,22 @@ class MyFilterAction(tables.FilterAction):
     name = "myfilter"
 
 
-class CreateSLO(tables.LinkAction):
+class CreateAccessControlPolicy(tables.LinkAction):
     name = "create"
-    verbose_name = _("Create SLO")
-    url = "horizon:crystal:policies:bw_slos:create"
+    verbose_name = _("Create Policy")
+    url = "horizon:crystal:policies:access_control:create"
     classes = ("ajax-modal",)
     icon = "plus"
 
 
-class UpdateSLO(tables.LinkAction):
+class UpdateAccessControlPolicy(tables.LinkAction):
     name = "update"
     verbose_name = _("Edit")
     icon = "pencil"
     classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, datum=None):
-        base_url = reverse("horizon:crystal:policies:bw_slos:update", kwargs={"slo_id": datum.id})
+        base_url = reverse("horizon:crystal:policies:access_control:update", kwargs={"policy_id": datum.id})
         return base_url
 
 
@@ -73,26 +73,26 @@ class UpdateRow(tables.Row):
 
         project_target, policy_id = get_sla_json['target'].split('#')
 
-        sla = SLA(project_target, projects_dict[str(project_target)], policy_id,
-                  storage_policies_dict[str(policy_id)], get_sla_json['value'],
-                  put_sla_json['value'])
+        sla = AccessControlPolicy(project_target, projects_dict[str(project_target)], policy_id,
+                                  storage_policies_dict[str(policy_id)], get_sla_json['value'],
+                                  put_sla_json['value'])
         return sla
 
 
-class DeleteSLO(tables.DeleteAction):
+class DeleteAccessControlPolicy(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete SLO",
-            u"Delete SLOs",
+            u"Delete Policy",
+            u"Delete Policies",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted SLO",
-            u"Deleted SLOs",
+            u"Deleted Policy",
+            u"Deleted Policies",
             count
         )
 
@@ -115,24 +115,24 @@ class DeleteSLO(tables.DeleteAction):
                 raise sdsexception.SdsException(error_msg)
         except Exception as ex:
             redirect = reverse("horizon:crystal:policies:index")
-            error_message = "Unable to remove sla.\t %s" % ex.message
+            error_message = "Unable to remove access control policy.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
-class DeleteMultipleSLOs(DeleteSLO):
-    name = "delete_multiple_slas"
+class DeleteMultipleAccessControlPolicies(DeleteAccessControlPolicy):
+    name = "delete_multiple_policies"
 
 
-class SLAsTable(tables.DataTable):
+class AccessControlTable(tables.DataTable):
     tenant_name = tables.Column("project_name", verbose_name=_("Project Name"))
     tenant_id = tables.Column("project_id", verbose_name=_("Project ID"))
-    policy_name = tables.Column("policy_name", verbose_name=_("Storage Policy"))
+    policy_name = tables.Column("policy_name", verbose_name=_("Storage Policy (Ring)"))
     get_bandwidth = tables.Column("get_bw", verbose_name=_("GET BW"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     put_bandwidth = tables.Column("put_bw", verbose_name=_("PUT BW"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:
-        name = "slas"
-        verbose_name = _("SLOs")
-        table_actions = (MyFilterAction, CreateSLO, DeleteMultipleSLOs,)
-        row_actions = (UpdateSLO, DeleteSLO,)
+        name = "access_control_policies"
+        verbose_name = _("Access Control Policies")
+        table_actions = (MyFilterAction, CreateAccessControlPolicy, DeleteMultipleAccessControlPolicies,)
+        row_actions = (UpdateAccessControlPolicy, DeleteAccessControlPolicy,)
         row_class = UpdateRow

@@ -28,8 +28,8 @@ class StoragePolicies(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            parameters = ', '.join([inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices']])
-            ret.append(storage_policies_models.StorageNode(inst['id'], inst['name'], inst['policy_type'], inst['default'], 'Parameters: ' + parameters))
+            parameters = ', '.join([key.replace('_', ' ').title()+':'+inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices', 'deprecated', 'deployed']])
+            ret.append(storage_policies_models.StoragePolicy(inst['id'], inst['name'], inst['policy_type'], inst['default'], parameters, inst['deprecated'], inst['deployed'], len(inst['devices'])))
         return ret
 
 

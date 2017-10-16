@@ -18,6 +18,7 @@
 </div>
 <div class="right">
     <h3>{% trans "Description:" %}</h3>
-    <p>{% trans "Openstack Swift EC Storage Policies." %}</p>
+    <p>{% trans " <a href='https://docs.openstack.org/swift/latest/overview_erasure_code.html' target='_blank'> Openstack Swift EC Storage Policies </a><br>Storage policies allow segmenting the cluster for various purposes through the creation of multiple object rings. Using policies, different devices can belong to different rings with varying levels of replication. By supporting multiple object rings, swift can segregate the objects within a single cluster." %}</p>
+   
 </div>
 {% endblock %}

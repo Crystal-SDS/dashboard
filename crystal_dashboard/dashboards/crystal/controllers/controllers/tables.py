@@ -117,6 +117,15 @@ class LaunchInstance(tables.LinkAction):
         return base_url
 
 
+class DownloadController(tables.LinkAction):
+    name = "download"
+    verbose_name = _("Download")
+    icon = "download"
+
+    def get_link_url(self, datum=None):
+        base_url = reverse('horizon:crystal:controllers:controllers:download_controller', kwargs={'controller_id': datum.id})
+        return base_url
+
 class ControllersTable(tables.DataTable):
     # id = tables.Column("id", verbose_name=_("ID"))
     controller_name = tables.Column("controller_name", verbose_name=_("Name"))
@@ -129,5 +138,5 @@ class ControllersTable(tables.DataTable):
         name = "controllers"
         verbose_name = _("Controllers")
         table_actions = (MyControllerFilterAction, CreateController, DeleteMultipleControllers,)
-        row_actions = (LaunchInstance, UpdateController, DeleteController)
+        row_actions = (LaunchInstance, UpdateController, DownloadController, DeleteController)
         row_class = UpdateRow

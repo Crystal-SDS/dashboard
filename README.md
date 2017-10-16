@@ -11,7 +11,7 @@ policies and rules for governance of cloud.
 * An [OpenStack Horizon](https://github.com/openstack/horizon) installation.
 * An [Elastic Stack](https://www.elastic.co/) (Elasticsearch, Logstash, Kibana) installation.
 
-## INSTALLATION
+## Installation
 
 To install the Crystal dashboard, clone the repository and run the installation command in the root directory:
 ```sh
@@ -30,3 +30,13 @@ cp dashboard/crystal_dashboard/enabled/_50_sdscontroller.py /usr/share/openstack
 ```sh
 cat dashboard/crystal_dashboard/local/local_settings.py >> /etc/openstack-dashboard/local_settings.py
 ```
+
+## Overview
+![Storage Nodes](http://crystal-sds.org/wp-content/uploads/2016/05/nodes.png)
+
+![Storlet Filters](http://crystal-sds.org/wp-content/uploads/2016/05/storlet_filters.png)
+
+![SWift Monitoring](http://crystal-sds.org/wp-content/uploads/2016/05/monitoring.png)
+
+
+

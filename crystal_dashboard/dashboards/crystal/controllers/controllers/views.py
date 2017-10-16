@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
-
+from django import http
 from crystal_dashboard.api import controllers as api
 import json
 
@@ -24,17 +24,16 @@ class CreateControllerView(forms.ModalFormView):
     page_title = _("Create Controller")
 
 
-
 class UpdateControllerView(forms.ModalFormView):
     form_class = controllers_forms.UpdateController
     submit_url = "horizon:crystal:controllers:controllers:update_controller"
     form_id = "update_controller_form"
-    modal_header = _("Update A Controller")
+    modal_header = _("Update a Controller")
     submit_label = _("Update Controller")
     template_name = "crystal/controllers/controllers/update.html"
     context_object_name = 'controller'
     success_url = reverse_lazy('horizon:crystal:controllers:index')
-    page_title = _("Update A Controller")
+    page_title = _("Update a Controller")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateControllerView, self).get_context_data(**kwargs)
@@ -59,7 +58,8 @@ class UpdateControllerView(forms.ModalFormView):
         # initial = super(UpdateView, self).get_initial()
         # initial['name'] = "my filter name"
         return initial
-    
+
+
 class LaunchInstanceView(forms.ModalFormView):
     form_class = controllers_forms.LaunchInstance
     form_id = "launch_instance_form"
@@ -78,8 +78,24 @@ class LaunchInstanceView(forms.ModalFormView):
         args = (self.kwargs['id'],)
         context['submit_url'] = reverse(self.submit_url, args=args)
         return context
-    
+
     def get_initial(self):
         initial = json.loads(api.get_controller(self.request, self.kwargs['id']).text)
         initial['id'] = self.kwargs['id']
         return initial
+    
+    
+def download_controller(request, controller_id):
+    try:
+        controller_response = api.download_controller(request, controller_id)
+
+        # Generate response
+        response = http.StreamingHttpResponse(controller_response.content)
+        response['Content-Disposition'] = controller_response.headers['Content-Disposition']
+        response['Content-Type'] = controller_response.headers['Content-Type']
+        response['Content-Length'] = controller_response.headers['Content-Length']
+        return response
+
+    except Exception as exc:
+        redirect = reverse("horizon:crystal:controllers:index")
+        exceptions.handle(request, _(exc.message), redirect=redirect)
