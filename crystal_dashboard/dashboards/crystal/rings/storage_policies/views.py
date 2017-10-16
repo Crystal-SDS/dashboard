@@ -72,7 +72,7 @@ class ManageDisksView(tables.DataTableView):
                 total = device['size']
                 occuped = (total - device['free'])
                 node_name, device_name = device['id'].split(':')
-                devices.append(models.Device(device['id'], node_name, device_name, occuped, total))
+                devices.append(models.Device(device['id'], node_name, device['region'], device['zone'], device_name, occuped, total))
 
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve devices.'))
@@ -98,7 +98,7 @@ class AddDisksView(forms.ModalFormMixin, tables.DataTableView):
                 total = device['size']
                 occuped = (total - device['free'])
                 controller_name, device_name = device['id'].split(':')
-                devices_objects.append(models.Device(device['id'], controller_name, device_name, occuped, total))
+                devices_objects.append(models.Device(device['id'], controller_name, device['region'], device['zone'], device_name, occuped, total))
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve devices.'))
         return devices_objects

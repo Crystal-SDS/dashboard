@@ -146,6 +146,8 @@ class DeleteDisk(tables.DeleteAction):
 
 class ManageDisksTable(tables.DataTable):
     storage_node = tables.WrappingColumn('storage_node', verbose_name=_('Storage Node'))
+    region = tables.Column('region', verbose_name="Region")
+    zone = tables.Column('zone', verbose_name="Zone")
     device = tables.Column('device', verbose_name="Device")
     size_occupied = tables.Column('size_occupied', verbose_name="Size Occupied")
     size = tables.Column('size', verbose_name="Total Size")
