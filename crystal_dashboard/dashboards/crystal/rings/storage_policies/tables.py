@@ -74,6 +74,17 @@ class UpdateRow(tables.Row):
         policy = storage_policies_models.StoragePolicy(inst['id'], inst['name'], inst['policy_type'], inst['default'], parameters, inst['deprecated'], inst['deployed'], inst['devices'])
 
         return policy
+    
+
+class UpdateStoragePolicy(tables.LinkAction):
+    name = "update"
+    verbose_name = _("Edit")
+    icon = "pencil"
+    classes = ("ajax-modal", "btn-update",)
+
+    def get_link_url(self, datum=None):
+        base_url = reverse("horizon:crystal:rings:storage_policies:update_storage_policy", kwargs={'id': datum.id})
+        return base_url
 
 
 class StoragePolicyTable(tables.DataTable):
@@ -82,9 +93,10 @@ class StoragePolicyTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_("Name"))
     type = tables.Column('type', verbose_name=_("Type"))
     default = tables.Column('default', verbose_name=_("Default"),
-                            form_field=forms.ChoiceField(choices=[('yes', _('Yes')), ('no', _('No'))]), update_action=UpdateCell)
+                            form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     parameters = tables.Column('parameters', verbose_name=_("Parameters"))
-    deprecated = tables.Column('deprecated', verbose_name=_("Deprecated"))
+    deprecated = tables.Column('default', verbose_name=_("Deprecated"),
+                            form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     devices = tables.Column('devices', verbose_name=_("Devices"))
     deployed = tables.Column('deployed', verbose_name=_("Deployed"))
 
@@ -92,7 +104,7 @@ class StoragePolicyTable(tables.DataTable):
         name = "storagepolicies"
         verbose_name = _("Storage Policies")
         table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies,)
-        row_actions = (ManageDisksLink,)
+        row_actions = (ManageDisksLink, UpdateStoragePolicy, )
         row_class = UpdateRow
 
 

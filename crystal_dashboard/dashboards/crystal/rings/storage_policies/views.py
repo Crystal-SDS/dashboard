@@ -3,11 +3,14 @@ Views for managing Ring & Storage Policies.
 """
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
+
 import json
 from horizon import forms
 from horizon import workflows
 from horizon import tables
 from horizon import exceptions
+
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import forms as storage_policies_forms
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import tables as storage_policies_tables
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import models
@@ -17,7 +20,7 @@ from crystal_dashboard.api import swift as api
 class CreateStoragePolicy(forms.ModalFormView):
     form_class = storage_policies_forms.CreateStoragePolicy
     form_id = "create_storage_policy_form"
-
+    
     modal_header = _("Create a Storage Policy")
     submit_label = _("Create Storage Policy")
     submit_url = reverse_lazy('horizon:crystal:rings:storage_policies:create_storage_policy')
@@ -25,6 +28,42 @@ class CreateStoragePolicy(forms.ModalFormView):
     context_object_name = 'storage_policy'
     success_url = reverse_lazy('horizon:crystal:rings:index')
     page_title = _("Create a Storage Policy")
+    
+class UpdateStoragePolicy(forms.ModalFormView):
+    form_class = storage_policies_forms.UpdateStoragePolicy
+    form_id = "update_storage_policy_form"
+    
+    modal_header = _("Update a Storage Policy")
+    submit_label = _("Update Storage Policy")
+    template_name = "crystal/rings/storage_policies/update_storage_policy.html"
+    context_object_name = 'storage_policy'
+    submit_url = 'horizon:crystal:rings:storage_policies:update_storage_policy'
+    success_url = reverse_lazy('horizon:crystal:rings:index')
+    page_title = _("Update a Storage Policy")
+    
+    def get_context_data(self, **kwargs):
+        context = super(UpdateStoragePolicy, self).get_context_data(**kwargs)
+        context['id'] = self.kwargs['id']
+        args = (self.kwargs['id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
+        return context
+
+    def _get_object(self, *args, **kwargs):
+        storage_policy_id = self.kwargs['id']
+        try:
+            filter = api.swift_storage_policy_detail(self.request, storage_policy_id)
+            return filter
+        except Exception:
+            redirect = self.success_url
+            msg = _('Unable to retrieve controller details.')
+            exceptions.handle(self.request, msg, redirect=redirect)
+
+    def get_initial(self):
+        storage_policy = self._get_object()
+        initial = json.loads(storage_policy.text)
+        print initial
+        return initial
+
 
 
 class CreateECStoragePolicy(forms.ModalFormView):

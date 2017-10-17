@@ -9,7 +9,7 @@ class StoragePolicy:
         self.id = id
         self.name = name
         self.type = type.title()
-        self.default = default.title()
+        self.default = default
         self.parameters = parameters
         self.deprecated = deprecated
         self.deployed = deployed

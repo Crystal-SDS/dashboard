@@ -288,6 +288,7 @@ def swift_edit_storage_policy(request, storage_policy_id, data):
     r = requests.put(url, json.dumps(data), headers=headers)
     return r
 
+
 def swift_add_disk_storage_policy(request, storage_policy_id, disk_id):
     token = get_token(request)
 
