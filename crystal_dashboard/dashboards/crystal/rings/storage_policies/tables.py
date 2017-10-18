@@ -8,6 +8,8 @@ from horizon import tables
 from horizon import forms
 import json
 
+from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
+
 from crystal_dashboard.dashboards.crystal.rings.storage_policies import models as storage_policies_models
 from crystal_dashboard.api import swift as api
 
@@ -71,7 +73,8 @@ class UpdateRow(tables.Row):
         response = api.swift_storage_policy_detail(request, obj_id)
         inst = json.loads(response.text)
         parameters = ', '.join([key.replace('_', ' ').title()+':'+inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices', 'deprecated', 'deployed']])
-        policy = storage_policies_models.StoragePolicy(inst['id'], inst['name'], inst['policy_type'], inst['default'], parameters, inst['deprecated'], inst['deployed'], inst['devices'])
+        policy = storage_policies_models.StoragePolicy(inst['storage_policy_id'], inst['name'], inst['policy_type'], 
+                                                       inst['default'], parameters, inst['deprecated'], inst['deployed'], inst['devices'])
 
         return policy
     
@@ -87,6 +90,43 @@ class UpdateStoragePolicy(tables.LinkAction):
         return base_url
 
 
+class DeleteStoragePolicy(tables.DeleteAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Storage Policy",
+            u"Delete Storage Policy",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Storage Policy",
+            u"Deleted Storage Policy",
+            count
+        )
+
+    name = "delete_storage_policy"
+    success_url = "horizon:crystal:rings:index"
+
+    def delete(self, request, obj_id):
+        try:
+            response = api.swift_delete_storage_policy(request, obj_id)
+            if 200 <= response.status_code < 300:
+                pass
+                # messages.success(request, _("Successfully deleted controller: %s") % obj_id)
+            else:
+                raise sdsexception.SdsException(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:rings:index")
+            error_message = "Unable to remove storage policy.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+
+
+class DeleteMultipleStoragePolicies(DeleteStoragePolicy):
+    name = "delete_multiple_storage_policies"
+
 class StoragePolicyTable(tables.DataTable):
 
     id = tables.Column('id', verbose_name=_("ID"))
@@ -95,7 +135,7 @@ class StoragePolicyTable(tables.DataTable):
     default = tables.Column('default', verbose_name=_("Default"),
                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     parameters = tables.Column('parameters', verbose_name=_("Parameters"))
-    deprecated = tables.Column('default', verbose_name=_("Deprecated"),
+    deprecated = tables.Column('deprecated', verbose_name=_("Deprecated"),
                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     devices = tables.Column('devices', verbose_name=_("Devices"))
     deployed = tables.Column('deployed', verbose_name=_("Deployed"))
@@ -103,8 +143,8 @@ class StoragePolicyTable(tables.DataTable):
     class Meta:
         name = "storagepolicies"
         verbose_name = _("Storage Policies")
-        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies,)
-        row_actions = (ManageDisksLink, UpdateStoragePolicy, )
+        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies,DeleteMultipleStoragePolicies,)
+        row_actions = (ManageDisksLink, UpdateStoragePolicy, DeleteStoragePolicy)
         row_class = UpdateRow
 
 

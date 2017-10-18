@@ -227,6 +227,18 @@ def swift_new_storage_policy(request, data):
     r = requests.post(url, json.dumps(data), headers=headers)
     return r
 
+def swift_delete_storage_policy(request, storage_policy_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policy/" + str(storage_policy_id) 
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.delete(url, headers=headers)
+    return r
+
 
 # TODO
 def load_swift_policies(request, data):

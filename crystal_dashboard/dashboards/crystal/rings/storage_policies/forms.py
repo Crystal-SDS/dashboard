@@ -72,15 +72,13 @@ class UpdateStoragePolicy(forms.SelfHandlingForm):
     deprecated = forms.BooleanField(required=False, label="Deprecated")
 
 
+
     def __init__(self, request, *args, **kwargs):
         super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
 
     def handle(self, request, data):
-        
-        print self.initial
         try:
-            
-            response = api.swift_edit_storage_policy(request, self.initial['id'], data)
+            response = api.swift_edit_storage_policy(request, self.initial['storage_policy_id'], data)
             if 200 <= response.status_code < 300:
                 messages.success(request, _("Storage policy successfully updated."))
                 return data
@@ -139,14 +137,17 @@ class CreateECStoragePolicy(forms.SelfHandlingForm):
                                             required=True,
                                             help_text=_("EC Duplication enables Swift to make duplicated copies of fragments of erasure coded objects."),
                                             initial=1)
+    
+    policy_type = forms.CharField(widget=forms.HiddenInput(), initial='EC')
 
-    deprecated = forms.BooleanField(initial=False,
-                                    widget=forms.HiddenInput(  # hidden
-                                        attrs={"ng-model": "deprecated"}))
+    deprecated = forms.CharField(widget=forms.HiddenInput(), initial='False')
+  
+    deployed = forms.CharField(widget=forms.HiddenInput(), initial='False')
+    
+    devices = forms.CharField(widget=forms.HiddenInput(), initial='[]')
+    
+    default = forms.CharField(widget=forms.HiddenInput(), initial='False')
 
-    deployed = forms.BooleanField(initial=False,
-                                  widget=forms.HiddenInput(  # hidden
-                                    attrs={"ng-model": "deprecated"}))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateECStoragePolicy, self).__init__(request, *args, **kwargs)

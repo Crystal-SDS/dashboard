@@ -61,7 +61,6 @@ class UpdateStoragePolicy(forms.ModalFormView):
     def get_initial(self):
         storage_policy = self._get_object()
         initial = json.loads(storage_policy.text)
-        print initial
         return initial
 
 
