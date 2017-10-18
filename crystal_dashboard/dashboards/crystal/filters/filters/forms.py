@@ -41,6 +41,11 @@ class UploadNativeFilter(forms.SelfHandlingForm):
                                    widget=forms.HiddenInput(
                                        attrs={"ng-model": "dependencies"}
                                    ))
+    
+    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
+                              attrs={'rows': 2}),
+                              label=_("valid_parameters"),
+                              required=False)
 
     put = forms.ChoiceField(
         label=_('Put'),
@@ -93,6 +98,11 @@ class UploadNativeFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
+    
+    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
+                              attrs={'rows': 2}),
+                              label=_("valid_parameters"),
+                              required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(UploadNativeFilter, self).__init__(request, *args, **kwargs)
@@ -195,6 +205,11 @@ class UploadStorletFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
+    
+    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
+                          attrs={'rows': 2}),
+                          label=_("valid_parameters"),
+                          required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(UploadStorletFilter, self).__init__(request, *args, **kwargs)
@@ -298,6 +313,11 @@ class UpdateNativeFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
+    
+    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
+                          attrs={'rows': 2}),
+                          label=_("valid_parameters"),
+                          required=False)
 
     failure_url = 'horizon:crystal:filters:index'
 
@@ -384,6 +404,11 @@ class UpdateStorletFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
+    
+    valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
+                          attrs={'rows': 2}),
+                          label=_("valid_parameters"),
+                          required=False)
 
     failure_url = 'horizon:crystal:filters:index'
 

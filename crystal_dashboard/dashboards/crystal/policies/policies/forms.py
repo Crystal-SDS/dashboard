@@ -1,11 +1,14 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
+import json
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
 from crystal_dashboard.api import policies as api
 from crystal_dashboard.api import filters as filters_api
+from crystal_dashboard.api import metrics as metrics_api
+
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
@@ -65,6 +68,11 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
                                   label=_("Object Size"),
                                   required=False,
                                   help_text=_("The size of object the rule will be applied to."))
+    
+    object_tag = forms.CharField(max_length=255,
+                              label=_("Object Tag"),
+                              required=False)
+
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -152,6 +160,137 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
             error_message = "Unable to create policy/rule.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
+
+
+class CreateDynamicPolicy(forms.SelfHandlingForm):
+    target_choices = []
+    target_id = forms.ChoiceField(choices=target_choices,
+                                  label=_("Project"),
+                                  help_text=_("The project where the rule will be applied."),
+                                  required=True)
+
+    container_choices = [('', 'None')]
+    container_id = forms.CharField(label=_("Container"),
+                                   help_text=_("The container where the rule will be applied."),
+                                   required=False,
+                                   widget=forms.Select(choices=container_choices))
+
+    filter_dsl_choices = []
+    filter_id = forms.ChoiceField(choices=filter_dsl_choices,
+                                  label=_("Filter"),
+                                  help_text=_("The id of the filter which will be used."),
+                                  required=True)
+
+    object_type_choices = []
+    object_type = forms.ChoiceField(choices=object_type_choices,
+                                    label=_("Object Type"),
+                                    help_text=_("The type of object the rule will be applied to."),
+                                    required=False)
+
+    object_size = forms.CharField(max_length=255,
+                                  label=_("Object Size"),
+                                  required=False,
+                                  help_text=_("The size of object the rule will be applied to."))
+    
+    object_tag = forms.CharField(max_length=255,
+                              label=_("Object Tag"),
+                              required=False)
+    
+    workload_metric = forms.ThemableChoiceField(label=_("Workload Metric"))
+
+    condition = forms.CharField(max_length=255,
+                              label=_("Condition"),
+                              required=False)
+
+    execution_server = forms.ChoiceField(
+        label=_('Execution Server'),
+        choices=[('default', _('Default')),
+                 ('proxy', _('Proxy Node')),
+                 ('object', _('Storage Node'))],
+        initial='default',
+        widget=forms.Select(attrs={
+            'class': 'switchable',
+            'data-slug': 'source'
+        })
+    )
+
+    reverse = forms.ChoiceField(
+        label=_('Reverse'),
+        choices=[('default', _('Default')),
+                 ('False', _('False')),
+                 ('proxy', _('Proxy Node')),
+                 ('object', _('Storage Node'))],
+        initial='default',
+        widget=forms.Select(attrs={
+            'class': 'switchable',
+            'data-slug': 'source'
+        })
+    )
+
+    params = forms.CharField(widget=forms.widgets.Textarea(attrs={'rows': 4}),
+                             label=_("Parameters"),
+                             required=False,
+                             help_text=_("CSV Parameters list.Ex: param1=value1, param2=value2"))
+
+    def __init__(self, request, *args, **kwargs):
+        # Obtain list of projects
+        self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request)]
+        self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
+        
+        # Obtain list of dsl filters
+        self.dsl_filter_choices = common.get_dsl_filter_list_choices(request)
+        # Obtain list of object types
+        self.object_type_choices = common.get_object_type_choices(request)
+        
+
+        # Initialization
+        super(CreateDynamicPolicy, self).__init__(request, *args, **kwargs)
+
+        # Overwrite target_id input form
+        self.fields['target_id'] = forms.ChoiceField(choices=self.target_choices,
+                                                     initial=request.user.project_id,  # Default project is the current one
+                                                     label=_("Project"),
+                                                     help_text=_("The project where the rule will be apply."),
+                                                     required=True)
+
+        # Overwrite contained_id input form
+        self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,
+                                                        label=_("Container"),
+                                                        help_text=_("The container where the rule will be apply."),
+                                                        required=False)
+
+        # Overwrite filter_id input form
+        self.fields['filter_id'] = forms.ChoiceField(choices=self.dsl_filter_choices,
+                                                     label=_("Filter"),
+                                                     help_text=_("The id of the filter which will be used."),
+                                                     required=True)
+        # Overwrite object_type input form
+        self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
+                                                       label=_("Object Type"),
+                                                       help_text=_("The type of object the rule will be applied to."),
+                                                       required=False)
+
+        self.fields['workload_metric'].choices = [(obj['name'], obj['name']) for obj in json.loads(metrics_api.get_activated_workload_metrics(request).text)]
+        
+        
+    @staticmethod
+    def handle(request, data):
+        try:
+            if data['container_id'] != '':
+                response = filters_api.deploy_filter_with_container(request, data['filter_id'], data['target_id'],
+                                                                    data['container_id'], data)
+            else:
+                response = filters_api.deploy_filter(request, data['filter_id'], data['target_id'], data)
+
+            if 200 <= response.status_code < 300:
+                messages.success(request, _('Successfully created static policy'))
+                return data
+            else:
+                raise ValueError(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:policies:index")
+            error_message = "Unable to create policy/rule.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
 
 class UpdatePolicy(forms.SelfHandlingForm):
     object_type_choices = []

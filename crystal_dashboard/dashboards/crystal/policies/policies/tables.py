@@ -25,6 +25,12 @@ class CreateStaticPolicy(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
 
+class CreateDynamicPolicy(tables.LinkAction):
+    name = "create_dynamic_policy"
+    verbose_name = _("Create Dynamic Policy")
+    url = "horizon:crystal:policies:policies:create_dynamic_policy"
+    classes = ("ajax-modal",)
+    icon = "plus"
 
 class CreatePolicyDSL(tables.LinkAction):
     name = "create_dsl"
@@ -172,6 +178,7 @@ class StaticPoliciesTable(tables.DataTable):
     filter_name = tables.Column('filter_name', verbose_name=_("Filter"))
     object_type = tables.Column('object_type', verbose_name="Object Type", form_field=forms.ChoiceField(required=False, choices=[]), update_action=UpdateCell)
     object_size = tables.Column('object_size', verbose_name=_("Object Size"), form_field=forms.CharField(required=False), update_action=UpdateCell)
+    object_tag = tables.Column('object_tag', verbose_name=_("Object Tag"))
     execution_server = tables.Column('execution_server', verbose_name="Execution Server", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     reverse = tables.Column('reverse', verbose_name="Reverse", form_field=forms.ChoiceField(choices=[('False', _('False')), ('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     params = tables.Column('params', verbose_name="Parameters", form_field=forms.CharField(required=False), update_action=UpdateCell)
@@ -196,6 +203,7 @@ class DynamicPoliciesTable(tables.DataTable):
     filter = tables.Column('filter', verbose_name=_("Filter"))
     object_type = tables.Column('object_type', verbose_name=_("Object Type"))
     object_size = tables.Column('object_size', verbose_name=_("Object Size"))
+    object_tag = tables.Column('object_tag', verbose_name=_("Object Tag"))
     transient = tables.Column('transient', verbose_name=_("Transient"))
     policy_location = tables.Column('policy', verbose_name=_("DSL Policy"))
     alive = tables.Column('alive', verbose_name="Alive")
@@ -203,6 +211,6 @@ class DynamicPoliciesTable(tables.DataTable):
     class Meta:
         name = "dynamic_policies"
         verbose_name = _("Dynamic Policies")
-        table_actions = (CreatePolicyDSL, MyDynamicPolicyFilterAction, DeleteMultipleDynamicPolicies,)
+        table_actions = ( CreateDynamicPolicy, CreatePolicyDSL ,MyDynamicPolicyFilterAction, DeleteMultipleDynamicPolicies,)
         row_actions = (DeleteDynamicPolicy,)
         hidden_title = False

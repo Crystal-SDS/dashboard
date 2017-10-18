@@ -28,6 +28,20 @@ class CreateStaticPolicyView(forms.ModalFormView):
     page_title = _("Create a Static Policy")
 
 
+class CreateDynamicPolicyView(forms.ModalFormView):
+    form_class = policies_forms.CreateDynamicPolicy
+    form_id = "create_dynamic_policy_form"
+
+    modal_header = _("Create a Dynamic Policy")
+    modal_id = "create_dynamic_policy_modal"
+    submit_label = _("Create Dynamic Policy")
+    submit_url = reverse_lazy("horizon:crystal:policies:policies:create_dynamic_policy")
+    template_name = 'crystal/policies/policies/create_dynamic_policy.html'
+    content_object_name = 'policy'
+    success_url = reverse_lazy('horizon:crystal:policies:index')
+    page_title = _("Create a Dynamic Policy")
+
+
 @csrf_exempt
 def get_container_by_project(request):
     if request.method == 'POST':

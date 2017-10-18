@@ -45,7 +45,7 @@ class NativeFilters(tabs.TableTab):
                     inst['reverse'] = 'Storage Node'
                 ret.append(filters_models.Filter(inst['dsl_name'], inst['filter_name'], inst['dsl_name'], inst['filter_type'],
                                                  inst['language'], inst['dependencies'], None, inst['main'],
-                                                 inst['execution_server'], inst['reverse'], inst['put'], inst['get']))
+                                                 inst['execution_server'], inst['reverse'], inst['put'], inst['get'], inst['valid_parameters']))
         return ret
 
 
@@ -84,7 +84,7 @@ class StorletFilters(tabs.TableTab):
                     inst['reverse'] = 'Storage Node'
                 ret.append(filters_models.Filter(inst['dsl_name'], inst['filter_name'], inst['dsl_name'], inst['filter_type'],
                                                  inst['language'], inst['dependencies'], inst['interface_version'], inst['main'],
-                                                 inst['execution_server'], inst['reverse'], inst['put'], inst['get']))
+                                                 inst['execution_server'], inst['reverse'], inst['put'], inst['get'], inst['valid_parameters']))
         return ret
 
 
