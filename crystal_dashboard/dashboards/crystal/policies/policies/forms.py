@@ -196,8 +196,12 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
                               label=_("Object Tag"),
                               required=False)
     
-    workload_metric = forms.ThemableChoiceField(label=_("Workload Metric"))
-
+    workload_metrics = []
+    workload_metric = forms.ChoiceField(choices=workload_metrics,
+                                    label=_("Workload Metrics"),
+                                    help_text=_(""),
+                                    required=False)
+    
     condition = forms.CharField(max_length=255,
                               label=_("Condition"),
                               required=False)
@@ -242,7 +246,10 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
         # Obtain list of object types
         self.object_type_choices = common.get_object_type_choices(request)
         
-
+        self.workload_metrics = common.get_activated_workload_metrics_list_choices(request)
+        
+        print self.object_type_choices
+        print self.workload_metrics
         # Initialization
         super(CreateDynamicPolicy, self).__init__(request, *args, **kwargs)
 
@@ -269,10 +276,11 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
                                                        label=_("Object Type"),
                                                        help_text=_("The type of object the rule will be applied to."),
                                                        required=False)
+        
+        self.fields['workload_metric'] = forms.ChoiceField(choices=self.workload_metrics,
+                                                            label=_("Workload Metrics"),
+                                                            required=False)
 
-        self.fields['workload_metric'].choices = [(obj['name'], obj['name']) for obj in json.loads(metrics_api.get_activated_workload_metrics(request).text)]
-        
-        
     @staticmethod
     def handle(request, data):
         try:
