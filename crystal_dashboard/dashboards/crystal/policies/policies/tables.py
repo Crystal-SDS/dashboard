@@ -86,8 +86,8 @@ class UpdateRow(tables.Row):
         response = api.dsl_get_static_policy(request, policy_id)
         data = json.loads(response.text)
         policy = StaticPolicy(data['id'], data['target_id'], data['target_name'], data['filter_name'],
-                              data['object_type'], data['object_size'], data['execution_server'],
-                              data['reverse'], data['execution_order'], data['params'])
+                              data['object_type'], data['object_size'], data['object_tag'],  data['execution_server'],
+                              data['reverse'], data['execution_order'], data['params'], data['put'], data['get'], data['post'], data['head'], data['delete'],)
 
         # Overwrite choices for object_type
         choices = common.get_object_type_choices(request)
@@ -174,6 +174,7 @@ class DeleteMultipleDynamicPolicies(DeleteDynamicPolicy):
 
 class StaticPoliciesTable(tables.DataTable):
     execution_order = tables.Column('execution_order', verbose_name="Execution Order", form_field=forms.CharField(), update_action=UpdateCell)
+    methods = tables.Column('methods', verbose_name=_("HTTP Methods"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     target_name = tables.Column(lambda x: str(str(x.target_name) + str(x.target_id).replace(str(x.target_id).split(':')[0], '')).replace(':', '/'), verbose_name=_("Target"))
     filter_name = tables.Column('filter_name', verbose_name=_("Filter"))
     object_type = tables.Column('object_type', verbose_name="Object Type", form_field=forms.ChoiceField(required=False, choices=[]), update_action=UpdateCell)
@@ -205,7 +206,6 @@ class DynamicPoliciesTable(tables.DataTable):
     object_size = tables.Column('object_size', verbose_name=_("Object Size"))
     object_tag = tables.Column('object_tag', verbose_name=_("Object Tag"))
     transient = tables.Column('transient', verbose_name=_("Transient"))
-    policy_location = tables.Column('policy', verbose_name=_("DSL Policy"))
     alive = tables.Column('alive', verbose_name="Alive")
 
     class Meta:

@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
-from horizon import forms
+from    horizon import forms
 from horizon import messages
 from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
@@ -44,35 +44,14 @@ class UploadNativeFilter(forms.SelfHandlingForm):
     
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                               attrs={'rows': 2}),
-                              label=_("valid_parameters"),
+                              label=_("Valid Parameters"),
                               required=False)
 
-    put = forms.ChoiceField(
-        label=_('Put'),
-        choices=[
-            ('False', _('False')),
-            ('Request', _('Input Stream (Request)')),
-            ('Response', _('Output Stream (Response)')),
-            ('Request/Response', _('Input/Output Streams (Request/Response)'))
-        ],
-        widget=forms.Select(attrs={
-            'class': 'switchable',
-            'data-slug': 'source'
-        })
-    )
-    get = forms.ChoiceField(
-        label=_('Get'),
-        choices=[
-            ('False', _('False')),
-            ('Request', _('Input Stream (Request)')),
-            ('Response', _('Output Stream (Response)')),
-            ('Request/Response', _('Input/Output Streams (Request/Response)'))
-        ],
-        widget=forms.Select(attrs={
-            'class': 'switchable',
-            'data-slug': 'source'
-        })
-    )
+    put = forms.BooleanField(required=False, label="PUT")
+    get = forms.BooleanField(required=False, label="GET")
+    post = forms.BooleanField(required=False, label="POST")
+    head = forms.BooleanField(required=False, label="HEAD")
+    delete = forms.BooleanField(required=False, label="DELETE")
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -101,7 +80,7 @@ class UploadNativeFilter(forms.SelfHandlingForm):
     
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                               attrs={'rows': 2}),
-                              label=_("valid_parameters"),
+                              label=_("Valid Parameters"),
                               required=False)
 
     def __init__(self, request, *args, **kwargs):
@@ -180,7 +159,7 @@ class UploadStorletFilter(forms.SelfHandlingForm):
 
     put = forms.BooleanField(required=False, label="PUT")
     get = forms.BooleanField(required=False, label="GET")
-
+    
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
@@ -208,7 +187,7 @@ class UploadStorletFilter(forms.SelfHandlingForm):
     
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                           attrs={'rows': 2}),
-                          label=_("valid_parameters"),
+                          label=_("Valid Parameters"),
                           required=False)
 
     def __init__(self, request, *args, **kwargs):
@@ -262,32 +241,11 @@ class UpdateNativeFilter(forms.SelfHandlingForm):
                                widget=forms.HiddenInput(  # hidden
                                             attrs={"ng-model": "language"}))
 
-    put = forms.ChoiceField(
-        label=_('Put'),
-        choices=[
-            ('False', _('False')),
-            ('Request', _('Input Stream (Request)')),
-            ('Response', _('Output Stream (Response)')),
-            ('Request/Response', _('Input/Output Streams (Request/Response)'))
-        ],
-        widget=forms.Select(attrs={
-            'class': 'switchable',
-            'data-slug': 'source'
-        })
-    )
-    get = forms.ChoiceField(
-        label=_('Get'),
-        choices=[
-            ('False', _('False')),
-            ('Request', _('Input Stream (Request)')),
-            ('Response', _('Output Stream (Response)')),
-            ('Request/Response', _('Input/Output Streams (Request/Response)'))
-        ],
-        widget=forms.Select(attrs={
-            'class': 'switchable',
-            'data-slug': 'source'
-        })
-    )
+    put = forms.BooleanField(required=False, label="PUT")
+    get = forms.BooleanField(required=False, label="GET")
+    post = forms.BooleanField(required=False, label="POST")
+    head = forms.BooleanField(required=False, label="HEAD")
+    delete = forms.BooleanField(required=False, label="DELETE")
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -316,7 +274,7 @@ class UpdateNativeFilter(forms.SelfHandlingForm):
     
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                           attrs={'rows': 2}),
-                          label=_("valid_parameters"),
+                          label=_("Valid Parameters"),
                           required=False)
 
     failure_url = 'horizon:crystal:filters:index'
@@ -407,7 +365,7 @@ class UpdateStorletFilter(forms.SelfHandlingForm):
     
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                           attrs={'rows': 2}),
-                          label=_("valid_parameters"),
+                          label=_("Valid Parameters"),
                           required=False)
 
     failure_url = 'horizon:crystal:filters:index'

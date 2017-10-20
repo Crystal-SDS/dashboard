@@ -84,6 +84,17 @@ def dsl_add_policy(request, policy):
     r = requests.post(url, policy, headers=headers)
     return r
 
+def create_dynamic_policy(request, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/policies/dynamic"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
 
 def list_dynamic_policies(request):
     token = get_token(request)

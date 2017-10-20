@@ -51,9 +51,16 @@ class StaticPoliciesTab(tabs.TableTab):
             elif inst['reverse'] == 'object':
                 inst['reverse'] = 'Storage Node'
             if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], 
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'], 
+                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'], 
+                                                        inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
+                
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], 
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'], 
+                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
+                                                        inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
         return ret
 
 
@@ -227,5 +234,5 @@ class ActivatedMetricsTab(tabs.TableTab):
 
 class PoliciesGroupTabs(tabs.TabGroup):
     slug = "policies_group_tabs"
-    tabs = (StaticPoliciesTab, DynamicPoliciesTab, AccessControlTab, SLOsTab, ObjectTypesTab, ActivatedMetricsTab,)
+    tabs = (StaticPoliciesTab, DynamicPoliciesTab, AccessControlTab, SLOsTab, ObjectTypesTab,)
     sticky = True

@@ -4,7 +4,7 @@ class Filter:
     """
 
     def __init__(self, filter_id, filter_name, dsl_name, filter_type, language, dependencies,
-                 interface_version, main, execution_server, reverse, put, get, valid_parameters):
+                 interface_version, main, execution_server, reverse, put, get, post, head, delete, valid_parameters):
         """
         :param filter_id:
         :param filter_name:
@@ -29,6 +29,5 @@ class Filter:
         self.main = main
         self.execution_server = execution_server
         self.reverse = reverse
-        self.put = put
-        self.get = get
+        self.methods = (('PUT, ' if put else '') + ('GET, ' if get else '') + ('POST, ' if post else '') + ('HEAD, ' if head else '') + ('DELETE, ' if delete else ''))[0:-2] 
         self.valid_parameters = valid_parameters

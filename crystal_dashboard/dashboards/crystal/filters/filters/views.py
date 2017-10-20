@@ -87,7 +87,6 @@ class UpdateView(forms.ModalFormView):
     def get_initial(self):
         data = self._get_object()
         data = json.loads(data.text)
-
         return data
 
 

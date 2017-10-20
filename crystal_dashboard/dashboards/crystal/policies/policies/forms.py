@@ -7,6 +7,7 @@ from horizon import forms
 from horizon import messages
 from crystal_dashboard.api import policies as api
 from crystal_dashboard.api import filters as filters_api
+from crystal_dashboard.api import policies as policies_api
 from crystal_dashboard.api import metrics as metrics_api
 
 from crystal_dashboard.dashboards.crystal import common
@@ -196,11 +197,14 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
                               label=_("Object Tag"),
                               required=False)
     
+    transient = forms.BooleanField(required=False, label="Transient")
+
+    
     workload_metrics = []
     workload_metric = forms.ChoiceField(choices=workload_metrics,
                                     label=_("Workload Metrics"),
                                     help_text=_(""),
-                                    required=False)
+                                    required=True)
     
     condition = forms.CharField(max_length=255,
                               label=_("Condition"),
@@ -248,8 +252,6 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
         
         self.workload_metrics = common.get_activated_workload_metrics_list_choices(request)
         
-        print self.object_type_choices
-        print self.workload_metrics
         # Initialization
         super(CreateDynamicPolicy, self).__init__(request, *args, **kwargs)
 
@@ -279,19 +281,14 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
         
         self.fields['workload_metric'] = forms.ChoiceField(choices=self.workload_metrics,
                                                             label=_("Workload Metrics"),
-                                                            required=False)
+                                                            required=True)
 
     @staticmethod
     def handle(request, data):
-        try:
-            if data['container_id'] != '':
-                response = filters_api.deploy_filter_with_container(request, data['filter_id'], data['target_id'],
-                                                                    data['container_id'], data)
-            else:
-                response = filters_api.deploy_filter(request, data['filter_id'], data['target_id'], data)
-
+        try: 
+            response = policies_api.create_dynamic_policy(request, data)
             if 200 <= response.status_code < 300:
-                messages.success(request, _('Successfully created static policy'))
+                messages.success(request, _('Successfully created dynamic policy'))
                 return data
             else:
                 raise ValueError(response.text)
@@ -311,6 +308,10 @@ class UpdatePolicy(forms.SelfHandlingForm):
                                   label=_("Object Size"),
                                   required=False,
                                   help_text=_("The size of object which the rule will be apply."))
+    
+    object_tag = forms.CharField(max_length=255,
+                          label=_("Object Tag"),
+                          required=False)
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
