@@ -2,17 +2,17 @@ import json
 from horizon import exceptions
 from horizon import messages
 from horizon import tabs
+from django.conf import settings
+from openstack_dashboard import api
+from openstack_dashboard import policy
+from openstack_dashboard.utils import identity
+from django.utils.translation import ugettext_lazy as _
 from crystal_dashboard.api import projects as crystal_api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.projects.projects import tables as project_tables
 from crystal_dashboard.dashboards.crystal.projects.projects.models import CrystalProject
 from crystal_dashboard.dashboards.crystal.projects.groups import models as group_models
 from crystal_dashboard.dashboards.crystal.projects.groups import tables as group_tables
-from django.conf import settings
-from openstack_dashboard import api
-from openstack_dashboard import policy
-from openstack_dashboard.utils import identity
-from django.utils.translation import ugettext_lazy as _
 
 
 class Groups(tabs.TableTab):
@@ -31,10 +31,10 @@ class Groups(tabs.TableTab):
             else:
                 error_message = 'Unable to get project groups.'
                 raise sdsexception.SdsException(error_message)
-    
-            groups = json.loads(strobj)    
+
+            groups = json.loads(strobj)
             for group in groups:
-                projects = 'Projects: ' + ', '.join(group['attached_projects'])
+                projects = ', '.join(group['attached_projects'])
                 ret.append(group_models.Group(group['id'], group['name'], projects))
         except Exception as e:
             exceptions.handle(self.request, e.message)

@@ -16,8 +16,8 @@ class CreateGroupView(workflows.WorkflowView):
     def get_initial(self):
         initial = super(CreateGroupView, self).get_initial()
         return initial
-    
-    
+
+
 class UpdateGroupView(workflows.WorkflowView):
     workflow_class = project_workflows.UpdateGroup
 

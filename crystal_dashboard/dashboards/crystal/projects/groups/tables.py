@@ -1,13 +1,11 @@
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
-
 from django.core.urlresolvers import reverse
 from horizon import tables
 from horizon import exceptions
 
 
 from crystal_dashboard.api import projects as api
-
 
 
 class MyFilterAction(tables.FilterAction):
@@ -21,13 +19,14 @@ class CreateGroup(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
 
+
 class UpdateGroup(tables.LinkAction):
     name = "update_group"
     verbose_name = _("Edit")
     url = "horizon:crystal:projects:groups:update"
     classes = ("ajax-modal",)
     icon = "plus"
-    
+
 
 class DeleteGroup(tables.DeleteAction):
     @staticmethod
@@ -56,7 +55,7 @@ class DeleteGroup(tables.DeleteAction):
                 pass
                 # messages.success(request, _("Successfully deleted controller: %s") % obj_id)
             else:
-                raise sdsexception.SdsException(response.text)
+                raise ValueError(response.text)
         except Exception as ex:
             redirect = reverse("horizon:crystal:projects:index")
             error_message = "Unable to remove group.\t %s" % ex.message

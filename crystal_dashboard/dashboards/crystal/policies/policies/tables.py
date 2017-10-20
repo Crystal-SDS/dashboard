@@ -25,12 +25,14 @@ class CreateStaticPolicy(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
 
+
 class CreateDynamicPolicy(tables.LinkAction):
     name = "create_dynamic_policy"
     verbose_name = _("Create Dynamic Policy")
     url = "horizon:crystal:policies:policies:create_dynamic_policy"
     classes = ("ajax-modal",)
     icon = "plus"
+
 
 class CreatePolicyDSL(tables.LinkAction):
     name = "create_dsl"
@@ -174,13 +176,13 @@ class DeleteMultipleDynamicPolicies(DeleteDynamicPolicy):
 
 class StaticPoliciesTable(tables.DataTable):
     execution_order = tables.Column('execution_order', verbose_name="Execution Order", form_field=forms.CharField(), update_action=UpdateCell)
-    methods = tables.Column('methods', verbose_name=_("HTTP Methods"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
+    methods = tables.Column('methods', verbose_name=_("HTTP Method"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
+    execution_server = tables.Column('execution_server', verbose_name="Execution Server", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     target_name = tables.Column(lambda x: str(str(x.target_name) + str(x.target_id).replace(str(x.target_id).split(':')[0], '')).replace(':', '/'), verbose_name=_("Target"))
     filter_name = tables.Column('filter_name', verbose_name=_("Filter"))
     object_type = tables.Column('object_type', verbose_name="Object Type", form_field=forms.ChoiceField(required=False, choices=[]), update_action=UpdateCell)
     object_size = tables.Column('object_size', verbose_name=_("Object Size"), form_field=forms.CharField(required=False), update_action=UpdateCell)
     object_tag = tables.Column('object_tag', verbose_name=_("Object Tag"))
-    execution_server = tables.Column('execution_server', verbose_name="Execution Server", form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     reverse = tables.Column('reverse', verbose_name="Reverse", form_field=forms.ChoiceField(choices=[('False', _('False')), ('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     params = tables.Column('params', verbose_name="Parameters", form_field=forms.CharField(required=False), update_action=UpdateCell)
 
@@ -211,6 +213,6 @@ class DynamicPoliciesTable(tables.DataTable):
     class Meta:
         name = "dynamic_policies"
         verbose_name = _("Dynamic Policies")
-        table_actions = ( CreateDynamicPolicy, CreatePolicyDSL ,MyDynamicPolicyFilterAction, DeleteMultipleDynamicPolicies,)
+        table_actions = (CreateDynamicPolicy, CreatePolicyDSL, MyDynamicPolicyFilterAction, DeleteMultipleDynamicPolicies,)
         row_actions = (DeleteDynamicPolicy,)
         hidden_title = False

@@ -11,12 +11,10 @@ from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.api import projects as api
 
 
-
 class CreateGroupInfoAction(workflows.Action):
 
     name = forms.CharField(label=_("Name"),
                            max_length=64)
-  
 
     def __init__(self, request, *args, **kwargs):
         super(CreateGroupInfoAction, self).__init__(request,
@@ -35,17 +33,16 @@ class CreateGroupInfo(workflows.Step):
 
     def __init__(self, workflow):
         super(CreateGroupInfo, self).__init__(workflow)
-        
-        
-        
+
+
 class UpdateGroupInfoAction(workflows.Action):
 
     name = forms.CharField(label=_("Name"),
                            max_length=64)
-    
+
     group_id = forms.CharField(max_length=255,
-                              label=_("group ID"),
-                              widget=forms.HiddenInput())
+                               label=_("group ID"),
+                               widget=forms.HiddenInput())
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateGroupInfoAction, self).__init__(request,
@@ -71,9 +68,7 @@ class GroupMembersAction(workflows.MembershipAction):
         super(GroupMembersAction, self).__init__(request, *args, **kwargs)
         err_msg = _('Unable to retrieve projects list. Please try again later.')
         context = args[0]
-        
-        group_id = 0
-        
+
         default_role_field_name = self.get_default_role_field_name()
         self.fields[default_role_field_name] = forms.CharField(required=True)
         self.fields[default_role_field_name].initial = 'member'
@@ -81,12 +76,10 @@ class GroupMembersAction(workflows.MembershipAction):
         field_name = self.get_member_field_name('member')
         self.fields[field_name] = forms.MultipleChoiceField(required=True)
 
-        
         # Fetch the projects crytsal-enabled list and add to policy options
         projects_crystal_enabled = []
         projects_crystal_enabled_attached = context.get('attached_projects', [])
-        
-            
+
         try:
             projects_crystal_enabled = common.get_project_list_crystal_enabled(request)
         except Exception:
@@ -94,7 +87,6 @@ class GroupMembersAction(workflows.MembershipAction):
 
         self.fields[field_name].choices = projects_crystal_enabled
         self.fields[field_name].initial = projects_crystal_enabled_attached
-                
 
     class Meta(object):
         name = _("Group projects")
@@ -112,6 +104,7 @@ class GroupMembers(workflows.UpdateMembersStep):
             member_field_name = self.get_member_field_name('member')
             context['attached_projects'] = data.get(member_field_name, [])
         return context
+
 
 class CreateGroup(workflows.Workflow):
     slug = "create_group"
