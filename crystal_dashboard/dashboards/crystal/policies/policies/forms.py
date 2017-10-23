@@ -172,8 +172,8 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
 
     action = forms.ChoiceField(
         label=_('Action'),
-        choices=[('set', _('Set')),
-                 ('delete', _('Delete'))],
+        choices=[('SET', _('Set')),
+                 ('DELETE', _('Delete'))],
         widget=forms.Select(attrs={
             'class': 'switchable',
             'data-slug': 'action'

@@ -3,8 +3,9 @@ class StaticPolicy:
         StaticPolicy class represents the policy data
     """
 
-    def __init__(self, static_policy_id, target_id, target_name, filter_name, object_type, object_size, object_tag, execution_server, reverse, execution_order, params,
-                  put, get, post, head, delete,):
+    def __init__(self, static_policy_id, target_id, target_name, filter_name,
+                 object_type, object_size, object_tag, execution_server,
+                 reverse, execution_order, params, put, get, post, head, delete):
         self.id = target_id + ':' + static_policy_id
         self.target_id = target_id
         self.target_name = target_name
@@ -24,14 +25,18 @@ class DynamicPolicy:
         DynamicPolicy class represents the policy data
     """
 
-    def __init__(self, dynamic_policy_id, target_id, target_name, condition, filter, object_type, object_size, object_tag, transient, alive):
+    def __init__(self, dynamic_policy_id, target_id, target_name, condition,
+                 action, filter, object_type, object_size, object_tag, transient,
+                 parameters, status):
         self.id = dynamic_policy_id
         self.target_id = target_id
         self.target_name = target_name
         self.condition = condition
+        self.action = action
         self.filter = filter
         self.object_type = object_type
         self.object_size = object_size
         self.object_tag = object_tag
         self.transient = transient
-        self.alive = alive
+        self.parameters = parameters
+        self.status = status

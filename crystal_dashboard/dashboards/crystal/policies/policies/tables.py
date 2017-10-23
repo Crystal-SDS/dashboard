@@ -203,12 +203,14 @@ class DynamicPoliciesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     target_name = tables.Column('target_name', verbose_name=_("Target"))
     condition = tables.Column('condition', verbose_name=_("Condition"))
+    action = tables.Column('action', verbose_name="Action")
     filter = tables.Column('filter', verbose_name=_("Filter"))
     object_type = tables.Column('object_type', verbose_name=_("Object Type"))
     object_size = tables.Column('object_size', verbose_name=_("Object Size"))
     object_tag = tables.Column('object_tag', verbose_name=_("Object Tag"))
+    parameters = tables.Column('parameters', verbose_name=_("Parameters"))
     transient = tables.Column('transient', verbose_name=_("Transient"))
-    alive = tables.Column('alive', verbose_name="Alive")
+    status = tables.Column('status', verbose_name="Status")
 
     class Meta:
         name = "dynamic_policies"
