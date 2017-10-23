@@ -201,7 +201,7 @@ class MyDynamicPolicyFilterAction(tables.FilterAction):
 
 class DynamicPoliciesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
-    target = tables.Column('target', verbose_name=_("Target"))
+    target_name = tables.Column('target_name', verbose_name=_("Target"))
     condition = tables.Column('condition', verbose_name=_("Condition"))
     filter = tables.Column('filter', verbose_name=_("Filter"))
     object_type = tables.Column('object_type', verbose_name=_("Object Type"))
