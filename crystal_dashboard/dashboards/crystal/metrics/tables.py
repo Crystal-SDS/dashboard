@@ -99,7 +99,7 @@ class EnableMetricModule(tables.BatchAction):
 
     def action(self, request, datum_id):
         data = {'enabled': True}
-        api.update_metric_module(request, datum_id, data)
+        api.update_metric_module_metadata(request, datum_id, data)
 
 
 class EnableMultipleMetricModules(EnableMetricModule):
@@ -140,7 +140,7 @@ class DisableMetricModule(tables.BatchAction):
 
     def action(self, request, datum_id):
         data = {'enabled': False}
-        api.update_metric_module(request, datum_id, data)
+        api.update_metric_module_metadata(request, datum_id, data)
 
 
 class DisableMultipleMetricModules(DisableMetricModule):
@@ -188,7 +188,7 @@ class UpdateCell(tables.UpdateAction):
                 new_cell_value = (new_cell_value == 'True')
 
             data[cell_name] = new_cell_value
-            api.update_metric_module(request, metric_module_id, data)
+            api.update_metric_module_metadata(request, metric_module_id, data)
         except Conflict:
             # Returning a nice error message about name conflict. The message
             # from exception is not that clear for the user
