@@ -20,8 +20,8 @@ class UploadMetricModule(forms.SelfHandlingForm):
                                      attrs={"ng-model": "name", "not-blank": ""}
                                  ))
 
-    in_flow = forms.BooleanField(required=False, label='Put')
-    out_flow = forms.BooleanField(required=False, label='Get')
+    put = forms.BooleanField(required=False, label='Put')
+    get = forms.BooleanField(required=False, label='Get')
     ssync = forms.BooleanField(required=False, label='Ssync')
 
     execution_server = forms.ChoiceField(
@@ -38,9 +38,9 @@ class UploadMetricModule(forms.SelfHandlingForm):
     )
 
     status = forms.CharField(max_length=255,
-                         label=_("Status"),
-                         initial='Stopped',
-                         widget=forms.HiddenInput(  # hidden
+                             label=_("Status"),
+                             initial='Stopped',
+                             widget=forms.HiddenInput(  # hidden
                                 attrs={"ng-model": "status"}))
 
     def __init__(self, request, *args, **kwargs):
@@ -73,10 +73,9 @@ class UpdateMetricModule(forms.SelfHandlingForm):
                                  label=_("Class Name"),
                                  help_text=_("The main class of the metric module to be created."))
 
-    in_flow = forms.BooleanField(required=False, label='Put')
-    out_flow = forms.BooleanField(required=False, label='Get')
+    put = forms.BooleanField(required=False, label='Put')
+    get = forms.BooleanField(required=False, label='Get')
     ssync = forms.BooleanField(required=False, label='Ssync')
-
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -91,16 +90,13 @@ class UpdateMetricModule(forms.SelfHandlingForm):
         })
     )
 
-    enabled = forms.BooleanField(label=_("Enable Workload Metric"),
-                                 required=False)
-
     def __init__(self, request, *args, **kwargs):
         super(UpdateMetricModule, self).__init__(request, *args, **kwargs)
 
     failure_url = 'horizon:crystal:metrics:index'
 
     def handle(self, request, data):
-        
+
         metric_module_file = data['metric_module_file']
         del data['metric_module_file']
         metric_module_id = self.initial['id']

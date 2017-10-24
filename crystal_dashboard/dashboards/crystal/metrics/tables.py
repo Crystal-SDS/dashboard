@@ -202,8 +202,8 @@ class UpdateRow(tables.Row):
         response = api.get_metric_module(request, metric_module_id)
         data = json.loads(response.text)
 
-        filter = MetricModule(data['id'], data['metric_name'], data['class_name'], data['out_flow'],
-                              data['in_flow'], data['ssync'], data['execution_server'], data['status'])
+        filter = MetricModule(data['id'], data['metric_name'], data['class_name'], data['put'],
+                              data['get'], data['ssync'], data['execution_server'], data['status'])
         return filter
 
 
@@ -215,7 +215,7 @@ class MetricTable(tables.DataTable):
     execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"),
                                      form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node')), ('proxy/object', _('Proxy & Storage Nodes'))]),
                                      update_action=UpdateCell)
-    status = tables.Column('status',verbose_name=_("Status"))
+    status = tables.Column('status', verbose_name=_("Status"))
 
     class Meta:
         name = "metric_modules"
