@@ -18,7 +18,11 @@ class Filter:
         :param reverse:
         :param put:
         :param get:
+        :param post:
+        :param head:
+        :param delete:
         """
+        
         self.id = filter_id
         self.filter_name = filter_name
         self.dsl_name = dsl_name
@@ -29,5 +33,8 @@ class Filter:
         self.main = main
         self.execution_server = execution_server
         self.reverse = reverse
-        self.methods = (('PUT, ' if put else '') + ('GET, ' if get else '') + ('POST, ' if post else '') + ('HEAD, ' if head else '') + ('DELETE, ' if delete else ''))[0:-2] 
+        if put and get and post and head and delete:
+            self.methods = 'ALL'
+        else: 
+            self.methods = (('PUT, ' if put else '') + ('GET, ' if get else '') + ('POST, ' if post else '') + ('HEAD, ' if head else '') + ('DELETE, ' if delete else ''))[0:-2] 
         self.valid_parameters = valid_parameters

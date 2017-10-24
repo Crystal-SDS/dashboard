@@ -48,6 +48,7 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
                                    help_text=_("The container where the rule will be applied."),
                                    required=False,
                                    widget=forms.Select(choices=container_choices))
+    
 
     filter_dsl_choices = []
     filter_id = forms.ChoiceField(choices=filter_dsl_choices,
@@ -210,7 +211,7 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
 
     condition = forms.CharField(max_length=255,
                                 label=_("Condition"),
-                                required=False)
+                                required=True)
 
     transient = forms.BooleanField(required=False, label="Transient")
 

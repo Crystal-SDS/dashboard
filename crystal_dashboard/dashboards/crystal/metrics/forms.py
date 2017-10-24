@@ -22,6 +22,7 @@ class UploadMetricModule(forms.SelfHandlingForm):
 
     in_flow = forms.BooleanField(required=False, label='Put')
     out_flow = forms.BooleanField(required=False, label='Get')
+    ssync = forms.BooleanField(required=False, label='Ssync')
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -36,8 +37,11 @@ class UploadMetricModule(forms.SelfHandlingForm):
         })
     )
 
-    enabled = forms.BooleanField(label=_("Enable Workload Metric"),
-                                 required=False)
+    status = forms.CharField(max_length=255,
+                         label=_("Status"),
+                         initial='Stopped',
+                         widget=forms.HiddenInput(  # hidden
+                                attrs={"ng-model": "status"}))
 
     def __init__(self, request, *args, **kwargs):
         super(UploadMetricModule, self).__init__(request, *args, **kwargs)
@@ -71,6 +75,8 @@ class UpdateMetricModule(forms.SelfHandlingForm):
 
     in_flow = forms.BooleanField(required=False, label='Put')
     out_flow = forms.BooleanField(required=False, label='Get')
+    ssync = forms.BooleanField(required=False, label='Ssync')
+
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),

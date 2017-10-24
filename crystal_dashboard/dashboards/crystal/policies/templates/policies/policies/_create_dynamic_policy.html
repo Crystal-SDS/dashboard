@@ -6,8 +6,8 @@
 {% block modal-header %}
     {% blocktrans %}Create a Dynamic Policy {% endblocktrans %}
     <script type="text/javascript">
-        $("#id_target_id").change(function () {
-            $("#id_container_id").load("{% url 'horizon:crystal:policies:policies:get_container_by_project' %}", {'project_id': $("#id_target_id").find("option:selected").val()});
+        $("#id_project_id").change(function () {
+            $("#id_container_id").load("{% url 'horizon:crystal:policies:policies:get_container_by_project' %}", {'project_id': $("#id_project_id").find("option:selected").val()});
         });
     </script>
 {% endblock %}

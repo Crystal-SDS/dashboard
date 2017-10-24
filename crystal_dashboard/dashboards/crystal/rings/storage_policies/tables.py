@@ -34,13 +34,27 @@ class CreateECStoragePolicy(tables.LinkAction):
     icon = "plus"
 
 
-class LoadSwiftPolicies(tables.LinkAction):
+class LoadSwiftPolicies(tables.Action):
     name = "load_swift_policies"
     verbose_name = _("Load Swift Policies")
-    url = "horizon:crystal:rings:storage_policies:load_swift_policies"
-    classes = ("ajax-modal",)
-    icon = "plus"
-
+    requires_input = False
+    success_url = "horizon:crystal:rings:index"
+    
+    def allowed(self, request, policies):
+        return len(self.table.get_rows()) == 0;
+    
+    def handle(self, data_table, request, object_ids):
+        try:
+            response = api.load_swift_policies(request)
+            if 200 <= response.status_code < 300:
+                messages.success(request, _("Policies loaded successfully"))
+            else:
+                raise sdsexception.SdsException(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:rings:index")
+            error_message = "Unable to load policies.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+    
 
 class ManageDisksLink(tables.LinkAction):
     name = "users"
