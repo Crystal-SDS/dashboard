@@ -141,6 +141,43 @@ class DeleteStoragePolicy(tables.DeleteAction):
 class DeleteMultipleStoragePolicies(DeleteStoragePolicy):
     name = "delete_multiple_storage_policies"
 
+    
+class DeployChanges(tables.BatchAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Deploy Changes",
+            u"Deploy Changes",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Changes deployed",
+            u"Changes deployed",
+            count
+        )
+
+    name = "add"
+    icon = "plus"
+    requires_input = True
+    success_url = "horizon:crystal:rings:index"
+    
+    def allowed(self, request, storage_policy):
+        return not storage_policy.deployed
+
+    def action(self, request, obj_id):
+        try:
+            response = api.deploy_storage_policy(request, obj_id)
+            if not 200 <= response.status_code < 300:
+                raise sdsexception.SdsException(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:rings:index")
+            error_message = "Unable to deploy storage policy.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+    
+
 class StoragePolicyTable(tables.DataTable):
 
     id = tables.Column('id', verbose_name=_("ID"))
@@ -158,7 +195,7 @@ class StoragePolicyTable(tables.DataTable):
         name = "storagepolicies"
         verbose_name = _("Storage Policies")
         table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies,DeleteMultipleStoragePolicies,)
-        row_actions = (ManageDisksLink, UpdateStoragePolicy, DeleteStoragePolicy)
+        row_actions = (DeployChanges, ManageDisksLink, UpdateStoragePolicy, DeleteStoragePolicy)
         row_class = UpdateRow
 
 
@@ -260,7 +297,7 @@ class AddDisksAction(tables.BatchAction):
     def get_success_url(self, request=None):
         policy_id = self.table.kwargs.get('policy_id', None)
         return reverse(self.success_url, args=[policy_id])
-
+    
 
 class AddDisksTable(ManageDisksTable):
 
