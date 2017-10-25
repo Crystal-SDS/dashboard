@@ -220,11 +220,11 @@ class EnableDynamicPolicy(tables.BatchAction):
     success_url = "horizon:crystal:policies:index"
 
     def allowed(self, request, instance):
-        return (instance is None) or (instance.status in ("Stopped", 'stopped'))
+        return (instance is None) or (instance.status in ("Stopped", 'Applied'))
 
     def action(self, request, datum_id):
-        data = {'status': 'Running'}
-        
+        data = {'status': 'Alive'}
+
         try:
             response = api.update_dynamic_policy(request, datum_id, data)
             if 200 <= response.status_code < 300:
@@ -258,11 +258,11 @@ class DisableDynamicPolicy(tables.BatchAction):
     success_url = "horizon:crystal:policies:index"
 
     def allowed(self, request, instance):
-        return (instance is None) or (instance.status in ("running", "Running"))
+        return (instance is None) or (instance.status in ("Alive"))
 
     def action(self, request, datum_id):
         data = {'status': 'Stopped'}
-        
+
         try:
             response = api.update_dynamic_policy(request, datum_id, data)
             if 200 <= response.status_code < 300:
