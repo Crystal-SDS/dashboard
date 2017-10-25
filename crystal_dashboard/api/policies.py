@@ -96,6 +96,18 @@ def create_dynamic_policy(request, data):
     r = requests.put(url, json.dumps(data), headers=headers)
     return r
 
+def update_dynamic_policy(request, policy_id, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/policies/dynamic/" + str(policy_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
+
 def list_dynamic_policies(request):
     token = get_token(request)
     headers = {}

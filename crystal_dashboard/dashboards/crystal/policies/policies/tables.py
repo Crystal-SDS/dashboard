@@ -199,6 +199,82 @@ class MyDynamicPolicyFilterAction(tables.FilterAction):
     name = "my_dynamic_policy_filter"
 
 
+class EnableDynamicPolicy(tables.BatchAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Start",
+            u"Start Dynamic policies",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Started Dynamic policy",
+            u"Started Dynamic policies",
+            count
+        )
+
+    name = "enable_dynamic_policy"
+    success_url = "horizon:crystal:policies:index"
+
+    def allowed(self, request, instance):
+        return (instance is None) or (instance.status in ("Stopped", 'stopped'))
+
+    def action(self, request, datum_id):
+        data = {'status': 'Running'}
+        
+        try:
+            response = api.update_dynamic_policy(request, datum_id, data)
+            if 200 <= response.status_code < 300:
+                pass
+            else:
+                raise ValueError(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:policies:index")
+            error_message = "Unable to enable policy.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+
+
+class DisableDynamicPolicy(tables.BatchAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Stop",
+            u"Stop Dynamic Policy",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Stopped Dynamic Policy",
+            u"Stopped Dynamic Policies",
+            count
+        )
+
+    name = "disable_metric_module"
+    success_url = "horizon:crystal:policies:index"
+
+    def allowed(self, request, instance):
+        return (instance is None) or (instance.status in ("running", "Running"))
+
+    def action(self, request, datum_id):
+        data = {'status': 'Stopped'}
+        
+        try:
+            response = api.update_dynamic_policy(request, datum_id, data)
+            if 200 <= response.status_code < 300:
+                pass
+            else:
+                raise ValueError(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:policies:index")
+            error_message = "Unable to disable policy.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+
+
 class DynamicPoliciesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     target_name = tables.Column('target_name', verbose_name=_("Target"))
@@ -215,6 +291,6 @@ class DynamicPoliciesTable(tables.DataTable):
     class Meta:
         name = "dynamic_policies"
         verbose_name = _("Dynamic Policies")
-        table_actions = (CreateDynamicPolicy, CreatePolicyDSL, MyDynamicPolicyFilterAction, DeleteMultipleDynamicPolicies,)
-        row_actions = (DeleteDynamicPolicy,)
+        table_actions = (CreateDynamicPolicy, CreatePolicyDSL, MyDynamicPolicyFilterAction, DeleteMultipleDynamicPolicies, )
+        row_actions = (DisableDynamicPolicy, EnableDynamicPolicy, DeleteDynamicPolicy,)
         hidden_title = False
