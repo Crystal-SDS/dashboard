@@ -136,6 +136,33 @@ def remove_dynamic_policy(request, policy_id):
 
 
 #
+# Access Control
+#
+def create_access_control_policy(request, data):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/policies/acl"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.post(url, json.dumps(data), headers=headers)
+    return r
+
+def access_control_policy_list(request):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/policies/acl"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+#
 # Object Types
 #
 def dsl_get_all_object_types(request):

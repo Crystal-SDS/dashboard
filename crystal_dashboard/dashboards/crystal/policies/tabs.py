@@ -98,41 +98,21 @@ class AccessControlTab(tabs.TableTab):
     preload = False
 
     def get_access_control_policies_data(self):
+        
+        acl_list = []
         try:
-            response = api.fil_get_all_slos(self.request)
+            response = api.access_control_policy_list(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
+                acl_list = json.loads(strobj)
             else:
                 error_message = 'Unable to get instances.'
                 raise ValueError(error_message)
         except Exception as e:
             strobj = "[]"
             exceptions.handle(self.request, e.message)
-
-        storage_policies_dict = dict(common.get_storage_policy_list(self.request, common.ListOptions.by_id()))
-        projects_dict = dict(common.get_project_list(self.request))
-
-        slos = json.loads(strobj)
-        tmp_slos = {}
-        for slo in slos:
-            if slo['dsl_filter'] == 'bandwidth':
-                project_target, policy_id = slo['target'].split('#')
-                project_id = project_target
-                if project_id not in tmp_slos:
-                    tmp_slos[project_id] = {}
-                if policy_id not in tmp_slos[project_id]:
-                    tmp_slos[project_id][policy_id] = {}
-                tmp_slos[project_id][policy_id][slo['slo_name']] = slo['value']
-
-        ret = []
-        for project_id in tmp_slos.keys():
-            for policy_id in tmp_slos[project_id].keys():
-                get_bw = tmp_slos[project_id][policy_id]['get_bw']
-                put_bw = tmp_slos[project_id][policy_id]['put_bw']
-                sla = access_control_models.AccessControlPolicy(project_id, projects_dict[str(project_id)], policy_id, storage_policies_dict[str(policy_id)], get_bw, put_bw)
-                ret.append(sla)
-
-        return ret
+ 
+        return []
 
 
 class SLOsTab(tabs.TableTab):
