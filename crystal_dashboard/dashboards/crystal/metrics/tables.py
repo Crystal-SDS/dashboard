@@ -106,7 +106,7 @@ class EnableMultipleMetricModules(EnableMetricModule):
     def handle(self, table, request, obj_ids):
         allowed_ids = []
         for obj_id in obj_ids:
-            if not table.get_object_by_id(obj_id).status:
+            if table.get_object_by_id(obj_id).status in ('Stopped', 'stopped'):
                 allowed_ids.append(obj_id)
 
         # Call to super with allowed_ids
@@ -147,7 +147,7 @@ class DisableMultipleMetricModules(DisableMetricModule):
     def handle(self, table, request, obj_ids):
         allowed_ids = []
         for obj_id in obj_ids:
-            if table.get_object_by_id(obj_id).status:
+            if table.get_object_by_id(obj_id).status in ('Running', 'running'):
                 allowed_ids.append(obj_id)
 
         # Call to super with allowed_ids

@@ -237,6 +237,19 @@ class EnableDynamicPolicy(tables.BatchAction):
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
+class EnableMultipleDynamicPolicies(EnableDynamicPolicy):
+    def handle(self, table, request, obj_ids):
+        allowed_ids = []
+        for obj_id in obj_ids:
+            if table.get_object_by_id(obj_id).status in ('Stopped', 'stopped'):
+                allowed_ids.append(obj_id)
+
+        # Call to super with allowed_ids
+        return super(EnableMultipleDynamicPolicies, self).handle(table, request, allowed_ids)
+
+    name = "enable_multiple_dynamic_policies"
+
+
 class DisableDynamicPolicy(tables.BatchAction):
     @staticmethod
     def action_present(count):
@@ -275,6 +288,19 @@ class DisableDynamicPolicy(tables.BatchAction):
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
+class DisableMultipleDynamicPolicies(DisableDynamicPolicy):
+    def handle(self, table, request, obj_ids):
+        allowed_ids = []
+        for obj_id in obj_ids:
+            if table.get_object_by_id(obj_id).status in ('Alive'):
+                allowed_ids.append(obj_id)
+
+        # Call to super with allowed_ids
+        return super(DisableMultipleDynamicPolicies, self).handle(table, request, allowed_ids)
+
+    name = "disable_multiple_dynamic_policies"
+    
+
 class DynamicPoliciesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     target_name = tables.Column('target_name', verbose_name=_("Target"))
@@ -291,6 +317,7 @@ class DynamicPoliciesTable(tables.DataTable):
     class Meta:
         name = "dynamic_policies"
         verbose_name = _("Dynamic Policies")
+        table_actions_menu = (EnableMultipleDynamicPolicies, DisableMultipleDynamicPolicies,)  # dropdown menu
         table_actions = (CreateDynamicPolicy, CreatePolicyDSL, MyDynamicPolicyFilterAction, DeleteMultipleDynamicPolicies, )
         row_actions = (DisableDynamicPolicy, EnableDynamicPolicy, DeleteDynamicPolicy,)
         hidden_title = False
