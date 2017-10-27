@@ -3,7 +3,7 @@ class MetricModule:
         Metric Module class represents the metric module data
     """
 
-    def __init__(self, metric_module_id, metric_name, class_name, out_flow, in_flow, execution_server, enabled):
+    def __init__(self, metric_module_id, metric_name, class_name, put, get, ssync, execution_server, status):
         """
 
         :param metric_module_id:
@@ -11,13 +11,13 @@ class MetricModule:
         :param class_name:
         :param out_flow:
         :param in_flow:
+        :param ssync:
         :param execution_server:
-        :param enabled
+        :param status
         """
         self.id = metric_module_id
         self.metric_name = metric_name
         self.class_name = class_name
-        self.out_flow = out_flow
-        self.in_flow = in_flow
+        self.methods = (('PUT, ' if put else '') + ('GET, ' if get else '') + ('SSYNC, ' if ssync else ''))[0:-2]
         self.execution_server = execution_server
-        self.enabled = enabled
+        self.status = status

@@ -27,7 +27,7 @@ def add_metric_module_metadata(request, data, in_memory_file):
     files = {'file': (in_memory_file.name, in_memory_file.read())}
     data_to_send = {'metadata': json.dumps(data)}
 
-    r = requests.put(url, data_to_send, files=files, headers=headers)
+    r = requests.post(url, data_to_send, files=files, headers=headers)
     return r
 
 
@@ -44,7 +44,7 @@ def get_all_metric_modules(request):
     return r
 
 
-def update_metric_module(request, metric_module_id, data):
+def update_metric_module_metadata(request, metric_module_id, data):
     token = get_token(request)
     headers = {}
 
@@ -54,6 +54,19 @@ def update_metric_module(request, metric_module_id, data):
     headers['Content-Type'] = "application/json"
 
     r = requests.post(url, json.dumps(data), headers=headers)
+    return r
+
+def update_metric_module_data(request, metric_module_id, in_memory_file):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/metrics/" + str(metric_module_id) + "/data"
+
+    headers["X-Auth-Token"] = str(token)
+
+    files = {'file': (in_memory_file.name, in_memory_file.read())}
+
+    r = requests.put(url, files=files, headers=headers)
     return r
 
 

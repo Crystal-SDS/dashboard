@@ -1,0 +1,22 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block form_id %}update_storage_policy_form{% endblock %}
+{% block form_name %}updateStoragePolicy{% endblock %}
+{% block form_attrs %}enctype="multipart/form-data"{% endblock %}
+
+{% block modal-header %}
+  {% blocktrans %}Update Storage Policy{% endblocktrans %}
+{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+    <fieldset>
+    {% include "horizon/common/_form_fields.html" %}
+    </fieldset>
+</div>
+<div class="right">
+    <h3>{% trans "Description:" %}</h3>
+    <p>{% trans " <a href='https://docs.openstack.org/swift/latest/overview_policies.html' target='_blank'> Openstack Swift Storage Policies </a><br>Storage policies allow segmenting the cluster for various purposes through the creation of multiple object rings. Using policies, different devices can belong to different rings with varying levels of replication. By supporting multiple object rings, swift can segregate the objects within a single cluster." %}</p>
+</div>
+{% endblock %}

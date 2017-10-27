@@ -78,16 +78,16 @@ class EnableMetricModule(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Enable",
-            u"Enable Metric Modules",
+            u"Start",
+            u"Start Metric Modules",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Enabled Metric Module",
-            u"Enabled Metric Modules",
+            u"Start Metric Module",
+            u"Start Metric Modules",
             count
         )
 
@@ -95,18 +95,18 @@ class EnableMetricModule(tables.BatchAction):
     success_url = "horizon:crystal:metrics:index"
 
     def allowed(self, request, instance):
-        return (instance is None) or (instance.enabled in ("False", False))
+        return (instance is None) or (instance.status in ("Stopped", 'stopped'))
 
     def action(self, request, datum_id):
-        data = {'enabled': True}
-        api.update_metric_module(request, datum_id, data)
+        data = {'status': 'Running'}
+        api.update_metric_module_metadata(request, datum_id, data)
 
 
 class EnableMultipleMetricModules(EnableMetricModule):
     def handle(self, table, request, obj_ids):
         allowed_ids = []
         for obj_id in obj_ids:
-            if not table.get_object_by_id(obj_id).enabled:
+            if table.get_object_by_id(obj_id).status in ('Stopped', 'stopped'):
                 allowed_ids.append(obj_id)
 
         # Call to super with allowed_ids
@@ -119,16 +119,16 @@ class DisableMetricModule(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Disable",
-            u"Disable Metric Modules",
+            u"Stop",
+            u"Stop Metric Modules",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Disabled Metric Module",
-            u"Disabled Metric Modules",
+            u"Stoped Metric Module",
+            u"Stoped Metric Modules",
             count
         )
 
@@ -136,18 +136,18 @@ class DisableMetricModule(tables.BatchAction):
     success_url = "horizon:crystal:metrics:index"
 
     def allowed(self, request, instance):
-        return (instance is None) or (instance.enabled in ("True", True))
+        return (instance is None) or (instance.status in ("running", "Running"))
 
     def action(self, request, datum_id):
-        data = {'enabled': False}
-        api.update_metric_module(request, datum_id, data)
+        data = {'status': 'Stopped'}
+        api.update_metric_module_metadata(request, datum_id, data)
 
 
 class DisableMultipleMetricModules(DisableMetricModule):
     def handle(self, table, request, obj_ids):
         allowed_ids = []
         for obj_id in obj_ids:
-            if table.get_object_by_id(obj_id).enabled:
+            if table.get_object_by_id(obj_id).status in ('Running', 'running'):
                 allowed_ids.append(obj_id)
 
         # Call to super with allowed_ids
@@ -169,9 +169,7 @@ class UpdateMetricModule(tables.LinkAction):
 
 class UpdateCell(tables.UpdateAction):
     def allowed(self, request, project, cell):
-        return ((cell.column.name == 'out_flow') or
-                (cell.column.name == 'in_flow') or
-                (cell.column.name == 'execution_server'))
+        return ((cell.column.name == 'execution_server') or (cell.column.name == 'class_name'))
 
     def update_cell(self, request, datum, metric_module_id, cell_name, new_cell_value):
         try:
@@ -184,11 +182,8 @@ class UpdateCell(tables.UpdateAction):
             if 'path' in data:  # PUT does not allow this key
                 del data['path']
 
-            if cell_name == 'out_flow' or cell_name == 'in_flow':
-                new_cell_value = (new_cell_value == 'True')
-
             data[cell_name] = new_cell_value
-            api.update_metric_module(request, metric_module_id, data)
+            api.update_metric_module_metadata(request, metric_module_id, data)
         except Conflict:
             # Returning a nice error message about name conflict. The message
             # from exception is not that clear for the user
@@ -207,8 +202,8 @@ class UpdateRow(tables.Row):
         response = api.get_metric_module(request, metric_module_id)
         data = json.loads(response.text)
 
-        filter = MetricModule(data['id'], data['metric_name'], data['class_name'], data['out_flow'],
-                              data['in_flow'], data['execution_server'], data['enabled'])
+        filter = MetricModule(data['id'], data['metric_name'], data['class_name'], data['put'],
+                              data['get'], data['ssync'], data['execution_server'], data['status'])
         return filter
 
 
@@ -216,21 +211,15 @@ class MetricTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     metric_name = tables.Column('metric_name', verbose_name=_("Metric Name"))
     class_name = tables.Column('class_name', verbose_name=_("Class Name"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    in_flow = tables.Column('in_flow', verbose_name=_("Put"),
-                            form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    out_flow = tables.Column('out_flow', verbose_name=_("Get"),
-                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
+    methods = tables.Column('methods', verbose_name=_("HTTP Methods"), form_field=forms.CharField(max_length=255))
     execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"),
                                      form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node')), ('proxy/object', _('Proxy & Storage Nodes'))]),
                                      update_action=UpdateCell)
-    enabled = tables.Column('enabled',
-                            verbose_name=_("Enabled"),
-                            status=True)
+    status = tables.Column('status', verbose_name=_("Status"))
 
     class Meta:
         name = "metric_modules"
         verbose_name = _("Metric Modules")
-        status_columns = ['enabled', ]
         table_actions_menu = (EnableMultipleMetricModules, DisableMultipleMetricModules,)  # dropdown menu
         table_actions = (MyFilterAction, UploadMetricModule, DeleteMultipleMetricModules,)
         row_actions = (EnableMetricModule, DisableMetricModule, UpdateMetricModule, DownloadMetricModule, DeleteMetricModule,)

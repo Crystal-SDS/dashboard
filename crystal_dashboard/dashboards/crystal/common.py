@@ -10,6 +10,7 @@ from crystal_dashboard.api import filters as api_filters
 from crystal_dashboard.api import projects as api_projects
 from crystal_dashboard.api import swift as api_swift
 from crystal_dashboard.api import policies as api_policies
+from crystal_dashboard.api import metrics as api_metrics
 
 
 # List Options
@@ -218,6 +219,20 @@ def get_project_list(request):
     return projects_list
 
 
+# Groups
+# =========
+def get_group_project_choices(request):
+    return ('Project Groups', get_group_project_list(request))
+
+
+def get_group_project_list(request):
+    response = api_projects.get_all_project_groups(request).text
+    groups = json.loads(response)
+    groups_choices = [('group:'+group['id'], group['name']) for group in groups]
+
+    return groups_choices
+
+
 # Container
 # =========
 def get_container_list_choices(request):
@@ -286,3 +301,17 @@ def get_storage_policy_list(request, by_attribute):
     for storage_policy in storage_policies:
         storage_policies_list.append((storage_policy[str(by_attribute)], storage_policy['name']))
     return storage_policies_list
+
+
+# Workload Metrics
+# ==============
+def get_activated_workload_metrics_list_choices(request):
+    """
+    Get a tuple of activaded workload metric choices
+
+    :param request: the request which the dashboard is using
+    :return: tuple with activaded workload metric choices
+    """
+    
+    workload_metrics_choices = [(obj['name'], obj['name']) for obj in json.loads(api_metrics.get_activated_workload_metrics(request).text)]
+    return ('', 'Select one'), ('Workload Metrics', workload_metrics_choices)

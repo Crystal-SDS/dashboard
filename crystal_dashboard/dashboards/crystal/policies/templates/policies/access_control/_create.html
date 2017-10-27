@@ -1,0 +1,25 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block form_id %}create_sla_form{% endblock %}
+{% block form_name %}createSLA{% endblock %}
+{% block form_action %}{% url 'horizon:crystal:policies:access_control:create' %}{% endblock %}
+{% block form_attrs %}enctype="multipart/form-data"{% endblock %}
+
+{% block modal-header %}
+    {% blocktrans %}Create access control policy{% endblocktrans %}
+{% endblock %}
+
+{% block modal-body %}
+    <div class="left">
+        <fieldset>
+            {% include "horizon/common/_form_fields.html" %}
+        </fieldset>
+    </div>
+    <script type="text/javascript">
+        $("#id_project_id").change(function () {
+            $("#id_container_id").load("{% url 'horizon:crystal:policies:policies:get_container_by_project' %}", {'project_id': $("#id_project_id").find("option:selected").val()});
+            $("#id_user_id").load("{% url 'horizon:crystal:policies:policies:get_users_by_project' %}", {'project_id': $("#id_project_id").find("option:selected").val()});
+        });
+    </script>
+{% endblock %}

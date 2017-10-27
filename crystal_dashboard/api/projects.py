@@ -83,6 +83,21 @@ def create_projects_group(request, data):
     return r
 
 
+def update_projects_group(request, data, group_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    data['attached_projects'] = json.dumps(data['attached_projects'])
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
+
+
 def get_all_project_groups(request):
     token = get_token(request)
     headers = {}
@@ -96,7 +111,7 @@ def get_all_project_groups(request):
     return r
 
 
-def list_projects_group(request, group_id):
+def get_project_group(request, group_id):
     token = get_token(request)
     headers = {}
 
@@ -109,40 +124,11 @@ def list_projects_group(request, group_id):
     return r
 
 
-def add_project_group_member(request, group_name, tenant_id):
+def delete_project_group(request, group_id):
     token = get_token(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    # TODO
-    parameters = {"new": str(tenant_id)}
-
-    r = requests.put(url, json.dumps(parameters), headers=headers)
-    return r
-
-
-def delete_project_group(request, group_name):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    r = requests.delete(url, headers=headers)
-    return r
-
-
-def delete_project_group_member(request, group_name, tenant_id):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name) + "/projects/" + str(tenant_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"

@@ -18,6 +18,8 @@ from crystal_dashboard.dashboards.crystal.policies.object_types import models as
 from crystal_dashboard.dashboards.crystal.policies.object_types import tables as object_types_tables
 from crystal_dashboard.dashboards.crystal.policies.access_control import models as access_control_models
 from crystal_dashboard.dashboards.crystal.policies.access_control import tables as access_control_tables
+from openstack_dashboard import api as api_keystone
+from openstack_dashboard.utils import identity
 
 
 class StaticPoliciesTab(tabs.TableTab):
@@ -51,9 +53,16 @@ class StaticPoliciesTab(tabs.TableTab):
             elif inst['reverse'] == 'object':
                 inst['reverse'] = 'Storage Node'
             if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], 
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'], 
+                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'], 
+                                                        inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
+                
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], 
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'], 
+                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
+                                                        inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
         return ret
 
 
@@ -79,8 +88,8 @@ class DynamicPoliciesTab(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ret.append(policies_models.DynamicPolicy(inst['id'], inst['target'], inst['condition'], inst['filter'], inst['object_type'], inst['object_size'], inst['transient'], inst['policy'], inst['alive']))
-        return ret
+            ret.append(policies_models.DynamicPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['condition'], inst['action'], inst['filter'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['transient'], inst['parameters'], inst['status']))
+        return sorted(ret, key=lambda x: x.id, reverse=True)
 
 
 class AccessControlTab(tabs.TableTab):
@@ -91,40 +100,36 @@ class AccessControlTab(tabs.TableTab):
     preload = False
 
     def get_access_control_policies_data(self):
+        
+        ret = []
         try:
-            response = api.fil_get_all_slos(self.request)
+            projects = common.get_project_list(self.request)
+            projects += common.get_group_project_list(self.request)            
+            users = [(user.id, user.name) for user in api_keystone.keystone.user_list(self.request)]
+            response = api.access_control_policy_list(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
+                instances = json.loads(strobj)
             else:
                 error_message = 'Unable to get instances.'
                 raise ValueError(error_message)
         except Exception as e:
-            strobj = "[]"
+            instances = []
+            users = []
             exceptions.handle(self.request, e.message)
-
-        storage_policies_dict = dict(common.get_storage_policy_list(self.request, common.ListOptions.by_id()))
-        projects_dict = dict(common.get_project_list(self.request))
-
-        slos = json.loads(strobj)
-        tmp_slos = {}
-        for slo in slos:
-            if slo['dsl_filter'] == 'bandwidth':
-                project_target, policy_id = slo['target'].split('#')
-                project_id = project_target
-                if project_id not in tmp_slos:
-                    tmp_slos[project_id] = {}
-                if policy_id not in tmp_slos[project_id]:
-                    tmp_slos[project_id][policy_id] = {}
-                tmp_slos[project_id][policy_id][slo['slo_name']] = slo['value']
-
-        ret = []
-        for project_id in tmp_slos.keys():
-            for policy_id in tmp_slos[project_id].keys():
-                get_bw = tmp_slos[project_id][policy_id]['get_bw']
-                put_bw = tmp_slos[project_id][policy_id]['put_bw']
-                sla = access_control_models.AccessControlPolicy(project_id, projects_dict[str(project_id)], policy_id, storage_policies_dict[str(policy_id)], get_bw, put_bw)
-                ret.append(sla)
-
+            
+            
+        for inst in instances:
+            try:
+                inst['user_name'] = [user[1] for user in users if user[0] == inst['user_id']][0]
+                inst['project_name'] = [project[1] for project in projects if project[0] == inst['project_id']][0]
+            except Exception as e:
+                instances = []
+                users = []
+                exceptions.handle(self.request, "User name or project name not found")
+            ret.append(access_control_models.AccessControlPolicy( inst['id'], inst['project_name'], inst['user_name'], inst['write'], inst['read'],
+                                                                  inst['object_type'], inst['object_tag']))  
+  
         return ret
 
 
@@ -227,5 +232,5 @@ class ActivatedMetricsTab(tabs.TableTab):
 
 class PoliciesGroupTabs(tabs.TabGroup):
     slug = "policies_group_tabs"
-    tabs = (StaticPoliciesTab, DynamicPoliciesTab, AccessControlTab, SLOsTab, ObjectTypesTab, ActivatedMetricsTab,)
+    tabs = (StaticPoliciesTab, DynamicPoliciesTab, AccessControlTab, SLOsTab, ObjectTypesTab,)
     sticky = True

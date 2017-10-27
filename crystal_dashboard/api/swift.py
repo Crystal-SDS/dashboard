@@ -227,11 +227,43 @@ def swift_new_storage_policy(request, data):
     r = requests.post(url, json.dumps(data), headers=headers)
     return r
 
+def swift_delete_storage_policy(request, storage_policy_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policy/" + str(storage_policy_id) 
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.delete(url, headers=headers)
+    return r
+
 
 # TODO
-def load_swift_policies(request, data):
-    return {}
+def load_swift_policies(request):
+    token = get_token(request)
+    headers = {}
 
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policies/load"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.post(url, json.dumps({}), headers=headers)
+    return r
+
+def deploy_storage_policy(request, storage_policy_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policy/" + str(storage_policy_id) + "/deploy"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.post(url, json.dumps({}), headers=headers)
+    return r
 
 def swift_list_storage_policies(request):
     token = get_token(request)
@@ -287,6 +319,7 @@ def swift_edit_storage_policy(request, storage_policy_id, data):
 
     r = requests.put(url, json.dumps(data), headers=headers)
     return r
+
 
 def swift_add_disk_storage_policy(request, storage_policy_id, disk_id):
     token = get_token(request)

@@ -37,8 +37,8 @@ class WorkloadMetrics(tabs.TableTab):
             elif inst['execution_server'] == 'proxy/object':
                 inst['execution_server'] = 'Proxy & Storage Nodes'
 
-            ret.append(wm_models.MetricModule(inst['id'], inst['metric_name'], inst['class_name'], inst['out_flow'], inst['in_flow'],
-                                              inst['execution_server'], inst['enabled']))
+            ret.append(wm_models.MetricModule(inst['id'], inst['metric_name'], inst['class_name'], inst['put'], inst['get'], inst['ssync'],
+                                              inst['execution_server'], inst['status']))
         return ret
 
 

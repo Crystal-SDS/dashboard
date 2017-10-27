@@ -9,6 +9,7 @@ policies and rules for governance of cloud.
 ## Requirements
 
 * An [OpenStack Horizon](https://github.com/openstack/horizon) installation.
+* A [Crystal controller](https://github.com/Crystal-SDS/controller) deployment.
 * An [Elastic Stack](https://www.elastic.co/) (Elasticsearch, Logstash, Kibana) installation.
 
 ## Installation

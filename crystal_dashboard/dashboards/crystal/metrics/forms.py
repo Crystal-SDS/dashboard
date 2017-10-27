@@ -20,8 +20,9 @@ class UploadMetricModule(forms.SelfHandlingForm):
                                      attrs={"ng-model": "name", "not-blank": ""}
                                  ))
 
-    in_flow = forms.BooleanField(required=False, label='Put')
-    out_flow = forms.BooleanField(required=False, label='Get')
+    put = forms.BooleanField(required=False, label='Put')
+    get = forms.BooleanField(required=False, label='Get')
+    ssync = forms.BooleanField(required=False, label='Ssync')
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -36,8 +37,11 @@ class UploadMetricModule(forms.SelfHandlingForm):
         })
     )
 
-    enabled = forms.BooleanField(label=_("Enable Workload Metric"),
-                                 required=False)
+    status = forms.CharField(max_length=255,
+                             label=_("Status"),
+                             initial='Stopped',
+                             widget=forms.HiddenInput(  # hidden
+                                attrs={"ng-model": "status"}))
 
     def __init__(self, request, *args, **kwargs):
         super(UploadMetricModule, self).__init__(request, *args, **kwargs)
@@ -61,12 +65,17 @@ class UploadMetricModule(forms.SelfHandlingForm):
 
 
 class UpdateMetricModule(forms.SelfHandlingForm):
+    metric_module_file = forms.FileField(label=_("File"),
+                                         required=False,
+                                         allow_empty_file=False)
+
     class_name = forms.CharField(max_length=255,
                                  label=_("Class Name"),
                                  help_text=_("The main class of the metric module to be created."))
 
-    in_flow = forms.BooleanField(required=False, label='Put')
-    out_flow = forms.BooleanField(required=False, label='Get')
+    put = forms.BooleanField(required=False, label='Put')
+    get = forms.BooleanField(required=False, label='Get')
+    ssync = forms.BooleanField(required=False, label='Ssync')
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -81,19 +90,27 @@ class UpdateMetricModule(forms.SelfHandlingForm):
         })
     )
 
-    enabled = forms.BooleanField(label=_("Enable Workload Metric"),
-                                 required=False)
-
     def __init__(self, request, *args, **kwargs):
         super(UpdateMetricModule, self).__init__(request, *args, **kwargs)
 
     failure_url = 'horizon:crystal:metrics:index'
 
     def handle(self, request, data):
+
+        metric_module_file = data['metric_module_file']
+        del data['metric_module_file']
+        metric_module_id = self.initial['id']
+
         try:
-            metric_module_id = self.initial['id']
-            response = api.update_metric_module(request, metric_module_id, data)
+            response = api.update_metric_module_metadata(request, metric_module_id, data)
             if 200 <= response.status_code < 300:
+                try:
+                    if metric_module_file is not None:
+                        response = api.update_metric_module_data(request, metric_module_id, metric_module_file)
+                        if response.status_code > 300:  # error
+                            raise sdsexception.SdsException(response.text)
+                except Exception as ex:
+                    pass
                 messages.success(request, _('Successfully metric module updated.'))
                 return data
             else:
