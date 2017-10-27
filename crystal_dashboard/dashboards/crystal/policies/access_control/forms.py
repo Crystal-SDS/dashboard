@@ -33,6 +33,11 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
     write = forms.BooleanField(required=False, label="Write")
     read = forms.BooleanField(required=False, label="Read")
 
+    object_type_choices = []
+    object_type = forms.ChoiceField(choices=object_type_choices,
+                                    label=_("Object Type"),
+                                    help_text=_("The type of object the rule will be applied to."),
+                                    required=False)
 
     object_tag = forms.CharField(max_length=255,
                                  label=_("Object Tag"),
@@ -42,12 +47,12 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request)]
+        self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), 
+                                common.get_group_project_choices(request)]
+        
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
-         
-        domain_id = identity.get_domain_id_for_operation(request)
-        users = [(user.id, user.name) for user in api_keystone.keystone.user_list(request, domain=domain_id)]
-        self.users_choices = [('', 'Select one'), ('Users', users)]       
+        
+        self.object_type_choices = common.get_object_type_choices(request)
         
         # Initialization
         super(CreateAccessControlPolicy, self).__init__(request, *args, **kwargs)
@@ -65,9 +70,18 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                                                         help_text=_("The container where the rule will be apply."),
                                                         required=False)
         
+        project = self.fields['project_id'].initial
+        users = [(user.id, user.name) for user in api_keystone.keystone.user_list(request, project=project)]
+        self.users_choices = [('', 'Select one'), ('Users', users)]
+        
         self.fields['user_id'] = forms.ChoiceField(choices=self.users_choices,
                                    label=_("Users"),
                                    required=True)
+        
+        self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
+                                                       label=_("Object Type"),
+                                                       help_text=_("The type of object the rule will be applied to."),
+                                                       required=False)
 
     @staticmethod
     def handle(request, data):

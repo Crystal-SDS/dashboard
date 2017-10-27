@@ -218,6 +218,19 @@ def get_project_list(request):
         projects_list.append((project.id, project.name))
     return projects_list
 
+# Groups
+# =========
+def get_group_project_choices(request):
+    return ('Groups', get_group_project_list(request))
+        
+        
+def get_group_project_list(request):
+    response = api_projects.get_all_project_groups(request).text
+    groups = json.loads(response)
+    groups_choices = [(group['id'], group['name']) for group in groups]
+    
+    return groups_choices
+
 
 # Container
 # =========

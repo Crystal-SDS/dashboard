@@ -10,8 +10,12 @@ from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
 from crystal_dashboard.api import policies as api
+
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal.policies.policies import forms as policies_forms
+
+from openstack_dashboard import api as api_keystone
+from openstack_dashboard.utils import identity
 
 
 class CreateStaticPolicyView(forms.ModalFormView):
@@ -81,38 +85,35 @@ def get_users_by_project(request):
 
     if request.method == 'POST':
         project_id = request.POST.get('project_id')
-        print project_id, request.user.tenant_id
         if request.user.tenant_id == project_id:
 
             try:
                 domain_id = identity.get_domain_id_for_operation(request)
-                users = [(user.id, user.name) for user in api_keystone.keystone.user_list(request, domain=domain_id, project=project_id)]
-                users_list = [('', 'Select one'), ('Users', users)]  
-                
+                users_list = [(user.id, user.name) for user in api_keystone.keystone.user_list(request, domain=domain_id, project=project_id)]
+                    
                 if len(users_list) > 0:
                     # If the project contains some containers
-                    container_response = '<option value="">Select one</option>'
-                    container_response += '<optgroup label="Users">'
-                    for container in container_list:
-                        value, label = container
-                        container_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
-                    container_response += '</optgroup>'
+                    users_response = '<option value="">Select one</option>'
+                    users_response += '<optgroup label="Users">'
+                    for value, label in users_list:
+                        users_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
+
                 else:
                     # If the project does not contain some containers
-                    container_response = '<option value="">None</option>'
+                    users_response = '<option value="">None</option>'
             except:
                 # If get_container_list raises an exception
-                container_response = '<option value="">None</option>'
+                users_response = '<option value="">None</option>'
         else:
             if project_id:
                 # If the selected project is not the current project
-                container_response = '<option value="">Not available</option>'
+                users_response = '<option value="">Not available</option>'
             else:
                 # If the selected project is 'Select one'
-                container_response = '<option value="">None</option>'
+                users_response = '<option value="">None</option>'
 
         # Generate response
-        response = http.StreamingHttpResponse(container_response)
+        response = http.StreamingHttpResponse(users_response)
         return response
     
 

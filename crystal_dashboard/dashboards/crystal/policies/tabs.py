@@ -18,6 +18,8 @@ from crystal_dashboard.dashboards.crystal.policies.object_types import models as
 from crystal_dashboard.dashboards.crystal.policies.object_types import tables as object_types_tables
 from crystal_dashboard.dashboards.crystal.policies.access_control import models as access_control_models
 from crystal_dashboard.dashboards.crystal.policies.access_control import tables as access_control_tables
+from openstack_dashboard import api as api_keystone
+from openstack_dashboard.utils import identity
 
 
 class StaticPoliciesTab(tabs.TableTab):
@@ -99,20 +101,36 @@ class AccessControlTab(tabs.TableTab):
 
     def get_access_control_policies_data(self):
         
-        acl_list = []
+        ret = []
         try:
+            projects = common.get_project_list(self.request)
+            projects += common.get_group_project_list(self.request)            
+            users = [(user.id, user.name) for user in api_keystone.keystone.user_list(self.request)]
             response = api.access_control_policy_list(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
-                acl_list = json.loads(strobj)
+                instances = json.loads(strobj)
             else:
                 error_message = 'Unable to get instances.'
                 raise ValueError(error_message)
         except Exception as e:
-            strobj = "[]"
+            instances = []
+            users = []
             exceptions.handle(self.request, e.message)
- 
-        return []
+            
+            
+        for inst in instances:
+            try:
+                inst['user_name'] = [user[1] for user in users if user[0] == inst['user_id']][0]
+                inst['project_name'] = [project[1] for project in projects if project[0] == inst['project_id']][0]
+            except Exception as e:
+                instances = []
+                users = []
+                exceptions.handle(self.request, "User name or project name not found")
+            ret.append(access_control_models.AccessControlPolicy( inst['id'], inst['project_name'], inst['user_name'], inst['write'], inst['read'],
+                                                                  inst['object_type'], inst['object_tag']))  
+  
+        return ret
 
 
 class SLOsTab(tabs.TableTab):

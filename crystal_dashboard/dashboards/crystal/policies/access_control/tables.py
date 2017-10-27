@@ -63,14 +63,13 @@ class DeleteAccessControlPolicy(tables.DeleteAction):
         try:
             success = True
             error_msg = ''
-            for slo_name in ['get_bw', 'put_bw']:
-                response = api.fil_delete_slo(request, 'bandwidth', slo_name, obj_id)
-                if 200 <= response.status_code < 300:
-                    pass
-                    # messages.success(request, _("Successfully deleted sla: %s") % obj_id)
-                else:
-                    success = False
-                    error_msg = response.text
+            response = api.delete_access_control(request, obj_id)
+            if 200 <= response.status_code < 300:
+                pass
+                # messages.success(request, _("Successfully deleted sla: %s") % obj_id)
+            else:
+                success = False
+                error_msg = response.text
             if not success:
                 raise sdsexception.SdsException(error_msg)
         except Exception as ex:
