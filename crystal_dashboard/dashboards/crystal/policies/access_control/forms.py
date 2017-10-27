@@ -12,7 +12,7 @@ from openstack_dashboard.utils import identity
 
 
 class CreateAccessControlPolicy(forms.SelfHandlingForm):
-    
+
     project_choices = []
     project_id = forms.ChoiceField(choices=project_choices,
                                    label=_("Project"),
@@ -24,12 +24,12 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                                    help_text=_("The container where the rule will be applied."),
                                    required=False,
                                    widget=forms.Select(choices=container_choices))
-    
+
     users_choices = []
     user_id = forms.ChoiceField(choices=users_choices,
-                                   label=_("Users"),
-                                   required=True)
-    
+                                label=_("Users"),
+                                required=True)
+
     write = forms.BooleanField(required=False, label="Write")
     read = forms.BooleanField(required=False, label="Read")
 
@@ -44,16 +44,14 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                                  required=False,
                                  help_text=_("The metadata tag of object the rule will be applied to."))
 
-
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), 
-                                common.get_group_project_choices(request)]
-        
+        self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
+
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
-        
+
         self.object_type_choices = common.get_object_type_choices(request)
-        
+
         # Initialization
         super(CreateAccessControlPolicy, self).__init__(request, *args, **kwargs)
 
@@ -69,15 +67,15 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                                                         label=_("Container"),
                                                         help_text=_("The container where the rule will be apply."),
                                                         required=False)
-        
+
         project = self.fields['project_id'].initial
         users = [(user.id, user.name) for user in api_keystone.keystone.user_list(request, project=project)]
         self.users_choices = [('', 'Select one'), ('Users', users)]
-        
+
         self.fields['user_id'] = forms.ChoiceField(choices=self.users_choices,
-                                   label=_("Users"),
-                                   required=True)
-        
+                                                   label=_("Users"),
+                                                   required=True)
+
         self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
                                                        label=_("Object Type"),
                                                        help_text=_("The type of object the rule will be applied to."),

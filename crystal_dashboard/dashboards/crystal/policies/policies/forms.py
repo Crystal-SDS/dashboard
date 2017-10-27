@@ -48,7 +48,6 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
                                    help_text=_("The container where the rule will be applied."),
                                    required=False,
                                    widget=forms.Select(choices=container_choices))
-    
 
     filter_dsl_choices = []
     filter_id = forms.ChoiceField(choices=filter_dsl_choices,
@@ -103,7 +102,7 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request)]
+        self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
 
         # Obtain list of dsl filters
@@ -247,7 +246,7 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request)]
+        self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
         self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
 
         # Obtain list of dsl filters
