@@ -34,10 +34,12 @@ class WorkloadMetrics(tabs.TableTab):
         for inst in instances:
             if inst['execution_server'] == 'proxy':
                 inst['execution_server'] = 'Proxy Node'
+            elif inst['execution_server'] == 'object':
+                inst['execution_server'] = 'Storage Node'
             elif inst['execution_server'] == 'proxy/object':
                 inst['execution_server'] = 'Proxy & Storage Nodes'
 
-            ret.append(wm_models.MetricModule(inst['id'], inst['metric_name'], inst['class_name'], inst['put'], inst['get'], inst['ssync'],
+            ret.append(wm_models.MetricModule(inst['id'], inst['metric_name'], inst['class_name'], inst['put'], inst['get'], inst['replicate'],
                                               inst['execution_server'], inst['status']))
         return ret
 

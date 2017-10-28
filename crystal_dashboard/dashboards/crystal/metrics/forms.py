@@ -22,7 +22,7 @@ class UploadMetricModule(forms.SelfHandlingForm):
 
     put = forms.BooleanField(required=False, label='Put')
     get = forms.BooleanField(required=False, label='Get')
-    ssync = forms.BooleanField(required=False, label='Ssync')
+    replicate = forms.BooleanField(required=False, label='Replicate')
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
@@ -75,7 +75,7 @@ class UpdateMetricModule(forms.SelfHandlingForm):
 
     put = forms.BooleanField(required=False, label='Put')
     get = forms.BooleanField(required=False, label='Get')
-    ssync = forms.BooleanField(required=False, label='Ssync')
+    replicate = forms.BooleanField(required=False, label='Replicate')
 
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
