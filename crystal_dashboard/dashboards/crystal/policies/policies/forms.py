@@ -103,7 +103,6 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
         self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
-        self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
 
         # Obtain list of dsl filters
         self.dsl_filter_choices = common.get_dsl_filter_list_choices(request)
@@ -115,10 +114,14 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
 
         # Overwrite target_id input form
         self.fields['target_id'] = forms.ChoiceField(choices=self.target_choices,
-                                                     initial=request.user.project_id,  # Default project is the current one
+                                                     # initial=request.user.project_id,  # Default project is the current one
                                                      label=_("Project"),
                                                      help_text=_("The project where the rule will be apply."),
                                                      required=True)
+
+        # project_id = self.fields['target_id'].initial
+
+        # self.container_choices = common.get_container_list_choices(request, project_id)  # Default: containers from current project
 
         # Overwrite contained_id input form
         self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,

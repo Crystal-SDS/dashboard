@@ -25,7 +25,7 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                                    required=True,
                                    widget=forms.Select(choices=container_choices))
 
-    users_choices = []
+    users_choices = [('', 'None')]
     user_id = forms.ChoiceField(choices=users_choices,
                                 label=_("Users"),
                                 required=True)
@@ -46,8 +46,7 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.project_choices = [('', 'Select one'), common.get_project_group_list_choices(request)]
-
+        self.project_choices = [('', 'Select one'), common.get_project_list_choices(request)]
 
         self.object_type_choices = common.get_object_type_choices(request)
 
@@ -56,20 +55,20 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
         # Overwrite project_id input form
         self.fields['project_id'] = forms.ChoiceField(choices=self.project_choices,
-                                                      initial=request.user.project_id,  # Default project is the current one
+                                                      # initial=request.user.project_id,  # Default project is the current one
                                                       label=_("Project"),
                                                       help_text=_("The project where the rule will be apply."),
                                                       required=True)
 
-        project = self.fields['project_id'].initial
-        
-        self.container_choices = common.get_container_list_choices(request, project)
+        # project = self.fields['project_id'].initial
+
+        # self.container_choices = common.get_container_list_choices(request, project)
         self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,
                                                         label=_("Container"),
                                                         help_text=_("The container where the rule will be apply."),
                                                         required=True)
 
-        self.users_choices = common.get_user_list_choices(request, project)
+        # self.users_choices = common.get_user_list_choices(request, project)
         self.fields['user_id'] = forms.ChoiceField(choices=self.users_choices,
                                                    label=_("Users"),
                                                    required=True)
@@ -95,7 +94,7 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
 
 class UpdateAccessControlPolicy(forms.SelfHandlingForm):
-    
+
     write = forms.BooleanField(required=False, label="Write")
     read = forms.BooleanField(required=False, label="Read")
 
@@ -107,7 +106,7 @@ class UpdateAccessControlPolicy(forms.SelfHandlingForm):
             acl_id = self.initial["policy_id"]
             response = api.update_access_control_policy(request, data, acl_id)
             if 200 > response.status_code >= 300:
-                raise sdsexception.SdsException(error_msg)
+                raise sdsexception.SdsException(response)
             else:
                 messages.success(request, _('Successfully updated policy: %s') % self.initial['policy_id'])
                 return data

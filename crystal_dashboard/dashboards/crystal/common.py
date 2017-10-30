@@ -233,15 +233,7 @@ def get_group_project_list(request):
     return groups_choices
 
 
-def get_project_group_list_choices(request):
-    """
-    Get a tuple of project choices
-
-    :param request: the request which the dashboard is using
-    :return: tuple with project choices
-    """
-    return ('Projects', get_project_list_crystal_enabled(request) + get_group_project_list(request))
-
+# =========
 # Container
 # =========
 def get_container_list_choices(request, project_id):
@@ -278,8 +270,10 @@ def get_container_list(request, project_id):
         containers_list.append((container['name'], container['name']))
     return containers_list
 
+
+# =========
 # Users
-# ==============
+# =========
 def get_user_list_choices(request, project_id):
     """
     Get a tuple of user choices
@@ -302,7 +296,7 @@ def get_users_list(request, project_id):
         if 200 <= response.status_code < 300:
             response_text = response.text
         else:
-            raise ValueError('Unable to get containers')
+            raise ValueError('Unable to get users')
     except Exception as exc:
         response_text = '[]'
         exceptions.handle(request, _(exc.message))
@@ -311,11 +305,12 @@ def get_users_list(request, project_id):
     users = json.loads(response_text)
     # Iterate object types
     for user in users:
-        users_list.append((user['name'], user['name']))
+        users_list.append((user['id'], user['name']))
     return users_list
 
 
-# Storage Policy
+# ==============
+# Storage Policies
 # ==============
 def get_storage_policy_list_choices(request, by_attribute):
     """
@@ -354,6 +349,7 @@ def get_storage_policy_list(request, by_attribute):
     return storage_policies_list
 
 
+# ==============
 # Workload Metrics
 # ==============
 def get_activated_workload_metrics_list_choices(request):
@@ -363,6 +359,6 @@ def get_activated_workload_metrics_list_choices(request):
     :param request: the request which the dashboard is using
     :return: tuple with activaded workload metric choices
     """
-    
+
     workload_metrics_choices = [(obj['name'], obj['name']) for obj in json.loads(api_metrics.get_activated_workload_metrics(request).text)]
     return ('', 'Select one'), ('Workload Metrics', workload_metrics_choices)
