@@ -135,3 +135,19 @@ def delete_project_group(request, group_id):
 
     r = requests.delete(url, headers=headers)
     return r
+
+
+#
+# Project users
+#
+def get_project_users(request, project_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/" + str(project_id) + "/users"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
