@@ -84,6 +84,7 @@ def dsl_add_policy(request, policy):
     r = requests.post(url, policy, headers=headers)
     return r
 
+
 def create_dynamic_policy(request, data):
     token = get_token(request)
     headers = {}
@@ -96,6 +97,7 @@ def create_dynamic_policy(request, data):
     r = requests.put(url, json.dumps(data), headers=headers)
     return r
 
+
 def update_dynamic_policy(request, policy_id, data):
     token = get_token(request)
     headers = {}
@@ -107,6 +109,7 @@ def update_dynamic_policy(request, policy_id, data):
 
     r = requests.put(url, json.dumps(data), headers=headers)
     return r
+
 
 def list_dynamic_policies(request):
     token = get_token(request)
@@ -150,6 +153,7 @@ def create_access_control_policy(request, data):
     r = requests.post(url, json.dumps(data), headers=headers)
     return r
 
+
 def access_control_policy_list(request):
     token = get_token(request)
     headers = {}
@@ -161,6 +165,7 @@ def access_control_policy_list(request):
 
     r = requests.get(url, headers=headers)
     return r
+
 
 def delete_access_control(request, policy_id):
     token = get_token(request)
@@ -174,6 +179,33 @@ def delete_access_control(request, policy_id):
 
     r = requests.delete(url, headers=headers)
     return r
+
+
+def get_access_control_policy(request, policy_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/policies/acl/" + str(policy_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
+def update_access_control_policy(request, data, policy_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/policies/acl/" + str(policy_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
+
 
 #
 # Object Types

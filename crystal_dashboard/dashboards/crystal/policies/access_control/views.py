@@ -42,25 +42,20 @@ class UpdateView(forms.ModalFormView):
         context["submit_url"] = reverse(self.submit_url, args=args)
         return context
 
-    @memoized.memoized_method
     def _get_object(self, *args, **kwargs):
-        slo_id = self.kwargs["slo_id"]
+        acl_id = self.kwargs["policy_id"]
         try:
-            get_sla = api.fil_get_slo(self.request, 'bandwidth', 'get_bw', slo_id)
-            put_sla = api.fil_get_slo(self.request, 'bandwidth', 'put_bw', slo_id)
-
-            obj = {"id": slo_id,
-                   "get_bandwidth": json.loads(get_sla.text)['value'],
-                   "put_bandwidth": json.loads(put_sla.text)['value']}
-            return obj
-
-        except Exception:
-            redirect = self.success_url
-            msg = _("Unable to retrieve policy details.")
-            exceptions.handle(self.request, msg, redirect=redirect)
-
+            response = api.get_access_control_policy(self.request, acl_id)
+            if 200 > response.status_code >= 300:
+                raise sdsexception.SdsException(error_msg)
+            else:
+                return json.loads(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:policies:index")
+            error_message = "Unable to update ACL.\t %s" % ex.message
+            exceptions.handle(self.request, _(error_message), redirect=redirect)
+            
     def get_initial(self):
-        # sla = self._get_object()
-        # initial = json.loads(sla.text)
-        # return initial
-        return self._get_object()
+        initial = self._get_object()
+        initial['policy_id'] = self.kwargs["policy_id"]  
+        return initial

@@ -94,5 +94,5 @@ class AccessControlTable(tables.DataTable):
         name = "access_control_policies"
         verbose_name = _("Access Control")
         table_actions = (MyFilterAction, CreateAccessControlPolicy, DeleteMultipleAccessControlPolicies)
-        row_actions = (DeleteAccessControlPolicy,)
+        row_actions = (UpdateAccessControlPolicy, DeleteAccessControlPolicy,)
         hidden_title = False

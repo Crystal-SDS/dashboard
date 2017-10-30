@@ -233,19 +233,20 @@ def get_group_project_list(request):
     return groups_choices
 
 
+# =========
 # Container
 # =========
-def get_container_list_choices(request):
+def get_container_list_choices(request, project_id):
     """
     Get a tuple of container choices
 
     :param request: the request which the dashboard is using
     :return: tuple with container choices
     """
-    return ('', 'Select one'), ('Containers', get_container_list(request))
+    return ('', 'Select one'), ('Containers', get_container_list(request, project_id))
 
 
-def get_container_list(request):
+def get_container_list(request, project_id):
     """
     Get a list of containers
 
@@ -253,18 +254,63 @@ def get_container_list(request):
     :return: list with containers
     """
     try:
-        swift_headers, swift_containers = swift.swift_api(request).get_account(full_listing=True)
-    except ClientException:
-        swift_containers = []
+        response = api_swift.swift_get_project_containers(request, project_id)
+        if 200 <= response.status_code < 300:
+            response_text = response.text
+        else:
+            raise ValueError('Unable to get containers')
+    except Exception as exc:
+        response_text = '[]'
+        exceptions.handle(request, _(exc.message))
 
     containers_list = []
-    # Iterate containers
-    for container in swift_containers:
+    containers = json.loads(response_text)
+    # Iterate object types
+    for container in containers:
         containers_list.append((container['name'], container['name']))
     return containers_list
 
 
-# Storage Policy
+# =========
+# Users
+# =========
+def get_user_list_choices(request, project_id):
+    """
+    Get a tuple of user choices
+
+    :param request: the request which the dashboard is using
+    :return: tuple with container choices
+    """
+    return ('', 'Select one'), ('Users', get_users_list(request, project_id))
+
+
+def get_users_list(request, project_id):
+    """
+    Get a list of users
+
+    :param request: the request which the dashboard is using
+    :return: list with containers
+    """
+    try:
+        response = api_projects.get_project_users(request, project_id)
+        if 200 <= response.status_code < 300:
+            response_text = response.text
+        else:
+            raise ValueError('Unable to get users')
+    except Exception as exc:
+        response_text = '[]'
+        exceptions.handle(request, _(exc.message))
+
+    users_list = []
+    users = json.loads(response_text)
+    # Iterate object types
+    for user in users:
+        users_list.append((user['id'], user['name']))
+    return users_list
+
+
+# ==============
+# Storage Policies
 # ==============
 def get_storage_policy_list_choices(request, by_attribute):
     """
@@ -303,6 +349,7 @@ def get_storage_policy_list(request, by_attribute):
     return storage_policies_list
 
 
+# ==============
 # Workload Metrics
 # ==============
 def get_activated_workload_metrics_list_choices(request):
@@ -312,6 +359,6 @@ def get_activated_workload_metrics_list_choices(request):
     :param request: the request which the dashboard is using
     :return: tuple with activaded workload metric choices
     """
-    
+
     workload_metrics_choices = [(obj['name'], obj['name']) for obj in json.loads(api_metrics.get_activated_workload_metrics(request).text)]
     return ('', 'Select one'), ('Workload Metrics', workload_metrics_choices)

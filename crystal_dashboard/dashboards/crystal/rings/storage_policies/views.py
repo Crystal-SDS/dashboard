@@ -101,7 +101,7 @@ class ManageDisksView(tables.DataTableView):
 
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve devices.'))
-        return devices
+        return sorted(devices, lambda x: x['id'].lower())
 
 
 class AddDisksView(forms.ModalFormMixin, tables.DataTableView):
@@ -126,4 +126,4 @@ class AddDisksView(forms.ModalFormMixin, tables.DataTableView):
                 devices_objects.append(models.Device(device['id'], controller_name, device['region'], device['zone'], device_name, occuped, total))
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve devices.'))
-        return devices_objects
+        return sorted(devices_objects, lambda x: x['id'].lower())

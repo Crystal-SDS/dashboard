@@ -203,7 +203,7 @@ class UpdateRow(tables.Row):
         data = json.loads(response.text)
 
         filter = MetricModule(data['id'], data['metric_name'], data['class_name'], data['put'],
-                              data['get'], data['ssync'], data['execution_server'], data['status'])
+                              data['get'], data['replicate'], data['execution_server'], data['status'])
         return filter
 
 
