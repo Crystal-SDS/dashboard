@@ -47,6 +47,8 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
         self.project_choices = [('', 'Select one'), common.get_project_list_choices(request)]
+        
+        self.container_choices = common.get_all_containers_list_choices(request)
 
         self.object_type_choices = common.get_object_type_choices(request)
 

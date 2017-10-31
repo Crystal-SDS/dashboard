@@ -104,6 +104,7 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
         # Obtain list of projects
         self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
 
+        self.container_choices = common.get_all_containers_list_choices(request)
         # Obtain list of dsl filters
         self.dsl_filter_choices = common.get_dsl_filter_list_choices(request)
         # Obtain list of object types
@@ -118,10 +119,6 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
                                                      label=_("Project"),
                                                      help_text=_("The project where the rule will be apply."),
                                                      required=True)
-
-        # project_id = self.fields['target_id'].initial
-
-        # self.container_choices = common.get_container_list_choices(request, project_id)  # Default: containers from current project
 
         # Overwrite contained_id input form
         self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,
@@ -148,7 +145,7 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
                                                                     data['container_id'], data)
             else:
                 response = filters_api.deploy_filter(request, data['filter_id'], data['target_id'], data)
-
+    
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully created static policy'))
                 return data
@@ -250,8 +247,9 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
         self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
-        # self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
 
+        self.container_choices = common.get_all_containers_list_choices(request)
+        
         # Obtain list of dsl filters
         self.dsl_filter_choices = common.get_dsl_filter_list_choices(request)
         # Obtain list of object types
