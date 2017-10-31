@@ -102,7 +102,7 @@ class CreateStaticPolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.target_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
+        self.target_choices = [('', 'Select one'), common.get_project_list_choices(request)]
 
         self.container_choices = common.get_all_containers_list_choices(request)
         # Obtain list of dsl filters
@@ -246,7 +246,7 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.project_choices = [('', 'Select one'), ('global', 'Global (All Projects)'), common.get_project_list_choices(request), common.get_group_project_choices(request)]
+        self.project_choices = [('', 'Select one'), common.get_project_list_choices(request)]
 
         self.container_choices = common.get_all_containers_list_choices(request)
         

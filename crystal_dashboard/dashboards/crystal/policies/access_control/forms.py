@@ -51,6 +51,9 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
         self.container_choices = common.get_all_containers_list_choices(request)
 
         self.object_type_choices = common.get_object_type_choices(request)
+        
+        users = [(user.id, user.name) for user in api_keystone.keystone.user_list(request)]
+        self.users_choices = [('', 'Select one'), ('Users', users)]
 
         # Initialization
         super(CreateAccessControlPolicy, self).__init__(request, *args, **kwargs)
