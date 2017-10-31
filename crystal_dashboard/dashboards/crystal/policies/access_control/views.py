@@ -8,6 +8,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
 from crystal_dashboard.api import policies as api
+from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.dashboards.crystal.policies.access_control import forms as ac_forms
 
 
@@ -47,15 +48,15 @@ class UpdateView(forms.ModalFormView):
         try:
             response = api.get_access_control_policy(self.request, acl_id)
             if 200 > response.status_code >= 300:
-                raise sdsexception.SdsException(error_msg)
+                raise sdsexception.SdsException(response.text)
             else:
                 return json.loads(response.text)
         except Exception as ex:
             redirect = reverse("horizon:crystal:policies:index")
             error_message = "Unable to update ACL.\t %s" % ex.message
             exceptions.handle(self.request, _(error_message), redirect=redirect)
-            
+
     def get_initial(self):
         initial = self._get_object()
-        initial['policy_id'] = self.kwargs["policy_id"]  
+        initial['policy_id'] = self.kwargs["policy_id"]
         return initial

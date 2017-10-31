@@ -98,15 +98,15 @@ class StartInstance(tables.BatchAction):
         try:
             response = api.update_instance(request, datum_id, {'status': 'Running'})
             if 200 <= response.status_code < 300:
-                messages.success(request, _("Instance successfully started."))
-                return data
+                pass
+                # messages.success(request, _("Instance successfully started."))
+                # return data
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
             redirect = reverse("horizon:crystal:controllers:index")
             error_message = "Unable to start instance.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
-
 
 
 class StopInstance(tables.BatchAction):
@@ -137,8 +137,9 @@ class StopInstance(tables.BatchAction):
         try:
             response = api.update_instance(request, datum_id, {'status': 'Stopped'})
             if 200 <= response.status_code < 300:
-                messages.success(request, _("Instance successfully stopped."))
-                return data
+                pass
+                # messages.success(request, _("Instance successfully stopped."))
+                # return data
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:

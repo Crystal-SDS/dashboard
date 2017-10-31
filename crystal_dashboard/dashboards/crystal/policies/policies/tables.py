@@ -299,7 +299,7 @@ class DisableMultipleDynamicPolicies(DisableDynamicPolicy):
         return super(DisableMultipleDynamicPolicies, self).handle(table, request, allowed_ids)
 
     name = "disable_multiple_dynamic_policies"
-    
+
 
 class DynamicPoliciesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))

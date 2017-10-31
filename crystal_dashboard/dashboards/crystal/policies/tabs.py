@@ -53,14 +53,14 @@ class StaticPoliciesTab(tabs.TableTab):
             elif inst['reverse'] == 'object':
                 inst['reverse'] = 'Storage Node'
             if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], 
-                                                        inst['object_type'], inst['object_size'], inst['object_tag'], 
-                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'], 
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'],
+                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
                                                         inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
-                
+
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], 
-                                                        inst['object_type'], inst['object_size'], inst['object_tag'], 
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'],
                                                         inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
                                                         inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
         return ret
@@ -100,11 +100,9 @@ class AccessControlTab(tabs.TableTab):
     preload = False
 
     def get_access_control_policies_data(self):
-        
+
         ret = []
         try:
-            projects = common.get_project_list(self.request)
-            projects += common.get_group_project_list(self.request)            
             users = [(user.id, user.name) for user in api_keystone.keystone.user_list(self.request)]
             response = api.access_control_policy_list(self.request)
             if 200 <= response.status_code < 300:
@@ -117,19 +115,18 @@ class AccessControlTab(tabs.TableTab):
             instances = []
             users = []
             exceptions.handle(self.request, e.message)
-            
-            
+
         for inst in instances:
             try:
                 inst['user_name'] = [user[1] for user in users if user[0] == inst['user_id']][0]
-                inst['project_name'] = [project[1] for project in projects if project[0] == inst['project_id']][0]
             except Exception as e:
                 instances = []
                 users = []
-                exceptions.handle(self.request, "User name or project name not found")
-            ret.append(access_control_models.AccessControlPolicy( inst['id'], inst['project_name'], inst['user_name'], inst['write'], inst['read'],
-                                                                  inst['object_type'], inst['object_tag']))  
-  
+                exceptions.handle(self.request, "User name not found")
+            ret.append(access_control_models.AccessControlPolicy(inst['id'], inst['target_id'], inst['target_name'],
+                                                                 inst['user_name'], inst['write'], inst['read'],
+                                                                 inst['object_type'], inst['object_tag']))
+
         return ret
 
 

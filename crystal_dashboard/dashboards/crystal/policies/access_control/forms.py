@@ -26,9 +26,10 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                                    widget=forms.Select(choices=container_choices))
 
     users_choices = [('', 'None')]
-    user_id = forms.ChoiceField(choices=users_choices,
-                                label=_("Users"),
-                                required=True)
+    user_id = forms.CharField(label=_("Users"),
+                              help_text=_("The user where the rule will be applied."),
+                              required=True,
+                              widget=forms.Select(choices=users_choices))
 
     write = forms.BooleanField(required=False, label="Write")
     read = forms.BooleanField(required=False, label="Read")
@@ -55,23 +56,9 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
         # Overwrite project_id input form
         self.fields['project_id'] = forms.ChoiceField(choices=self.project_choices,
-                                                      # initial=request.user.project_id,  # Default project is the current one
                                                       label=_("Project"),
                                                       help_text=_("The project where the rule will be apply."),
                                                       required=True)
-
-        # project = self.fields['project_id'].initial
-
-        # self.container_choices = common.get_container_list_choices(request, project)
-        self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,
-                                                        label=_("Container"),
-                                                        help_text=_("The container where the rule will be apply."),
-                                                        required=True)
-
-        # self.users_choices = common.get_user_list_choices(request, project)
-        self.fields['user_id'] = forms.ChoiceField(choices=self.users_choices,
-                                                   label=_("Users"),
-                                                   required=True)
 
         self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
                                                        label=_("Object Type"),
@@ -89,7 +76,7 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                 raise ValueError(response.text)
         except Exception as ex:
             redirect = reverse("horizon:crystal:policies:index")
-            error_message = "Unable to create access control policy/rule.\t %s" % ex.message
+            error_message = "Unable to create access control policy.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
