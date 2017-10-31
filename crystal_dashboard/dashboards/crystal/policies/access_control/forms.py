@@ -84,9 +84,25 @@ class UpdateAccessControlPolicy(forms.SelfHandlingForm):
 
     write = forms.BooleanField(required=False, label="Write")
     read = forms.BooleanField(required=False, label="Read")
+    object_type_choices = []
+    object_type = forms.ChoiceField(choices=object_type_choices,
+                                    label=_("Object Type"),
+                                    help_text=_("The type of object the rule will be applied to."),
+                                    required=False)
+
+    object_tag = forms.CharField(max_length=255,
+                                 label=_("Object Tag"),
+                                 required=False,
+                                 help_text=_("The metadata tag of object the rule will be applied to."))
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateAccessControlPolicy, self).__init__(request, *args, **kwargs)
+
+        self.object_type_choices = common.get_object_type_choices(request)
+        self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
+                                                       label=_("Object Type"),
+                                                       help_text=_("The type of object the rule will be applied to."),
+                                                       required=False)
 
     def handle(self, request, data):
         try:

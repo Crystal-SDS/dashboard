@@ -1,10 +1,8 @@
-import json
-
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
-from    horizon import forms
+from horizon import forms
 from horizon import messages
 from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
@@ -41,7 +39,7 @@ class UploadNativeFilter(forms.SelfHandlingForm):
                                    widget=forms.HiddenInput(
                                        attrs={"ng-model": "dependencies"}
                                    ))
-    
+
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                               attrs={'rows': 2}),
                               label=_("Valid Parameters"),
@@ -77,7 +75,7 @@ class UploadNativeFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
-    
+
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                               attrs={'rows': 2}),
                               label=_("Valid Parameters"),
@@ -159,7 +157,7 @@ class UploadStorletFilter(forms.SelfHandlingForm):
 
     put = forms.BooleanField(required=False, label="PUT")
     get = forms.BooleanField(required=False, label="GET")
-    
+
     execution_server = forms.ChoiceField(
         label=_('Execution Server'),
         choices=[
@@ -184,7 +182,7 @@ class UploadStorletFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
-    
+
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                           attrs={'rows': 2}),
                           label=_("Valid Parameters"),
@@ -271,7 +269,7 @@ class UpdateNativeFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
-    
+
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                           attrs={'rows': 2}),
                           label=_("Valid Parameters"),
@@ -362,7 +360,7 @@ class UpdateStorletFilter(forms.SelfHandlingForm):
             'data-slug': 'source'
         })
     )
-    
+
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                           attrs={'rows': 2}),
                           label=_("Valid Parameters"),
