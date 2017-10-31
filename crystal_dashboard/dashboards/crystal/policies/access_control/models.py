@@ -13,3 +13,10 @@ class AccessControlPolicy:
         self.read = read
         self.object_type = object_type
         self.object_tag = object_tag
+
+        self.permissions = (('WRITE, ' if write else '') + ('READ, ' if read else ''))[0:-2]
+
+        if (not object_type and not object_tag) or not read:
+            self.conditions = 'None'
+        else:
+            self.conditions = (('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
