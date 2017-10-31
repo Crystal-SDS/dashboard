@@ -22,7 +22,7 @@ class UpdateCell(tables.UpdateAction):
             response = api.get_controller(request, id)
             data = json.loads(response.text)
             data[cell_name] = new_cell_value
-            api.update_controller(request, id, data)
+            api.update_controller_metadata(request, id, data)
         except Conflict:
             # Returning a nice error message about name conflict. The message
             # from exception is not that clear for the user
@@ -125,6 +125,7 @@ class DownloadController(tables.LinkAction):
     def get_link_url(self, datum=None):
         base_url = reverse('horizon:crystal:controllers:controllers:download_controller', kwargs={'controller_id': datum.id})
         return base_url
+
 
 class ControllersTable(tables.DataTable):
     # id = tables.Column("id", verbose_name=_("ID"))

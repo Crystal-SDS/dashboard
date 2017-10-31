@@ -44,6 +44,7 @@ def get_all_controllers(request):
     r = requests.get(url, headers=headers)
     return r
 
+
 def update_controller_data(request, controller_id, in_memory_file):
     token = get_token(request)
     headers = {}
@@ -56,6 +57,7 @@ def update_controller_data(request, controller_id, in_memory_file):
 
     r = requests.put(url, files=files, headers=headers)
     return r
+
 
 def update_controller_metadata(request, controller_id, data):
     token = get_token(request)
