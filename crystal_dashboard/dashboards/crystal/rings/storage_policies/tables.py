@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 from django.core.urlresolvers import reverse_lazy
+from django import shortcuts
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
@@ -38,23 +39,24 @@ class LoadSwiftPolicies(tables.Action):
     name = "load_swift_policies"
     verbose_name = _("Load Swift Policies")
     requires_input = False
-    success_url = "horizon:crystal:rings:index"
-    
+    icon = "upload"
+
     def allowed(self, request, policies):
-        return len(self.table.get_rows()) == 0;
-    
-    def handle(self, data_table, request, object_ids):
+        return len(self.table.get_rows()) == 0
+
+    def single(self, data_table, request, object_id):
         try:
             response = api.load_swift_policies(request)
             if 200 <= response.status_code < 300:
-                messages.success(request, _("Policies loaded successfully"))
+                messages.success(request, _("Storage Policies loaded successfully"))
+                return shortcuts.redirect('horizon:crystal:rings:index')
             else:
                 raise sdsexception.SdsException(response.text)
         except Exception as ex:
             redirect = reverse("horizon:crystal:rings:index")
             error_message = "Unable to load policies.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
-    
+
 
 class ManageDisksLink(tables.LinkAction):
     name = "users"
@@ -87,11 +89,11 @@ class UpdateRow(tables.Row):
         response = api.swift_storage_policy_detail(request, obj_id)
         inst = json.loads(response.text)
         parameters = ', '.join([key.replace('_', ' ').title()+':'+inst[key] for key in inst.keys() if key not in ['id', 'name', 'policy_type', 'default', 'devices', 'deprecated', 'deployed']])
-        policy = storage_policies_models.StoragePolicy(inst['storage_policy_id'], inst['name'], inst['policy_type'], 
+        policy = storage_policies_models.StoragePolicy(inst['storage_policy_id'], inst['name'], inst['policy_type'],
                                                        inst['default'], parameters, inst['deprecated'], inst['deployed'], inst['devices'])
 
         return policy
-    
+
 
 class UpdateStoragePolicy(tables.LinkAction):
     name = "update"
@@ -141,7 +143,7 @@ class DeleteStoragePolicy(tables.DeleteAction):
 class DeleteMultipleStoragePolicies(DeleteStoragePolicy):
     name = "delete_multiple_storage_policies"
 
-    
+
 class DeployChanges(tables.BatchAction):
     @staticmethod
     def action_present(count):
@@ -163,7 +165,7 @@ class DeployChanges(tables.BatchAction):
     icon = "plus"
     requires_input = True
     success_url = "horizon:crystal:rings:index"
-    
+
     def allowed(self, request, storage_policy):
         return not storage_policy.deployed
 
@@ -176,7 +178,7 @@ class DeployChanges(tables.BatchAction):
             redirect = reverse("horizon:crystal:rings:index")
             error_message = "Unable to deploy storage policy.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
-    
+
 
 class StoragePolicyTable(tables.DataTable):
 
@@ -187,14 +189,14 @@ class StoragePolicyTable(tables.DataTable):
                             form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     parameters = tables.Column('parameters', verbose_name=_("Parameters"))
     deprecated = tables.Column('deprecated', verbose_name=_("Deprecated"),
-                            form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
+                               form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
     devices = tables.Column('devices', verbose_name=_("Devices"))
     deployed = tables.Column('deployed', verbose_name=_("Deployed"))
 
     class Meta:
         name = "storagepolicies"
         verbose_name = _("Storage Policies")
-        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies,DeleteMultipleStoragePolicies,)
+        table_actions = (MyFilterAction, CreateStoragePolicy, CreateECStoragePolicy, LoadSwiftPolicies, DeleteMultipleStoragePolicies,)
         row_actions = (DeployChanges, ManageDisksLink, UpdateStoragePolicy, DeleteStoragePolicy)
         row_class = UpdateRow
 
@@ -240,8 +242,7 @@ class DeleteDisk(tables.DeleteAction):
             redirect = reverse("horizon:crystal:rings:storage_policies:devices")
             error_message = "Unable to remove disk.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
-        
-        
+
     def get_success_url(self, request=None):
         policy_id = self.table.kwargs.get('policy_id', None)
         return reverse(self.success_url, args=[policy_id])
@@ -297,7 +298,7 @@ class AddDisksAction(tables.BatchAction):
     def get_success_url(self, request=None):
         policy_id = self.table.kwargs.get('policy_id', None)
         return reverse(self.success_url, args=[policy_id])
-    
+
 
 class AddDisksTable(ManageDisksTable):
 

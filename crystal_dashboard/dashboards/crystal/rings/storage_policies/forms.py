@@ -4,7 +4,6 @@ from django.core.urlresolvers import reverse
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-import json
 
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from crystal_dashboard.api import swift as api
@@ -22,31 +21,29 @@ class CreateStoragePolicy(forms.SelfHandlingForm):
                                label=_("Num. Replicas"),
                                help_text=_("Number of replicas"),
                                initial=3)
- 
+
     partition_power = forms.CharField(max_length=255,
                                       label=_("Partiton Power"),
                                       help_text=_("If the value is x the num of partitions will be 2^x"),
                                       initial=10)
- 
+
     time = forms.CharField(max_length=255,
                            label=_("Time"),
                            help_text=_("Time between moving a partition more than once. In hours"),
                            initial=1)
-    
-    
+
     policy_type = forms.CharField(widget=forms.HiddenInput(), initial='replication')
- 
+
     deprecated = forms.CharField(widget=forms.HiddenInput(), initial='False')
-  
+
     deployed = forms.CharField(widget=forms.HiddenInput(), initial='False')
-    
+
     default = forms.CharField(widget=forms.HiddenInput(), initial='False')
-      
+
     devices = forms.CharField(widget=forms.HiddenInput(), initial='[]')
 
     def __init__(self, request, *args, **kwargs):
         super(CreateStoragePolicy, self).__init__(request, *args, **kwargs)
-
 
     def handle(self, request, data):
         try:
@@ -60,7 +57,6 @@ class CreateStoragePolicy(forms.SelfHandlingForm):
             redirect = reverse("horizon:crystal:rings:index")
             error_message = "Unable to create storage policy.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
-        
 
 
 class UpdateStoragePolicy(forms.SelfHandlingForm):
@@ -70,8 +66,6 @@ class UpdateStoragePolicy(forms.SelfHandlingForm):
 
     default = forms.BooleanField(required=False, label="Default")
     deprecated = forms.BooleanField(required=False, label="Deprecated")
-
-
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
@@ -137,17 +131,16 @@ class CreateECStoragePolicy(forms.SelfHandlingForm):
                                             required=True,
                                             help_text=_("EC Duplication enables Swift to make duplicated copies of fragments of erasure coded objects."),
                                             initial=1)
-    
+
     policy_type = forms.CharField(widget=forms.HiddenInput(), initial='EC')
 
     deprecated = forms.CharField(widget=forms.HiddenInput(), initial='False')
-  
-    deployed = forms.CharField(widget=forms.HiddenInput(), initial='False')
-    
-    devices = forms.CharField(widget=forms.HiddenInput(), initial='[]')
-    
-    default = forms.CharField(widget=forms.HiddenInput(), initial='False')
 
+    deployed = forms.CharField(widget=forms.HiddenInput(), initial='False')
+
+    devices = forms.CharField(widget=forms.HiddenInput(), initial='[]')
+
+    default = forms.CharField(widget=forms.HiddenInput(), initial='False')
 
     def __init__(self, request, *args, **kwargs):
         super(CreateECStoragePolicy, self).__init__(request, *args, **kwargs)
@@ -164,25 +157,3 @@ class CreateECStoragePolicy(forms.SelfHandlingForm):
             redirect = reverse("horizon:crystal:rings:index")
             error_message = "Unable to create storage policy.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
-
-
-class LoadSwiftPolicies(forms.SelfHandlingForm):
-    name = forms.CharField(max_length=255,
-                           label=_("Name"),
-                           help_text=_("The name assigned to new storage node."),
-                           widget=forms.TextInput(
-                               attrs={"ng-model": "name", "not-blank": ""}
-                           ))
-    type = forms.CharField(max_length=255,
-                           label=_("Type"),
-                           help_text=_("SSD or HDD"),
-                           widget=forms.TextInput(
-                               attrs={"ng-model": "type", "not-blank": ""}
-                           ))
-
-    def __init__(self, request, *args, **kwargs):
-        super(LoadSwiftPolicies, self).__init__(request, *args, **kwargs)
-
-    def handle(self, request, data):
-        api.load_swift_policies(request, data)
-        return data
