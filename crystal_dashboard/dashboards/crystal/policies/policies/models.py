@@ -16,8 +16,13 @@ class StaticPolicy:
         self.execution_server = execution_server
         self.reverse = reverse
         self.execution_order = execution_order
-        self.methods = (('PUT, ' if put else '') + ('GET, ' if get else '') + ('POST, ' if post else '') + ('HEAD, ' if head else '') + ('DELETE, ' if delete else ''))[0:-2] 
+        self.methods = (('PUT, ' if put else '') + ('GET, ' if get else '') + ('POST, ' if post else '') + ('HEAD, ' if head else '') + ('DELETE, ' if delete else ''))[0:-2]
         self.params = params
+
+        if not object_type and not object_tag and not object_size:
+            self.conditions = 'None'
+        else:
+            self.conditions = (('Object Size: '+object_size+', ' if object_size else '') + ('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
 
 
 class DynamicPolicy:
@@ -40,3 +45,9 @@ class DynamicPolicy:
         self.transient = transient
         self.parameters = parameters
         self.status = status
+
+        if not object_type and not object_tag and not object_size:
+            self.conditions = 'None'
+        else:
+            self.conditions = (('Object Size: '+object_size+', ' if object_size else '') + ('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
+
