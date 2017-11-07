@@ -91,10 +91,6 @@ class UpdateRow(tables.Row):
                               data['object_type'], data['object_size'], data['object_tag'],  data['execution_server'],
                               data['reverse'], data['execution_order'], data['params'], data['put'], data['get'], data['post'], data['head'], data['delete'],)
 
-        # Overwrite choices for object_type
-        choices = common.get_object_type_choices(request)
-        self.table.columns['object_type'].form_field.choices = choices
-
         return policy
 
 
