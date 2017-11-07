@@ -28,6 +28,10 @@ urlpatterns = [
     url(r'^(?P<container_name>(.+/)+)?create$',
         views.CreateView.as_view(),
         name='create'),
+               
+    url(r'^(?P<container_name>[^/]+)/?update$',
+        views.UpdateContainerView.as_view(),
+        name='update'),
 
     url(r'^(?P<container_name>.+?)/(?P<subfolder_path>(.+/)+)'
         '?container_detail$',

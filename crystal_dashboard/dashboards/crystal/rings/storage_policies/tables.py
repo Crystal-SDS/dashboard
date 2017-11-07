@@ -26,6 +26,9 @@ class CreateStoragePolicy(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
 
+    def allowed(self, request, policies):
+        return len(self.table.get_rows()) > 0
+
 
 class CreateECStoragePolicy(tables.LinkAction):
     name = "create_ec_storage_policy"
@@ -33,6 +36,9 @@ class CreateECStoragePolicy(tables.LinkAction):
     url = "horizon:crystal:rings:storage_policies:create_ec_storage_policy"
     classes = ("ajax-modal",)
     icon = "plus"
+
+    def allowed(self, request, policies):
+        return len(self.table.get_rows()) > 0
 
 
 class LoadSwiftPolicies(tables.Action):

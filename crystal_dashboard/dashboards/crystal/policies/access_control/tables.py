@@ -88,7 +88,7 @@ class AccessControlTable(tables.DataTable):
     permissions = tables.Column('permissions', verbose_name="Permissions")
     # write = tables.Column('write', verbose_name="Write")
     # read = tables.Column('read', verbose_name=_("Read"))
-    conditions = tables.Column('conditions', verbose_name="Conditions")
+    conditions = tables.Column('conditions', verbose_name="Read Conditions")
     # object_type = tables.Column('object_type', verbose_name=_("Object Type"))
     # object_tag = tables.Column('object_tag', verbose_name=_("Object Tag"))
 
