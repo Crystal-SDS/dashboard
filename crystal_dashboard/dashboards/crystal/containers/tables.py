@@ -250,6 +250,18 @@ def get_metadata_loaded(container):
     return hasattr(container, 'is_public') and container.is_public is not None
 
 
+class UpdateContainer(tables.LinkAction):
+    name = "update"
+    verbose_name = _("Edit")
+    icon = "pencil"
+    url = "horizon:crystal:containers:update"
+    classes = ("ajax-modal", "btn-update",)
+
+    def get_link_url(self, datum=None):
+        container_name = self.table.kwargs['container_name']
+        return reverse(self.url, args=(container_name,))
+
+
 class ContainersTable(tables.DataTable):
     METADATA_LOADED_CHOICES = (
         (False, None),
@@ -273,7 +285,7 @@ class ContainersTable(tables.DataTable):
         status_columns = ['metadata_loaded', ]
         table_actions = (CreateContainer,)
         row_actions = (ViewContainer, MakePublicContainer,
-                       MakePrivateContainer, DeleteContainer,)
+                       MakePrivateContainer,UpdateContainer, DeleteContainer,)
         browser_table = "navigation"
         footer = False
 

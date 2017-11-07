@@ -25,6 +25,7 @@ import os
 from django.core.urlresolvers import reverse
 from django import http
 from django.utils.functional import cached_property  # noqa
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 import six
@@ -146,6 +147,40 @@ class CreateView(forms.ModalFormView):
     def get_initial(self):
         initial = super(CreateView, self).get_initial()
         initial['parent'] = self.kwargs['container_name']
+        return initial
+
+
+class UpdateContainerView(forms.ModalFormView):
+    form_class = project_forms.UpdateContainer
+    submit_url = "horizon:crystal:containers:update"
+    form_id = "update_container_form"
+    modal_header = _("Update a container")
+    submit_label = _("Update container")
+    template_name = "crystal/container/update_container.html"
+    context_object_name = 'container'
+    success_url = reverse_lazy('horizon:crystal:containers:index')
+    page_title = _("Update a Container")
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateControllerView, self).get_context_data(**kwargs)
+        context['container_name'] = self.kwargs['container_name']
+        args = (self.kwargs["container_name"],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
+        return context
+
+    def _get_object(self, *args, **kwargs):
+        container_name = self.kwargs['container_name']
+        try:
+            filter = api.get_controller(self.request, container_name)
+            return filter
+        except Exception:
+            redirect = self.success_url
+            msg = _('Unable to retrieve container details.')
+            exceptions.handle(self.request, msg, redirect=redirect)
+
+    def get_initial(self):
+        controller = self._get_object()
+        initial = json.loads(controller.text)
         return initial
 
 

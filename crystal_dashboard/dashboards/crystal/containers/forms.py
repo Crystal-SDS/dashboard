@@ -154,6 +154,13 @@ class UploadObject(forms.SelfHandlingForm):
             exceptions.handle(request, _("Unable to upload object."))
 
 
+class UpdateContainer(forms.SelfHandlingForm):
+    
+
+    def handle(self, request, data):
+        return data
+
+
 class UpdateObject(UploadObject):
     def __init__(self, *args, **kwargs):
         super(UpdateObject, self).__init__(*args, **kwargs)
