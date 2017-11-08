@@ -154,10 +154,18 @@ class UploadObject(forms.SelfHandlingForm):
             exceptions.handle(request, _("Unable to upload object."))
 
 
-class UpdateContainer(forms.SelfHandlingForm):
+class AddMetadata(forms.SelfHandlingForm):
     
+    key = forms.CharField(max_length=255,
+                             required=True)
+    value = forms.CharField(max_length=255,
+                             required=True)
 
     def handle(self, request, data):
+        name = self.initial['container_name']
+        data['key'] = data['key'].replace(' ', ':')
+        headers = {'X-Container-Meta-' + data['key']: data['value']}
+        api.swift.swift_api(request).post_container(name, headers=headers)
         return data
 
 

@@ -258,8 +258,7 @@ class UpdateContainer(tables.LinkAction):
     classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, datum=None):
-        container_name = self.table.kwargs['container_name']
-        return reverse(self.url, args=(container_name,))
+        return reverse(self.url, args=(datum.name,))
 
 
 class ContainersTable(tables.DataTable):
@@ -291,6 +290,65 @@ class ContainersTable(tables.DataTable):
 
     def get_object_id(self, container):
         return container.name
+
+
+class AddMetadata(tables.LinkAction):
+    name = "add_metadata"
+    verbose_name = _("Add Metadata")
+    url = "horizon:crystal:containers:add_metadata"
+    classes = ("ajax-modal", "btn-update",)
+    icon = "plus"
+
+    def get_link_url(self, datum=None): 
+        container_name = self.table.kwargs['container_name'] 
+        base_url = reverse(self.url, args=(container_name,))
+        return base_url
+
+
+class DeleteMetadata(tables.DeleteAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Metadata",
+            u"Delete metadata",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Metadata",
+            u"Deleted Metadata",
+            count
+        )
+
+    name = "delete_metadata"
+    success_url = "horizon:crystal:containers:update"
+
+    def get_success_url(self, obj):
+        container_name = self.table.kwargs['container_name']
+        return reverse(self.success_url, args=(container_name,))
+
+    def delete(self, request, obj_id):
+        try:
+            container_name = self.table.kwargs['container_name']
+            header = {'x-remove-container-meta-' + obj_id: 'x'}
+            api.swift.swift_api(request).post_container(container_name, headers=header)
+
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:containers:index")
+            error_message = "Unable to remove metadata.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+
+class UpdateContainerTable(tables.DataTable):
+    key = tables.Column('key', verbose_name="Key")
+    value = tables.Column('value', verbose_name="Value")
+
+    class Meta(object):
+        name = "update_container_table"
+        verbose_name = _("Update Container")
+        table_actions = (AddMetadata,)
+        row_actions = (DeleteMetadata,)
 
 
 class ViewObject(tables.LinkAction):

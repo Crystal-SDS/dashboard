@@ -33,7 +33,9 @@ import six
 from horizon import browsers
 from horizon import exceptions
 from horizon import forms
+from horizon import tables
 from horizon.utils import memoized
+
 
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
@@ -42,6 +44,10 @@ from crystal_dashboard.dashboards.crystal.containers \
     import browsers as project_browsers
 from crystal_dashboard.dashboards.crystal.containers \
     import forms as project_forms
+from crystal_dashboard.dashboards.crystal.containers \
+    import tables as project_tables
+from crystal_dashboard.dashboards.crystal.containers \
+    import models as project_models
 from crystal_dashboard.dashboards.crystal.containers import utils
 
 
@@ -150,38 +156,57 @@ class CreateView(forms.ModalFormView):
         return initial
 
 
-class UpdateContainerView(forms.ModalFormView):
-    form_class = project_forms.UpdateContainer
-    submit_url = "horizon:crystal:containers:update"
+class UpdateContainerView(forms.ModalFormMixin, tables.DataTableView):
+
+    template_name = "crystal/containers/update_container.html"
+    ajax_template_name = "crystal/containers/_update_container.html"
+    table_class = project_tables.UpdateContainerTable
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateContainerView, self).get_context_data(**kwargs)
+        context['container_name'] = self.kwargs['container_name']
+        return context
+
+    def get_data(self):
+        metadata = []
+        try:
+            headers = api.swift.swift_api(self.request).head_container(self.kwargs['container_name'])
+            for header in headers:
+                if header.startswith('x-container-meta-'):
+                    key = header.split('-')[-1]
+                    metadata.append(project_models.MetadataObject(key,key,headers[header]))
+        except Exception:
+            exceptions.handle(self.request, _('Unable to retrieve container metadata.'))
+        # return sorted(devices_objects, lambda x: x['id'].lower())
+        return metadata
+
+class AddMetadataView(forms.ModalFormView):
+    form_class = project_forms.AddMetadata
+    submit_url = "horizon:crystal:containers:add_metadata"
     form_id = "update_container_form"
     modal_header = _("Update a container")
     submit_label = _("Update container")
-    template_name = "crystal/container/update_container.html"
+    template_name = "crystal/containers/add_metadata.html"
     context_object_name = 'container'
-    success_url = reverse_lazy('horizon:crystal:containers:index')
+    success_url = "horizon:crystal:containers:update"
     page_title = _("Update a Container")
-
+ 
     def get_context_data(self, **kwargs):
-        context = super(UpdateControllerView, self).get_context_data(**kwargs)
+        context = super(AddMetadataView, self).get_context_data(**kwargs)
         context['container_name'] = self.kwargs['container_name']
         args = (self.kwargs["container_name"],)
         context['submit_url'] = reverse(self.submit_url, args=args)
         return context
-
-    def _get_object(self, *args, **kwargs):
-        container_name = self.kwargs['container_name']
-        try:
-            filter = api.get_controller(self.request, container_name)
-            return filter
-        except Exception:
-            redirect = self.success_url
-            msg = _('Unable to retrieve container details.')
-            exceptions.handle(self.request, msg, redirect=redirect)
-
+    
+    def get_success_url(self, **kwargs):
+        args = (self.kwargs["container_name"],)
+        return reverse(self.success_url, args=args)
+    
     def get_initial(self):
-        controller = self._get_object()
-        initial = json.loads(controller.text)
+        initial = super(AddMetadataView, self).get_initial()
+        initial['container_name'] = self.kwargs['container_name']
         return initial
+        
 
 
 class CreatePseudoFolderView(forms.ModalFormView):

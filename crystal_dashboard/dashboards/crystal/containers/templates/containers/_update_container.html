@@ -1,8 +1,7 @@
-{% extends "horizon/common/_modal_form.html" %}
+{% extends "horizon/common/_modal_form_add_members.html" %}
 {% load i18n %}
 
-{% block form_attrs %}enctype="multipart/form-data"{% endblock %}
-
-{% block modal-header %}
-  {% blocktrans %}Edit container{% endblocktrans %}
+{% block modal-header %}{% trans "Update Container" %}{% endblock %}
+{% block modal-footer %}
+  <a href="{% url 'horizon:crystal:containers:index' %}" class="btn btn-default cancel">{% trans "Cancel" %}</a>
 {% endblock %}
