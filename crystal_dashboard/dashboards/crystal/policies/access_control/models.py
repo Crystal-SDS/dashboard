@@ -17,7 +17,9 @@ class AccessControlPolicy:
 
         self.permissions = (('LIST, ' if listing else '') + ('WRITE, ' if write else '') + ('READ, ' if read else ''))[0:-2]
 
-        if (not object_type and not object_tag) or not read:
+        if read and not object_type and not object_tag:
             self.conditions = 'None; Full Access'
         else:
             self.conditions = (('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
+        if not read:
+            self.conditions = '-'
