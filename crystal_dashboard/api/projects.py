@@ -151,3 +151,18 @@ def get_project_users(request, project_id):
 
     r = requests.get(url, headers=headers)
     return r
+
+#
+# Project groups
+#
+def get_project_groups(request, project_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/" + str(project_id) + "/groups"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r

@@ -81,17 +81,29 @@ def get_users_by_project(request):
 
         try:
             users_list = common.get_users_list(request, project_id)
-
-            if len(users_list) > 0:
-                # If the project contains some containers
-                users_response = '<option value="">Select one</option>'
-                users_response += '<optgroup label="Users">'
-                for value, label in users_list:
-                    users_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
-
-            else:
+            group_list = common.get_groups_list(request, project_id)
+            
+            
+            if len(users_list) == 0 and len(group_list) == 0:
                 # If the project does not contain some containers
                 users_response = '<option value="">None</option>'
+            else:
+                users_response = '<option value="">Select one</option>'
+
+                if len(users_list) > 0:
+                    # If the project contains some containers
+                    users_response += '<optgroup label="Users">'
+                    for value, label in users_list:
+                        users_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
+    
+                if len(group_list) > 0:
+                    # If the project contains some containers
+                    users_response += '<optgroup label="Groups">'
+                    for value, label in group_list:
+                        users_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
+            
+
+            
         except:
             # If get_container_list raises an exception
             users_response = '<option value="">None</option>'

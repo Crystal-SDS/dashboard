@@ -308,6 +308,45 @@ def get_users_list(request, project_id):
         users_list.append((user['id'], user['name']))
     return users_list
 
+# =========
+# Groups
+# =========
+def get_groups_list_choices(request, project_id):
+    """
+    Get a tuple of groups choices
+
+    :param request: the request which the dashboard is using
+    :return: tuple with container choices
+    """
+    return ('', 'Select one'), ('Groups', get_users_list(request, project_id))
+
+
+def get_groups_list(request, project_id):
+    """
+    Get a list of groups
+
+    :param request: the request which the dashboard is using
+    :return: list with containers
+    """
+    try:
+        response = api_projects.get_project_groups(request, project_id)
+        if 200 <= response.status_code < 300:
+            response_text = response.text
+        else:
+            raise ValueError('Unable to get groups')
+    except Exception as exc:
+        response_text = '[]'
+        exceptions.handle(request, _(exc.message))
+
+    groups_list = []
+    groups = json.loads(response_text)
+    # Iterate object types
+    for group in groups:
+        groups_list.append((group['id'], group['name']))
+    return groups_list
+
+
+
 
 # ==============
 # Storage Policies
