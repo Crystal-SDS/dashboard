@@ -41,6 +41,10 @@ no_begin_or_end_slash = validators.RegexValidator(r'^[^\/](?u).+[^\/]$',
                                                     "your string."),
                                                   code="nobeginorendslash")
 
+no_space_validator = validators.RegexValidator(r'^(?u)[^\s:-;]+$',
+                                               _("Invalid character."),
+                                               code="nospace")
+
 
 class CreateContainer(forms.SelfHandlingForm):
     ACCESS_CHOICES = (
@@ -157,7 +161,8 @@ class UploadObject(forms.SelfHandlingForm):
 class AddMetadata(forms.SelfHandlingForm):
     
     key = forms.CharField(max_length=255,
-                             required=True)
+                             required=True,
+                             validators=[no_space_validator])
     value = forms.CharField(max_length=255,
                              required=True)
 

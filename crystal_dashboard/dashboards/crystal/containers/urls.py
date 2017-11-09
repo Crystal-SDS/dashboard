@@ -29,8 +29,7 @@ urlpatterns = [
         views.CreateView.as_view(),
         name='create'),
                
-    url(r'^(?P<container_name>[^/]+)/update$',
-        views.UpdateContainerView.as_view(),
+    url(r'^(?P<container_name>[^/]+)/update$', views.UpdateContainerView.as_view(),
         name='update'),
                
     url(r'^(?P<container_name>[^/]+)/add_metadata$',

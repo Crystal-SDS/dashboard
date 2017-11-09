@@ -24,11 +24,13 @@ from django.utils.translation import ungettext_lazy
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
+from horizon import forms
 
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
 from crystal_dashboard.api import swift as crystal_api
 from crystal_dashboard.dashboards.crystal.containers import utils
+from crystal_dashboard.dashboards.crystal.containers import models 
 
 LOG = logging.getLogger(__name__)
 
@@ -255,7 +257,6 @@ class UpdateContainer(tables.LinkAction):
     verbose_name = _("Edit")
     icon = "pencil"
     url = "horizon:crystal:containers:update"
-    classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, datum=None):
         return reverse(self.url, args=(datum.name,))
@@ -340,15 +341,48 @@ class DeleteMetadata(tables.DeleteAction):
             error_message = "Unable to remove metadata.\t %s" % ex.message
             exceptions.handle(request, _(error_message), redirect=redirect)
 
+
+class DeleteMultipleMetadata(DeleteMetadata):
+    name = "delete_multiple_instances"
+
+
+class UpdateCell(tables.UpdateAction):
+    ajax = True
+    
+    def allowed(self, request, project, cell):
+        return cell.column.name == 'value'
+    
+    def update_cell(self, request, datum, id, cell_name, new_cell_value):
+        try:
+            headers = {'X-Container-Meta-' + id: new_cell_value}
+            api.swift.swift_api(request).post_container(datum.container, headers=headers)
+        except Exception:
+            exceptions.handle(request, ignore=True)
+            message = _("Can't change value")
+            raise ValidationError(message)
+            return False
+        return True
+
+
+class UpdateRow(tables.Row):
+    ajax = True
+
+    def get_data(self, request, id):
+        headers = api.swift.swift_api(request).head_container(self.table.kwargs['container_name'])
+        value = headers['x-container-meta-' + id]
+        return models.MetadataObject(id, self.table.kwargs['container_name'], id, value)
+
+
 class UpdateContainerTable(tables.DataTable):
     key = tables.Column('key', verbose_name="Key")
-    value = tables.Column('value', verbose_name="Value")
+    value = tables.Column('value', verbose_name=_("Value"), form_field=forms.CharField(max_length=25), update_action=UpdateCell)
 
     class Meta(object):
         name = "update_container_table"
         verbose_name = _("Update Container")
-        table_actions = (AddMetadata,)
+        table_actions = (AddMetadata, DeleteMultipleMetadata)
         row_actions = (DeleteMetadata,)
+        row_class = UpdateRow
 
 
 class ViewObject(tables.LinkAction):

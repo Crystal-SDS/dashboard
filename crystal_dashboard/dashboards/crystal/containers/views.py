@@ -24,6 +24,7 @@ import os
 
 from django.core.urlresolvers import reverse
 from django import http
+from django import shortcuts
 from django.utils.functional import cached_property  # noqa
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -154,13 +155,12 @@ class CreateView(forms.ModalFormView):
         initial = super(CreateView, self).get_initial()
         initial['parent'] = self.kwargs['container_name']
         return initial
+    
 
-
-class UpdateContainerView(forms.ModalFormMixin, tables.DataTableView):
-
-    template_name = "crystal/containers/update_container.html"
-    ajax_template_name = "crystal/containers/_update_container.html"
+class UpdateContainerView(tables.DataTableView):
     table_class = project_tables.UpdateContainerTable
+    template_name = "crystal/containers/update_container.html"
+    page_title = _("Update Container Metadata")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateContainerView, self).get_context_data(**kwargs)
@@ -174,11 +174,12 @@ class UpdateContainerView(forms.ModalFormMixin, tables.DataTableView):
             for header in headers:
                 if header.startswith('x-container-meta-'):
                     key = header.split('-')[-1]
-                    metadata.append(project_models.MetadataObject(key,key,headers[header]))
+                    metadata.append(project_models.MetadataObject(key,self.kwargs['container_name'], key,headers[header]))
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve container metadata.'))
         # return sorted(devices_objects, lambda x: x['id'].lower())
         return metadata
+
 
 class AddMetadataView(forms.ModalFormView):
     form_class = project_forms.AddMetadata
@@ -190,7 +191,8 @@ class AddMetadataView(forms.ModalFormView):
     context_object_name = 'container'
     success_url = "horizon:crystal:containers:update"
     page_title = _("Update a Container")
- 
+    classes = ("ajax-modal", "btn-update",)
+
     def get_context_data(self, **kwargs):
         context = super(AddMetadataView, self).get_context_data(**kwargs)
         context['container_name'] = self.kwargs['container_name']
@@ -200,7 +202,7 @@ class AddMetadataView(forms.ModalFormView):
     
     def get_success_url(self, **kwargs):
         args = (self.kwargs["container_name"],)
-        return reverse(self.success_url, args=args)
+        return reverse(self.success_url,args=args)
     
     def get_initial(self):
         initial = super(AddMetadataView, self).get_initial()
