@@ -22,15 +22,16 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
     container_choices = [('', 'None')]
     container_id = forms.CharField(label=_("Container"),
                                    help_text=_("The container where the rule will be applied."),
-                                   required=True,
+                                   required=False,
                                    widget=forms.Select(choices=container_choices))
 
     users_choices = [('', 'None')]
-    user_id = forms.CharField(label=_("Users"),
+    user_id = forms.CharField(label=_("User/Group"),
                               help_text=_("The user where the rule will be applied."),
                               required=True,
                               widget=forms.Select(choices=users_choices))
 
+    list = forms.BooleanField(required=False, label="List")
     write = forms.BooleanField(required=False, label="Write")
     read = forms.BooleanField(required=False, label="Read")
 
@@ -82,6 +83,7 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
 class UpdateAccessControlPolicy(forms.SelfHandlingForm):
 
+    list = forms.BooleanField(required=False, label="List")
     write = forms.BooleanField(required=False, label="Write")
     read = forms.BooleanField(required=False, label="Read")
     object_type_choices = []

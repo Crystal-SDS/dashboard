@@ -305,11 +305,12 @@ def get_users_list(request, project_id):
     users = json.loads(response_text)
     # Iterate object types
     for user in users:
-        users_list.append((user['id'], user['name']))
+        users_list.append(('user_id:'+user['id'], user['name']))
     return users_list
 
+
 # =========
-# Groups
+# User Groups
 # =========
 def get_groups_list_choices(request, project_id):
     """
@@ -318,7 +319,7 @@ def get_groups_list_choices(request, project_id):
     :param request: the request which the dashboard is using
     :return: tuple with container choices
     """
-    return ('', 'Select one'), ('Groups', get_users_list(request, project_id))
+    return ('', 'Select one'), ('Groups', get_groups_list(request, project_id))
 
 
 def get_groups_list(request, project_id):
@@ -342,10 +343,8 @@ def get_groups_list(request, project_id):
     groups = json.loads(response_text)
     # Iterate object types
     for group in groups:
-        groups_list.append((group['id'], group['name']))
+        groups_list.append(('group_id:'+group['id'], group['name']))
     return groups_list
-
-
 
 
 # ==============

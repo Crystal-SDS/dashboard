@@ -104,6 +104,7 @@ class AccessControlTab(tabs.TableTab):
         ret = []
         try:
             users = [(user.id, user.name) for user in api_keystone.keystone.user_list(self.request)]
+            groups = [(group.id, group.name) for group in api_keystone.keystone.group_list(self.request)]
             response = api.access_control_policy_list(self.request)
             if 200 <= response.status_code < 300:
                 strobj = response.text
@@ -114,18 +115,27 @@ class AccessControlTab(tabs.TableTab):
         except Exception as e:
             instances = []
             users = []
+            groups = []
             exceptions.handle(self.request, e.message)
 
         for inst in instances:
             try:
-                inst['user_name'] = [user[1] for user in users if user[0] == inst['user_id']][0]
+                if inst['user_id']:
+                    inst['user_name'] = [user[1] for user in users if user[0] == inst['user_id']][0]
+                else:
+                    inst['user_name'] = '-'
+
+                if inst['group_id']:
+                    inst['group_name'] = [group[1] for group in groups if group[0] == inst['group_id']][0]
+                else:
+                    inst['group_name'] = '-'
             except Exception as e:
                 instances = []
                 users = []
                 exceptions.handle(self.request, "User name not found")
             ret.append(access_control_models.AccessControlPolicy(inst['id'], inst['target_id'], inst['target_name'],
-                                                                 inst['user_name'], inst['write'], inst['read'],
-                                                                 inst['object_type'], inst['object_tag']))
+                                                                 inst['user_name'], inst['group_name'], inst['list'], inst['write'],
+                                                                 inst['read'], inst['object_type'], inst['object_tag']))
 
         return ret
 
