@@ -23,7 +23,7 @@
     <dt>{% trans "Storage Policy" %}</dt>
     <dd>{{ container.storage_policy }}</dd>
     {% if container.metadata != '' %}
-	    <div style="margin-top:5px;" id='{{ container.name }}_metadata'></div>
+	    <div style="margin-top:5px;" id='{{ container.name }}_dt_metadata'></div>
     {% endif %}
   </dl>
 </div>
@@ -35,7 +35,7 @@
 	for (i = 0; i < metadata.length; i++) {
 		var value = metadata[i].split('=')
 		if (value[0] != '')
-			$("#"+container_name+"_metadata").append('<dt>{% trans "'+value[0]+'" %}</dt><dd>'+value[1]+'</dd>');
+			$("#"+container_name+"_dt_metadata").append('<dt>{% trans "'+value[0]+'" %}</dt><dd>'+value[1]+'</dd>');
 	}
 </script>
 
