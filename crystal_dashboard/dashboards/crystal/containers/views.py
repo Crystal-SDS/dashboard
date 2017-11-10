@@ -173,7 +173,7 @@ class UpdateContainerView(tables.DataTableView):
             headers = api.swift.swift_api(self.request).head_container(self.kwargs['container_name'])
             for header in headers:
                 if header.startswith('x-container-meta-'):
-                    key = header.split('-')[-1]
+                    key = header.split('x-container-meta-')[-1] 
                     metadata.append(project_models.MetadataObject(key,self.kwargs['container_name'], key,headers[header]))
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve container metadata.'))

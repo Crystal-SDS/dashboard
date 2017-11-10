@@ -22,6 +22,10 @@
     <dd>{{ container.container_bytes_used|filesizeformat }}</dd>
     <dt>{% trans "Storage Policy" %}</dt>
     <dd>{{ container.storage_policy }}</dd>
+    {% if container.metadata != '' %}
+	    <dt>{% trans "Container Metadata" %}</dt>
+	    <dd>{{ container.metadata }}</dd>
+    {% endif %}
   </dl>
 </div>
 {% endblock %}

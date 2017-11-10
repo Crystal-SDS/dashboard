@@ -254,7 +254,7 @@ def get_metadata_loaded(container):
 
 class UpdateContainer(tables.LinkAction):
     name = "update"
-    verbose_name = _("Edit")
+    verbose_name = _("Edit Metadata")
     icon = "pencil"
     url = "horizon:crystal:containers:update"
 

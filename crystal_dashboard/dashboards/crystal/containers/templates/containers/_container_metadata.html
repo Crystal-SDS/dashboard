@@ -10,4 +10,8 @@
   {% endif %}
   </li>
   <li>{% trans "Storage Policy: " %}{{ container.storage_policy }}</li>
+  {% if container.metadata != '' %}
+  	  <li>{% trans "Container Metadata: " %}{{ container.metadata }}</li>
+  {% endif %}
+  
 </ul>
