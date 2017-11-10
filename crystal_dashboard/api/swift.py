@@ -374,13 +374,16 @@ def swift_get_container(request, container_name, with_data=True):
             public_url = swift_endpoint + '/' + parameters
         ts_float = float(headers.get('x-timestamp'))
         timestamp = timeutils.iso8601_from_timestamp(ts_float)
-        
+
         metadata = ''
         for header in headers:
             if header.startswith('x-container-meta-'):
-                metadata += header.split('-')[-1] + '=' + headers[header] + ', '
+                key_name = header.replace('x-container-meta-', '').replace('-', ' ').title()
+                value = headers[header]
+                metadata += key_name + '=' + value + ', '
+
         metadata = metadata[0:-2]
-        
+
     except Exception:
         pass
     container_info = {
@@ -392,7 +395,7 @@ def swift_get_container(request, container_name, with_data=True):
         'is_public': is_public,
         'public_url': public_url,
         'storage_policy': headers.get('x-storage-policy'),
-        'metadata': metadata 
+        'metadata': metadata,
     }
     return Container(container_info)
 

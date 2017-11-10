@@ -284,8 +284,8 @@ class ContainersTable(tables.DataTable):
         row_class = ContainerAjaxUpdateRow
         status_columns = ['metadata_loaded', ]
         table_actions = (CreateContainer,)
-        row_actions = (ViewContainer, MakePublicContainer,
-                       MakePrivateContainer,UpdateContainer, DeleteContainer,)
+        row_actions = (ViewContainer, MakePublicContainer, UpdateContainer,
+                       MakePrivateContainer, DeleteContainer,)
         browser_table = "navigation"
         footer = False
 
@@ -300,8 +300,8 @@ class AddMetadata(tables.LinkAction):
     classes = ("ajax-modal", "btn-update",)
     icon = "plus"
 
-    def get_link_url(self, datum=None): 
-        container_name = self.table.kwargs['container_name'] 
+    def get_link_url(self, datum=None):
+        container_name = self.table.kwargs['container_name']
         base_url = reverse(self.url, args=(container_name,))
         return base_url
 
@@ -348,10 +348,10 @@ class DeleteMultipleMetadata(DeleteMetadata):
 
 class UpdateCell(tables.UpdateAction):
     ajax = True
-    
+
     def allowed(self, request, project, cell):
         return cell.column.name == 'value'
-    
+
     def update_cell(self, request, datum, id, cell_name, new_cell_value):
         try:
             headers = {'X-Container-Meta-' + id: new_cell_value}

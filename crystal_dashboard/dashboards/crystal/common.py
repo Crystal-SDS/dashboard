@@ -133,7 +133,7 @@ def get_object_type_choices(request):
     :return: tuple with object types
     """
     object_type_list = get_object_type_list(request)
-    return (('', 'None'), ('Object Types', object_type_list)) if len(object_type_list) > 0 else (('', 'None'),)
+    return (('', ''), ('Object Types', object_type_list)) if len(object_type_list) > 0 else (('', 'None'),)
 
 
 def get_object_type_list(request):

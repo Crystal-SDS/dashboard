@@ -123,12 +123,12 @@ class AccessControlTab(tabs.TableTab):
                 if inst['user_id']:
                     inst['user_name'] = [user[1] for user in users if user[0] == inst['user_id']][0]
                 else:
-                    inst['user_name'] = '-'
+                    inst['user_name'] = ''
 
                 if inst['group_id']:
                     inst['group_name'] = [group[1] for group in groups if group[0] == inst['group_id']][0]
                 else:
-                    inst['group_name'] = '-'
+                    inst['group_name'] = ''
             except Exception as e:
                 instances = []
                 users = []

@@ -23,11 +23,22 @@
     <dt>{% trans "Storage Policy" %}</dt>
     <dd>{{ container.storage_policy }}</dd>
     {% if container.metadata != '' %}
-	    <dt>{% trans "Container Metadata" %}</dt>
-	    <dd>{{ container.metadata }}</dd>
+	    <div style="margin-top:5px;" id='{{ container.name }}_metadata'></div>
     {% endif %}
   </dl>
 </div>
+
+<script type="text/javascript">
+	var metadata = "{{container.metadata}}"
+	var container_name = "{{ container.name }}"
+	var metadata = metadata.split(", ");
+	for (i = 0; i < metadata.length; i++) {
+		var value = metadata[i].split('=')
+		if (value[0] != '')
+			$("#"+container_name+"_metadata").append('<dt>{% trans "'+value[0]+'" %}</dt><dd>'+value[1]+'</dd>');
+	}
+</script>
+
 {% endblock %}
 
 {% block modal-footer %}

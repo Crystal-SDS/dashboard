@@ -159,12 +159,11 @@ class UploadObject(forms.SelfHandlingForm):
 
 
 class AddMetadata(forms.SelfHandlingForm):
-    
     key = forms.CharField(max_length=255,
-                             required=True,
-                             validators=[no_space_validator])
+                          required=True,
+                          validators=[no_space_validator])
     value = forms.CharField(max_length=255,
-                             required=True)
+                            required=True)
 
     def handle(self, request, data):
         name = self.initial['container_name']

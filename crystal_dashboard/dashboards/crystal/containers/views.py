@@ -155,7 +155,7 @@ class CreateView(forms.ModalFormView):
         initial = super(CreateView, self).get_initial()
         initial['parent'] = self.kwargs['container_name']
         return initial
-    
+
 
 class UpdateContainerView(tables.DataTableView):
     table_class = project_tables.UpdateContainerTable
@@ -173,8 +173,8 @@ class UpdateContainerView(tables.DataTableView):
             headers = api.swift.swift_api(self.request).head_container(self.kwargs['container_name'])
             for header in headers:
                 if header.startswith('x-container-meta-'):
-                    key = header.split('x-container-meta-')[-1] 
-                    metadata.append(project_models.MetadataObject(key,self.kwargs['container_name'], key,headers[header]))
+                    key = header.split('x-container-meta-')[-1]
+                    metadata.append(project_models.MetadataObject(key, self.kwargs['container_name'], key, headers[header]))
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve container metadata.'))
         # return sorted(devices_objects, lambda x: x['id'].lower())
@@ -199,16 +199,15 @@ class AddMetadataView(forms.ModalFormView):
         args = (self.kwargs["container_name"],)
         context['submit_url'] = reverse(self.submit_url, args=args)
         return context
-    
+
     def get_success_url(self, **kwargs):
         args = (self.kwargs["container_name"],)
-        return reverse(self.success_url,args=args)
-    
+        return reverse(self.success_url, args=args)
+
     def get_initial(self):
         initial = super(AddMetadataView, self).get_initial()
         initial['container_name'] = self.kwargs['container_name']
         return initial
-        
 
 
 class CreatePseudoFolderView(forms.ModalFormView):

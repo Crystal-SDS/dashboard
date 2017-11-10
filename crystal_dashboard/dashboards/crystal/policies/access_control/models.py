@@ -15,6 +15,8 @@ class AccessControlPolicy:
         self.object_type = object_type
         self.object_tag = object_tag
 
+        self.identity = (('User:  '+user if user else '') + ('Group: '+group if group else ''))
+
         self.permissions = (('LIST, ' if listing else '') + ('WRITE, ' if write else '') + ('READ, ' if read else ''))[0:-2]
 
         if read and not object_type and not object_tag:
