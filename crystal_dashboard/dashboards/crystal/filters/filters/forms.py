@@ -67,7 +67,7 @@ class UploadNativeFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('proxy', _('Proxy Node')),
+            # ('proxy', _('Proxy Node')),
             ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
@@ -174,7 +174,7 @@ class UploadStorletFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('proxy', _('Proxy Node')),
+            # ('proxy', _('Proxy Node')),
             ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
@@ -261,7 +261,7 @@ class UpdateNativeFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('proxy', _('Proxy Node')),
+            # ('proxy', _('Proxy Node')),
             ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={
@@ -352,7 +352,7 @@ class UpdateStorletFilter(forms.SelfHandlingForm):
         label=_('Reverse'),
         choices=[
             ('False', _('False')),
-            ('proxy', _('Proxy Node')),
+            # ('proxy', _('Proxy Node')),
             ('object', _('Storage Node'))
         ],
         widget=forms.Select(attrs={

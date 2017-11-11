@@ -252,7 +252,7 @@ def get_metadata_loaded(container):
     return hasattr(container, 'is_public') and container.is_public is not None
 
 
-class UpdateContainer(tables.LinkAction):
+class UpdateContainerMetadata(tables.LinkAction):
     name = "update"
     verbose_name = _("Edit Metadata")
     icon = "pencil"
@@ -284,8 +284,10 @@ class ContainersTable(tables.DataTable):
         row_class = ContainerAjaxUpdateRow
         status_columns = ['metadata_loaded', ]
         table_actions = (CreateContainer,)
-        row_actions = (ViewContainer, MakePublicContainer, UpdateContainer,
-                       MakePrivateContainer, DeleteContainer,)
+        # row_actions = (ViewContainer, UpdateContainer, MakePublicContainer,
+        #                MakePrivateContainer, DeleteContainer,)
+        # Josep: Disabled make a container Public for security reasons.
+        row_actions = (UpdateContainerMetadata, ViewContainer, DeleteContainer,)
         browser_table = "navigation"
         footer = False
 
@@ -293,7 +295,7 @@ class ContainersTable(tables.DataTable):
         return container.name
 
 
-class AddMetadata(tables.LinkAction):
+class AddContainerMetadata(tables.LinkAction):
     name = "add_metadata"
     verbose_name = _("Add Metadata")
     url = "horizon:crystal:containers:add_metadata"
@@ -306,7 +308,7 @@ class AddMetadata(tables.LinkAction):
         return base_url
 
 
-class DeleteMetadata(tables.DeleteAction):
+class DeleteContainerMetadata(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -342,11 +344,11 @@ class DeleteMetadata(tables.DeleteAction):
             exceptions.handle(request, _(error_message), redirect=redirect)
 
 
-class DeleteMultipleMetadata(DeleteMetadata):
+class DeleteMultipleContainerMetadata(DeleteContainerMetadata):
     name = "delete_multiple_instances"
 
 
-class UpdateCell(tables.UpdateAction):
+class UpdateMetadataCell(tables.UpdateAction):
     ajax = True
 
     def allowed(self, request, project, cell):
@@ -354,35 +356,32 @@ class UpdateCell(tables.UpdateAction):
 
     def update_cell(self, request, datum, id, cell_name, new_cell_value):
         try:
-            headers = {'X-Container-Meta-' + id: new_cell_value}
+            headers = {id: new_cell_value}
             api.swift.swift_api(request).post_container(datum.container, headers=headers)
         except Exception:
             exceptions.handle(request, ignore=True)
-            message = _("Can't change value")
-            raise ValidationError(message)
-            return False
         return True
 
 
-class UpdateRow(tables.Row):
+class UpdateMetadataRow(tables.Row):
     ajax = True
 
     def get_data(self, request, id):
         headers = api.swift.swift_api(request).head_container(self.table.kwargs['container_name'])
-        value = headers['x-container-meta-' + id]
+        value = headers[id]
         return models.MetadataObject(id, self.table.kwargs['container_name'], id, value)
 
 
-class UpdateContainerTable(tables.DataTable):
+class UpdateContainerMetadataTable(tables.DataTable):
     key = tables.Column('key', verbose_name="Key")
-    value = tables.Column('value', verbose_name=_("Value"), form_field=forms.CharField(max_length=25), update_action=UpdateCell)
+    value = tables.Column('value', verbose_name=_("Value"), form_field=forms.CharField(max_length=25), update_action=UpdateMetadataCell)
 
     class Meta(object):
         name = "update_container_table"
         verbose_name = _("Update Container")
-        table_actions = (AddMetadata, DeleteMultipleMetadata)
-        row_actions = (DeleteMetadata,)
-        row_class = UpdateRow
+        table_actions = (AddContainerMetadata, DeleteMultipleContainerMetadata)
+        row_actions = (DeleteContainerMetadata,)
+        row_class = UpdateMetadataRow
 
 
 class ViewObject(tables.LinkAction):

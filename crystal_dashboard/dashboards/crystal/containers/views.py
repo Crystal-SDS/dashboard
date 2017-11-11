@@ -158,7 +158,7 @@ class CreateView(forms.ModalFormView):
 
 
 class UpdateContainerView(tables.DataTableView):
-    table_class = project_tables.UpdateContainerTable
+    table_class = project_tables.UpdateContainerMetadataTable
     template_name = "crystal/containers/update_container.html"
     page_title = _("Update Container Metadata")
 
@@ -173,8 +173,9 @@ class UpdateContainerView(tables.DataTableView):
             headers = api.swift.swift_api(self.request).head_container(self.kwargs['container_name'])
             for header in headers:
                 if header.startswith('x-container-meta-'):
-                    key = header.split('x-container-meta-')[-1]
-                    metadata.append(project_models.MetadataObject(key, self.kwargs['container_name'], key, headers[header]))
+                    key_name = header.replace('x-container-meta-', '').replace('-', ' ').title()
+                    value = headers[header]
+                    metadata.append(project_models.MetadataObject(header, self.kwargs['container_name'], key_name, value))
         except Exception:
             exceptions.handle(self.request, _('Unable to retrieve container metadata.'))
         # return sorted(devices_objects, lambda x: x['id'].lower())

@@ -61,7 +61,7 @@ class CreateContainer(forms.SelfHandlingForm):
 
     policy_choices = []
     policy_name = forms.ChoiceField(choices=policy_choices,
-                                    label=_("Policy Name"),
+                                    label=_("Storage Policy"),
                                     help_text=_("The storage policy that you want to assign to the specific project."),
                                     required=True)
 
@@ -77,7 +77,7 @@ class CreateContainer(forms.SelfHandlingForm):
 
         # Overwrite policy_id input form
         self.fields['policy_name'] = forms.ChoiceField(choices=self.storage_policy_choices,
-                                                       label=_("Policy Name"),
+                                                       label=_("Storage Policy"),
                                                        help_text=_("The storage policy that you want to assign to the specific project."),
                                                        required=True)
 
