@@ -277,7 +277,10 @@ def object_download(request, container_name, object_path):
         safe_name = safe_name.encode('utf-8')
     response['Content-Disposition'] = 'attachment; filename="%s"' % safe_name
     response['Content-Type'] = 'application/octet-stream'
-    response['Content-Length'] = obj.bytes
+
+    if obj.bytes:
+        response['Content-Length'] = obj.bytes
+
     return response
 
 
