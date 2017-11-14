@@ -39,7 +39,7 @@ class SubmitJob(forms.SelfHandlingForm):
         # Obtain list of projects
 
         self.tenant_choices = [('', 'Select one'), common.get_project_list_choices(request)]
-        self.container_choices = common.get_container_list_choices(request)  # Default: containers from current project
+        self.container_choices = common.get_container_list_choices(request, request.user.project_id)  # TODO Default: containers from current project
         self.analyzer_choices = common.get_anj_analyzer_list_choices(request)
 
         super(SubmitJob, self).__init__(request, *args, **kwargs)
