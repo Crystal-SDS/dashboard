@@ -31,6 +31,9 @@ urlpatterns = [
                
     url(r'^(?P<container_name>[^/]+)/update$', views.UpdateContainerView.as_view(),
         name='update'),
+    
+    url(r'^(?P<container_name>[^/]+)/update_policy$', views.UpdateContainerPolicy.as_view(),
+        name='update_policy'),
                
     url(r'^(?P<container_name>[^/]+)/add_metadata$',
         views.AddMetadataView.as_view(),

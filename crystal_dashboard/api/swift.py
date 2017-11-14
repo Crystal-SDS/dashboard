@@ -412,3 +412,17 @@ def swift_get_project_containers(request, project_id):
 
     r = requests.get(url, headers=headers)
     return r
+
+
+def swift_update_container_policy(request, project_id, storage_policy_id):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/" + str(project_id) + "/container/policy"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.put(url, json.dumps(storage_policy_id), headers=headers)
+    return r

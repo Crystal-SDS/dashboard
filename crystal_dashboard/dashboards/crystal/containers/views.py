@@ -211,6 +211,34 @@ class AddMetadataView(forms.ModalFormView):
         return initial
 
 
+class UpdateContainerPolicy(forms.ModalFormView):
+    form_class = project_forms.UpdateStoragePolicy
+    form_id = "update_policy_form"
+    template_name = "crystal/containers/update_policy.html"
+    context_object_name = 'container'
+    submit_url = "horizon:crystal:containers:update_policy"
+    success_url = "horizon:crystal:containers:index"
+    page_title = _("Update Container Policy")
+
+    def get_success_url(self):
+        container_name = self.kwargs['container_name']
+        return reverse(self.success_url,
+                       args=(utils.wrap_delimiter(container_name),
+                             self.request.POST.get('path', '')))
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateContainerPolicy, self).get_context_data(**kwargs)
+        context['container_name'] = self.kwargs['container_name']
+        args = (self.kwargs["container_name"],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
+        return context
+
+    def get_initial(self):
+        initial = super(UpdateContainerPolicy, self).get_initial()
+        initial['container_name'] = self.kwargs['container_name']
+        return initial
+
+
 class CreatePseudoFolderView(forms.ModalFormView):
     form_class = project_forms.CreatePseudoFolder
     template_name = 'crystal/containers/create_pseudo_folder.html'

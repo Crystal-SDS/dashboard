@@ -262,6 +262,16 @@ class UpdateContainerMetadata(tables.LinkAction):
         return reverse(self.url, args=(datum.name,))
 
 
+class UpdateStoragePolicy(tables.LinkAction):
+    name = "update_policy"
+    verbose_name = _("Update Policy")
+    icon = "pencil"
+    url = "horizon:crystal:containers:update_policy"
+    classes = ("ajax-modal", "btn-view")
+
+    def get_link_url(self, datum=None):
+        return reverse(self.url, args=(datum.name,))
+
 class ContainersTable(tables.DataTable):
     METADATA_LOADED_CHOICES = (
         (False, None),
@@ -287,7 +297,7 @@ class ContainersTable(tables.DataTable):
         # row_actions = (ViewContainer, UpdateContainer, MakePublicContainer,
         #                MakePrivateContainer, DeleteContainer,)
         # Josep: Disabled make a container Public for security reasons.
-        row_actions = (UpdateContainerMetadata, ViewContainer, DeleteContainer,)
+        row_actions = (UpdateContainerMetadata, UpdateStoragePolicy, ViewContainer, DeleteContainer,)
         browser_table = "navigation"
         footer = False
 

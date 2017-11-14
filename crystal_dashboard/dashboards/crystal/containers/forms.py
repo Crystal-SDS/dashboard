@@ -27,6 +27,7 @@ from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
+from crystal_dashboard.api import swift as swift_api
 from crystal_dashboard.dashboards.crystal.containers import utils
 from crystal_dashboard.dashboards.crystal import common
 
@@ -172,6 +173,37 @@ class AddMetadata(forms.SelfHandlingForm):
         api.swift.swift_api(request).post_container(name, headers=headers)
         return data
 
+
+class UpdateStoragePolicy(forms.SelfHandlingForm):
+    policy_choices = []
+    policy = forms.ChoiceField()
+    
+    def __init__(self, request, *args, **kwargs):
+        # Obtain list of projects
+        self.policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name())
+        
+        super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
+
+        # Overwrite target_id input form
+        self.fields['policy'] = forms.ChoiceField(choices=self.policy_choices,
+                                                    label=_("Storage Policies"),
+                                                    required=True)
+
+
+    def handle(self, request, data):
+        name = self.initial['container_name']
+        try:
+            response = swift_api.swift_update_container_policy(request, name, data['policy'])
+            if 200 <= response.status_code < 300:
+                messages.success(request, _('Successfully updated container policy'))
+                return data
+            else:
+                raise ValueError(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:containers:index")
+            error_message = "Unable to update container policy.\st %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+            
 
 class UpdateObject(UploadObject):
     def __init__(self, *args, **kwargs):
