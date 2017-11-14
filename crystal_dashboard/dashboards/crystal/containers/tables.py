@@ -264,7 +264,7 @@ class UpdateContainerMetadata(tables.LinkAction):
 
 class UpdateStoragePolicy(tables.LinkAction):
     name = "update_policy"
-    verbose_name = _("Update Policy")
+    verbose_name = _("Edit Storage Policy")
     icon = "pencil"
     url = "horizon:crystal:containers:update_policy"
     classes = ("ajax-modal", "btn-view")

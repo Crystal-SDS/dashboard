@@ -218,7 +218,7 @@ class UpdateContainerPolicy(forms.ModalFormView):
     context_object_name = 'container'
     submit_url = "horizon:crystal:containers:update_policy"
     success_url = "horizon:crystal:containers:index"
-    page_title = _("Update Container Policy")
+    page_title = _("Edit Storage Policy")
 
     def get_success_url(self):
         container_name = self.kwargs['container_name']
