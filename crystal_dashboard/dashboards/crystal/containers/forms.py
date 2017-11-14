@@ -183,11 +183,12 @@ class UpdateStoragePolicy(forms.SelfHandlingForm):
         self.policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name())
         
         super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
-
         # Overwrite target_id input form
+        headers = api.swift.swift_api(request).head_container(self.initial['container_name'])
         self.fields['policy'] = forms.ChoiceField(choices=self.policy_choices,
                                                     label=_("Storage Policies"),
-                                                    required=True)
+                                                    required=True, 
+                                                    initial=headers.get('x-storage-policy'))
 
 
     def handle(self, request, data):

@@ -4,7 +4,7 @@ class StaticPolicy:
     """
 
     def __init__(self, static_policy_id, target_id, target_name, filter_name,
-                 object_type, object_size, object_tag, execution_server,
+                 object_name, object_type, object_size, object_tag, execution_server,
                  reverse, execution_order, params, put, get, post, head, delete):
         self.id = target_id + ':' + static_policy_id
         self.target_id = target_id
@@ -22,7 +22,7 @@ class StaticPolicy:
         if not object_type and not object_tag and not object_size:
             self.conditions = 'None'
         else:
-            self.conditions = (('Object Size: '+object_size+', ' if object_size else '') + ('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
+            self.conditions = (('Object Name: '+object_name+', ' if object_name else '') + ('Object Size: '+object_size+', ' if object_size else '') + ('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
 
 
 class DynamicPolicy:

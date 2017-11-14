@@ -88,7 +88,7 @@ class UpdateRow(tables.Row):
         response = api.dsl_get_static_policy(request, policy_id)
         data = json.loads(response.text)
         policy = StaticPolicy(data['id'], data['target_id'], data['target_name'], data['filter_name'],
-                              data['object_type'], data['object_size'], data['object_tag'],  data['execution_server'],
+                              data['object_name'], data['object_type'], data['object_size'], data['object_tag'],  data['execution_server'],
                               data['reverse'], data['execution_order'], data['params'], data['put'], data['get'], data['post'], data['head'], data['delete'],)
 
         return policy
