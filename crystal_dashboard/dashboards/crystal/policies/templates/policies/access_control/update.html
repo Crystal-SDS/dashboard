@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Update ACL" %}{% endblock %}
+
+{% block main %}
+    {% include 'crystal/policies/access_control/_update.html' %}
+{% endblock %}

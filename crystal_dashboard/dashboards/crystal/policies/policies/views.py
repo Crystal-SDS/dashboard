@@ -10,8 +10,12 @@ from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
 from crystal_dashboard.api import policies as api
+
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal.policies.policies import forms as policies_forms
+
+from openstack_dashboard import api as api_keystone
+from openstack_dashboard.utils import identity
 
 
 class CreateStaticPolicyView(forms.ModalFormView):
@@ -28,37 +32,80 @@ class CreateStaticPolicyView(forms.ModalFormView):
     page_title = _("Create a Static Policy")
 
 
+class CreateDynamicPolicyView(forms.ModalFormView):
+    form_class = policies_forms.CreateDynamicPolicy
+    form_id = "create_dynamic_policy_form"
+
+    modal_header = _("Create a Dynamic Policy")
+    modal_id = "create_dynamic_policy_modal"
+    submit_label = _("Create Dynamic Policy")
+    submit_url = reverse_lazy("horizon:crystal:policies:policies:create_dynamic_policy")
+    template_name = 'crystal/policies/policies/create_dynamic_policy.html'
+    content_object_name = 'policy'
+    success_url = reverse_lazy('horizon:crystal:policies:index')
+    page_title = _("Create a Dynamic Policy")
+
+
 @csrf_exempt
 def get_container_by_project(request):
+
     if request.method == 'POST':
         project_id = request.POST.get('project_id')
-        if request.user.tenant_id == project_id:
-            try:
-                container_list = common.get_container_list(request)
-                if len(container_list) > 0:
-                    # If the project contains some containers
-                    container_response = '<option value="">Select one</option>'
-                    container_response += '<optgroup label="Containers">'
-                    for container in container_list:
-                        value, label = container
-                        container_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
-                    container_response += '</optgroup>'
-                else:
-                    # If the project does not contain some containers
-                    container_response = '<option value="">None</option>'
-            except:
-                # If get_container_list raises an exception
-                container_response = '<option value="">None</option>'
-        else:
-            if project_id:
-                # If the selected project is not the current project
-                container_response = '<option value="">Not available</option>'
+        try:
+            container_list = common.get_container_list(request, project_id)
+            if len(container_list) > 0:
+                # If the project contains some containers
+                container_response = '<option value="">Select one</option>'
+                container_response += '<optgroup label="Containers">'
+                for container in container_list:
+                    value, label = container
+                    container_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
+                container_response += '</optgroup>'
             else:
-                # If the selected project is 'Select one'
+                # If the project does not contain some containers
                 container_response = '<option value="">None</option>'
+        except:
+            # If get_container_list raises an exception
+            container_response = '<option value="">None</option>'
 
         # Generate response
         response = http.StreamingHttpResponse(container_response)
+        return response
+
+
+@csrf_exempt
+def get_users_by_project(request):
+
+    if request.method == 'POST':
+        project_id = request.POST.get('project_id')
+
+        try:
+            users_list = common.get_users_list(request, project_id)
+            group_list = common.get_groups_list(request, project_id)
+
+            if len(users_list) == 0 and len(group_list) == 0:
+                # If the project does not contain users nor groups
+                users_response = '<option value="">None</option>'
+            else:
+                users_response = '<option value="">Select one</option>'
+
+                if len(users_list) > 0:
+                    # If the project contains some users
+                    users_response += '<optgroup label="Users">'
+                    for value, label in users_list:
+                        users_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
+
+                if len(group_list) > 0:
+                    # If the project contains some groups
+                    users_response += '<optgroup label="Groups">'
+                    for value, label in group_list:
+                        users_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
+
+        except:
+            users_response = '<option value="">None</option>'
+
+        # Generate response
+        response = http.StreamingHttpResponse(users_response)
         return response
 
 

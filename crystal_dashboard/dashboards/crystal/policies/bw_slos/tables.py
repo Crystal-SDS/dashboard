@@ -126,7 +126,7 @@ class DeleteMultipleSLOs(DeleteSLO):
 class SLAsTable(tables.DataTable):
     tenant_name = tables.Column("project_name", verbose_name=_("Project Name"))
     tenant_id = tables.Column("project_id", verbose_name=_("Project ID"))
-    policy_name = tables.Column("policy_name", verbose_name=_("Storage Policy (Ring)"))
+    policy_name = tables.Column("policy_name", verbose_name=_("Storage Policy"))
     get_bandwidth = tables.Column("get_bw", verbose_name=_("GET BW"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     put_bandwidth = tables.Column("put_bw", verbose_name=_("PUT BW"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 

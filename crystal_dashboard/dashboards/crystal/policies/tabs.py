@@ -16,12 +16,16 @@ from crystal_dashboard.dashboards.crystal.policies.policies import models as pol
 from crystal_dashboard.dashboards.crystal.policies.policies import tables as policies_tables
 from crystal_dashboard.dashboards.crystal.policies.object_types import models as object_types_models
 from crystal_dashboard.dashboards.crystal.policies.object_types import tables as object_types_tables
+from crystal_dashboard.dashboards.crystal.policies.access_control import models as access_control_models
+from crystal_dashboard.dashboards.crystal.policies.access_control import tables as access_control_tables
+from openstack_dashboard import api as api_keystone
+from openstack_dashboard.utils import identity
 
 
-class PoliciesTab(tabs.TableTab):
-    table_classes = (policies_tables.StaticPoliciesTable, policies_tables.DynamicPoliciesTable,)
-    name = _("Policies")
-    slug = "policies_table"
+class StaticPoliciesTab(tabs.TableTab):
+    table_classes = (policies_tables.StaticPoliciesTable,)
+    name = _("Static Policies")
+    slug = "static_policies_table"
     template_name = "crystal/policies/policies/_detail.html"
     preload = False
 
@@ -40,11 +44,34 @@ class PoliciesTab(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
+            if inst['execution_server'] == 'proxy':
+                inst['execution_server'] = 'Proxy Node'
+            elif inst['execution_server'] == 'object':
+                inst['execution_server'] = 'Storage Node'
+            if inst['reverse'] == 'proxy':
+                inst['reverse'] = 'Proxy Node'
+            elif inst['reverse'] == 'object':
+                inst['reverse'] = 'Storage Node'
             if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['execution_server_reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
+                                                        inst['object_name'], inst['object_type'], inst['object_size'], inst['object_tag'],
+                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
+                                                        inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
+
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
-                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'], inst['object_type'], inst['object_size'], inst['execution_server'], inst['execution_server_reverse'], inst['execution_order'], inst['params']))
+                ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
+                                                        inst['object_name'], inst['object_type'], inst['object_size'], inst['object_tag'],
+                                                        inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
+                                                        inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
         return ret
+
+
+class DynamicPoliciesTab(tabs.TableTab):
+    table_classes = (policies_tables.DynamicPoliciesTable,)
+    name = _("Dynamic Policies")
+    slug = "dynamic_policies_table"
+    template_name = "crystal/policies/policies/_detail.html"
+    preload = False
 
     def get_dynamic_policies_data(self):
         try:
@@ -61,7 +88,55 @@ class PoliciesTab(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ret.append(policies_models.DynamicPolicy(inst['id'], inst['target'], inst['condition'], inst['filter'], inst['object_type'], inst['object_size'], inst['transient'], inst['policy'], inst['alive']))
+            ret.append(policies_models.DynamicPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['condition'], inst['action'], inst['filter'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['transient'], inst['parameters'], inst['status']))
+        return sorted(ret, key=lambda x: x.id, reverse=True)
+
+
+class AccessControlTab(tabs.TableTab):
+    table_classes = (access_control_tables.AccessControlTable,)
+    name = _("Access Control")
+    slug = "access_control_table"
+    template_name = ("horizon/common/_detail_table.html")
+    preload = False
+
+    def get_access_control_policies_data(self):
+
+        ret = []
+        try:
+            users = [(user.id, user.name) for user in api_keystone.keystone.user_list(self.request)]
+            groups = [(group.id, group.name) for group in api_keystone.keystone.group_list(self.request)]
+            response = api.access_control_policy_list(self.request)
+            if 200 <= response.status_code < 300:
+                strobj = response.text
+                instances = json.loads(strobj)
+            else:
+                error_message = 'Unable to get instances.'
+                raise ValueError(error_message)
+        except Exception as e:
+            instances = []
+            users = []
+            groups = []
+            exceptions.handle(self.request, e.message)
+
+        for inst in instances:
+            try:
+                if inst['user_id']:
+                    inst['user_name'] = [user[1] for user in users if user[0] == inst['user_id']][0]
+                else:
+                    inst['user_name'] = ''
+
+                if inst['group_id']:
+                    inst['group_name'] = [group[1] for group in groups if group[0] == inst['group_id']][0]
+                else:
+                    inst['group_name'] = ''
+            except Exception as e:
+                instances = []
+                users = []
+                exceptions.handle(self.request, "User name not found")
+            ret.append(access_control_models.AccessControlPolicy(inst['id'], inst['target_id'], inst['target_name'],
+                                                                 inst['user_name'], inst['group_name'], inst['list'], inst['write'],
+                                                                 inst['read'], inst['object_type'], inst['object_tag']))
+
         return ret
 
 
@@ -164,5 +239,5 @@ class ActivatedMetricsTab(tabs.TableTab):
 
 class PoliciesGroupTabs(tabs.TabGroup):
     slug = "policies_group_tabs"
-    tabs = (PoliciesTab, SLOsTab, ObjectTypesTab, ActivatedMetricsTab,)
+    tabs = (StaticPoliciesTab, DynamicPoliciesTab, AccessControlTab, SLOsTab, ObjectTypesTab,)
     sticky = True

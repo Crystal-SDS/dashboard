@@ -27,6 +27,7 @@ from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
+from crystal_dashboard.api import swift as swift_api
 from crystal_dashboard.dashboards.crystal.containers import utils
 from crystal_dashboard.dashboards.crystal import common
 
@@ -40,6 +41,10 @@ no_begin_or_end_slash = validators.RegexValidator(r'^[^\/](?u).+[^\/]$',
                                                     "the beginning or end of "
                                                     "your string."),
                                                   code="nobeginorendslash")
+
+no_space_validator = validators.RegexValidator(r'^(?u)[^\s:-;]+$',
+                                               _("Invalid character."),
+                                               code="nospace")
 
 
 class CreateContainer(forms.SelfHandlingForm):
@@ -57,7 +62,7 @@ class CreateContainer(forms.SelfHandlingForm):
 
     policy_choices = []
     policy_name = forms.ChoiceField(choices=policy_choices,
-                                    label=_("Policy Name"),
+                                    label=_("Storage Policy"),
                                     help_text=_("The storage policy that you want to assign to the specific project."),
                                     required=True)
 
@@ -73,7 +78,7 @@ class CreateContainer(forms.SelfHandlingForm):
 
         # Overwrite policy_id input form
         self.fields['policy_name'] = forms.ChoiceField(choices=self.storage_policy_choices,
-                                                       label=_("Policy Name"),
+                                                       label=_("Storage Policy"),
                                                        help_text=_("The storage policy that you want to assign to the specific project."),
                                                        required=True)
 
@@ -153,6 +158,53 @@ class UploadObject(forms.SelfHandlingForm):
         except Exception:
             exceptions.handle(request, _("Unable to upload object."))
 
+
+class AddMetadata(forms.SelfHandlingForm):
+    key = forms.CharField(max_length=255,
+                          required=True,
+                          validators=[no_space_validator])
+    value = forms.CharField(max_length=255,
+                            required=True)
+
+    def handle(self, request, data):
+        name = self.initial['container_name']
+        data['key'] = data['key'].replace(' ', ':')
+        headers = {'X-Container-Meta-' + data['key']: data['value']}
+        api.swift.swift_api(request).post_container(name, headers=headers)
+        return data
+
+
+class UpdateStoragePolicy(forms.SelfHandlingForm):
+    policy_choices = []
+    policy = forms.ChoiceField()
+    
+    def __init__(self, request, *args, **kwargs):
+        # Obtain list of projects
+        self.policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name())
+        
+        super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
+        # Overwrite target_id input form
+        headers = api.swift.swift_api(request).head_container(self.initial['container_name'])
+        self.fields['policy'] = forms.ChoiceField(choices=self.policy_choices,
+                                                    label=_("Storage Policies"),
+                                                    required=True, 
+                                                    initial=headers.get('x-storage-policy'))
+
+
+    def handle(self, request, data):
+        name = self.initial['container_name']
+        try:
+            response = swift_api.swift_update_container_policy(request, name, data['policy'])
+            if 200 <= response.status_code < 300:
+                messages.success(request, _('Successfully updated container policy'))
+                return data
+            else:
+                raise ValueError(response.text)
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:containers:index")
+            error_message = "Unable to update container policy.\st %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+            
 
 class UpdateObject(UploadObject):
     def __init__(self, *args, **kwargs):

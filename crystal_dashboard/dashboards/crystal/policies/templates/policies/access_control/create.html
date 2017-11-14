@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Create access control policy" %}{% endblock %}
+
+{% block main %}
+    {% include 'crystal/policies/access_control/_create.html' %}
+{% endblock %}

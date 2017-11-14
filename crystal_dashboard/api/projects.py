@@ -68,7 +68,7 @@ def disable_crystal(request, project_id):
 #
 # Project Groups
 #
-def dsl_create_tenants_group(request, name, tenants_list):
+def create_projects_group(request, data):
     token = get_token(request)
     headers = {}
 
@@ -77,14 +77,28 @@ def dsl_create_tenants_group(request, name, tenants_list):
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
 
-    # parameters = {"name": str(name), "tenants": str(tenants_list)}
-    # r = requests.post(url, json.dumps(parameters), headers=headers)
+    data['attached_projects'] = json.dumps(data['attached_projects'])
 
-    r = requests.post(url, json.dumps(tenants_list), headers=headers)
+    r = requests.post(url, json.dumps(data), headers=headers)
     return r
 
 
-def dsl_get_all_tenants_groups(request):
+def update_projects_group(request, data, group_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_id)
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    data['attached_projects'] = json.dumps(data['attached_projects'])
+
+    r = requests.put(url, json.dumps(data), headers=headers)
+    return r
+
+
+def get_all_project_groups(request):
     token = get_token(request)
     headers = {}
 
@@ -97,11 +111,11 @@ def dsl_get_all_tenants_groups(request):
     return r
 
 
-def dsl_list_tenants_group(request, group_name):
+def get_project_group(request, group_id):
     token = get_token(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -110,27 +124,11 @@ def dsl_list_tenants_group(request, group_name):
     return r
 
 
-def dsl_add_tenant_group_member(request, group_name, tenant_id):
+def delete_project_group(request, group_id):
     token = get_token(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
-
-    headers["X-Auth-Token"] = str(token)
-    headers['Content-Type'] = "application/json"
-
-    # TODO
-    parameters = {"new": str(tenant_id)}
-
-    r = requests.put(url, json.dumps(parameters), headers=headers)
-    return r
-
-
-def dsl_delete_tenants_group(request, group_name):
-    token = get_token(request)
-    headers = {}
-
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name)
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_id)
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
@@ -139,14 +137,32 @@ def dsl_delete_tenants_group(request, group_name):
     return r
 
 
-def dsl_delete_tenant_group_member(request, group_name, tenant_id):
+#
+# Project users
+#
+def get_project_users(request, project_id):
     token = get_token(request)
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/projects/groups/" + str(group_name) + "/projects/" + str(tenant_id)
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/" + str(project_id) + "/users"
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"
 
-    r = requests.delete(url, headers=headers)
+    r = requests.get(url, headers=headers)
+    return r
+
+#
+# Project groups
+#
+def get_project_groups(request, project_id):
+    token = get_token(request)
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/projects/" + str(project_id) + "/groups"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
     return r

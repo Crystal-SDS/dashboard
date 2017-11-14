@@ -18,7 +18,7 @@ class CreateSLA(forms.SelfHandlingForm):
 
     policy_choices = []
     policy_id = forms.ChoiceField(choices=policy_choices,
-                                  label=_("Storage Policy (Ring)"),
+                                  label=_("Storage Policy"),
                                   help_text=_("The storage policy that you want to assign to the specific project."),
                                   required=True)
 

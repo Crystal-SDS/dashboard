@@ -10,6 +10,7 @@ from horizon import forms
 from horizon.utils import memoized
 from crystal_dashboard.api import filters as api
 from crystal_dashboard.dashboards.crystal.filters.filters import forms as filters_forms
+from crystal_dashboard.dashboards.crystal.filters.filters.models import Filter
 
 
 class UploadStorletView(forms.ModalFormView):
@@ -40,7 +41,7 @@ class UploadNativeView(forms.ModalFormView):
 
 def download_filter(request, filter_id):
     try:
-        filter_response = api.fil_download_filter_data(request, filter_id)
+        filter_response = api.download_filter_data(request, filter_id)
 
         # Generate response
         response = http.StreamingHttpResponse(filter_response.content)
@@ -76,19 +77,17 @@ class UpdateView(forms.ModalFormView):
     def _get_object(self, *args, **kwargs):
         filter_id = self.kwargs['filter_id']
         try:
-            filter = api.fil_get_filter_metadata(self.request, filter_id)
-            return filter
+            filter_data = api.get_filter_metadata(self.request, filter_id)
+            return filter_data
         except Exception:
             redirect = self.success_url
             msg = _('Unable to retrieve filter details.')
             exceptions.handle(self.request, msg, redirect=redirect)
 
     def get_initial(self):
-        filter = self._get_object()
-        initial = json.loads(filter.text)
-        # initial = super(UpdateView, self).get_initial()
-        # initial['name'] = "my filter name"
-        return initial
+        data = self._get_object()
+        data = json.loads(data.text)
+        return data
 
 
 class UpdateStorletView(UpdateView):

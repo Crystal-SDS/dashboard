@@ -79,7 +79,7 @@ class DeleteFilter(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         try:
-            response = api.fil_delete_filter(request, obj_id)
+            response = api.delete_filter(request, obj_id)
             if 200 <= response.status_code < 300:
                 pass
                 # messages.success(request, _('Successfully deleted filter: %s') % obj_id)
@@ -132,14 +132,13 @@ class DeleteMultipleNativeFilters(DeleteMultipleFilters):
 
 class UpdateCell(tables.UpdateAction):
     def allowed(self, request, project, cell):
-        return (cell.column.name in ['interface_version', 'execution_server', 'execution_server_reverse',
-                                     'is_pre_put', 'is_post_put', 'is_pre_get', 'is_post_get', 'has_reverse', 'main'])
+        return (cell.column.name in ['interface_version', 'execution_server', 'reverse', 'put', 'get', 'main'])
 
     def update_cell(self, request, datum, id, cell_name, new_cell_value):
         try:
             data = {}
             data[cell_name] = new_cell_value
-            api.fil_update_filter_metadata(request, id, data)
+            api.update_filter_metadata(request, id, data)
         except Conflict:
             # Returning a nice error message about name conflict. The message
             # from exception is not that clear for the user
@@ -155,15 +154,12 @@ class UpdateStorletRow(tables.Row):
     ajax = True
 
     def get_data(self, request, id):
-        response = api.fil_get_filter_metadata(request, id)
+        response = api.get_filter_metadata(request, id)
         data = json.loads(response.text)
-        filter = Filter(data['id'], data['filter_name'], data['dsl_name'], data['language'],
-                        data['filter_type'], data['dependencies'],
-                        data['interface_version'],
-                        data['main'],
-                        data['has_reverse'], data['execution_server'],
-                        data['execution_server_reverse'],
-                        data['is_pre_put'], data['is_post_put'], data['is_pre_get'], data['is_post_get'])
+
+        filter = Filter(data['dsl_name'], data['filter_name'], data['dsl_name'], data['language'],
+                        data['filter_type'], data['dependencies'], data['interface_version'],
+                        data['main'], data['execution_server'], data['reverse'], data['put'], data['get'], False, False, False, data['valid_parameters'])
         return filter
 
 
@@ -171,32 +167,28 @@ class UpdateNativeRow(tables.Row):
     ajax = True
 
     def get_data(self, request, id):
-        response = api.fil_get_filter_metadata(request, id)
+        response = api.get_filter_metadata(request, id)
         data = json.loads(response.text)
-        filter = Filter(data['id'], data['filter_name'], data['dsl_name'], data['language'],
-                        data['filter_type'], None, None,
-                        data['main'],
-                        data['has_reverse'], data['execution_server'],
-                        data['execution_server_reverse'],
-                        data['is_pre_put'], data['is_post_put'], data['is_pre_get'], data['is_post_get'])
+
+        filter = Filter(data['dsl_name'], data['filter_name'], data['dsl_name'], data['language'],
+                        data['filter_type'], data['dependencies'], None,
+                        data['main'], data['execution_server'], data['reverse'], data['put'], data['get'], data['post'], data['head'], data['delete'], data['valid_parameters'])
         return filter
 
 
 class StorletFilterTable(tables.DataTable):
     #id = tables.Column('id', verbose_name=_("ID"))
-    name = tables.Column('filter_name', verbose_name=_("Name"))
+    name = tables.Column('filter_name', verbose_name=_("Filter"))
     # filter_type = tables.Column('filter_type', verbose_name=_("Type"))
-    dsl_name = tables.Column('dsl_name', verbose_name=_("DSL Name"))
-
+    dsl_name = tables.Column('dsl_name', verbose_name=_("DSL Name"), update_action=UpdateCell)
     interface_version = tables.Column('interface_version', verbose_name=_("Version"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     #dependencies = tables.Column('dependencies', verbose_name=_("Dependencies"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     language = tables.Column('language', verbose_name=_("Language"))
     main = tables.Column('main', verbose_name=_("Main Class"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    is_pre_put = tables.Column('is_pre_put', verbose_name=_("Put"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    is_post_get = tables.Column('is_post_get', verbose_name=_("Get"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    has_reverse = tables.Column('has_reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    execution_server = tables.Column('execution_server', verbose_name=_("Exec. Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
-    execution_server_reverse = tables.Column('execution_server_reverse', verbose_name=_("Exec. Server - Reverse"), form_field=forms.ChoiceField(choices=[('none', _('None')), ('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
+    methods = tables.Column('methods', verbose_name=_("HTTP Methods"), form_field=forms.CharField(max_length=255))
+    execution_server = tables.Column('execution_server', verbose_name=_("Exec. Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    valid_parameters = tables.Column('valid_parameters', verbose_name=_("Valid Parameters"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:
         name = "storlet_filters"
@@ -209,24 +201,17 @@ class StorletFilterTable(tables.DataTable):
 
 class NativeFilterTable(tables.DataTable):
     #id = tables.Column('id', verbose_name=_("ID"))
-    name = tables.Column('filter_name', verbose_name=_("Name"))
-    dsl_name = tables.Column('dsl_name', verbose_name=_("DSL Name"))
+    name = tables.Column('filter_name', verbose_name=_("Filter"))
+    dsl_name = tables.Column('dsl_name', verbose_name=_("DSL Name"), update_action=UpdateCell)
 
     # filter_type = tables.Column('filter_type', verbose_name=_("Type"))
     #interface_version = tables.Column('interface_version', verbose_name=_("Interface Version"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     #dependencies = tables.Column('dependencies', verbose_name=_("Dependencies"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     main = tables.Column('main', verbose_name=_("Main Class"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
-    is_pre_put = tables.Column('is_pre_put', verbose_name=_("pre-PUT"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
-                               update_action=UpdateCell)
-    is_post_put = tables.Column('is_post_put', verbose_name=_("post-PUT"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
-                               update_action=UpdateCell)
-    is_pre_get = tables.Column('is_pre_get', verbose_name=_("pre-GET"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
-                               update_action=UpdateCell)
-    is_post_get = tables.Column('is_post_get', verbose_name=_("post-GET"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]),
-                                update_action=UpdateCell)
-    has_reverse = tables.Column('has_reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('True', _('True')), ('False', _('False'))]), update_action=UpdateCell)
-    execution_server = tables.Column('execution_server', verbose_name=_("Exec. Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
-    execution_server_reverse = tables.Column('execution_server_reverse', verbose_name=_("Exec. Server - Reverse"), form_field=forms.ChoiceField(choices=[('none', _('None')), ('proxy', _('Proxy Server')), ('object', _('Object Storage Servers'))]), update_action=UpdateCell)
+    methods = tables.Column('methods', verbose_name=_("HTTP Methods"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
+    execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    valid_parameters = tables.Column('valid_parameters', verbose_name=_("Valid Parameters"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:
         name = "native_filters"
