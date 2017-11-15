@@ -182,6 +182,10 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
                                   help_text=_("The id of the filter which will be used."),
                                   required=True)
 
+    object_name = forms.CharField(max_length=255,
+                             label=_("Object Name"),
+                             required=False)
+
     object_type_choices = []
     object_type = forms.ChoiceField(choices=object_type_choices,
                                     label=_("Object Type"),

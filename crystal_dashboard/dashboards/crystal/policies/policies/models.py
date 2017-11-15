@@ -19,7 +19,7 @@ class StaticPolicy:
         self.methods = (('PUT, ' if put else '') + ('GET, ' if get else '') + ('POST, ' if post else '') + ('HEAD, ' if head else '') + ('DELETE, ' if delete else ''))[0:-2]
         self.params = params
 
-        if not object_type and not object_tag and not object_size:
+        if not object_name and not object_type and not object_tag and not object_size:
             self.conditions = 'None'
         else:
             self.conditions = (('Object Name: '+object_name+', ' if object_name else '') + ('Object Size: '+object_size+', ' if object_size else '') + ('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
@@ -31,7 +31,7 @@ class DynamicPolicy:
     """
 
     def __init__(self, dynamic_policy_id, target_id, target_name, condition,
-                 action, filter, object_type, object_size, object_tag, transient,
+                 action, filter, object_name, object_type, object_size, object_tag, transient,
                  parameters, status):
         self.id = dynamic_policy_id
         self.target_id = target_id
@@ -42,12 +42,13 @@ class DynamicPolicy:
         self.object_type = object_type
         self.object_size = object_size
         self.object_tag = object_tag
+        self.object_name = object_name
         self.transient = transient
         self.parameters = parameters
         self.status = status
 
-        if not object_type and not object_tag and not object_size:
+        if not object_name and not object_type and not object_tag and not object_size:
             self.conditions = 'None'
         else:
-            self.conditions = (('Object Size: '+object_size+', ' if object_size else '') + ('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
+            self.conditions = (('Object Name: '+object_name+', ' if object_name else '') + ('Object Size: '+object_size+', ' if object_size else '') + ('Object Type: '+object_type+', ' if object_type else '') + ('Object TAG: '+object_tag+', ' if object_tag else ''))[0:-2]
 
