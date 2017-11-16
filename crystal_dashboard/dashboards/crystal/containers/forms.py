@@ -194,7 +194,7 @@ class UpdateStoragePolicy(forms.SelfHandlingForm):
     def handle(self, request, data):
         name = self.initial['container_name']
         try:
-            response = swift_api.swift_update_container_policy(request, name, data['policy'])
+            response = swift_api.swift_update_container_policy(request, request.user.project_id, name, data['policy'])
             if 200 <= response.status_code < 300:
                 messages.success(request, _('Successfully updated container policy'))
                 return data
