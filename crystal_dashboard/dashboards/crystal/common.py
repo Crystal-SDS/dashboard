@@ -390,6 +390,7 @@ def get_storage_policy_list(request, by_attribute):
 # ==============
 # Workload Metrics
 # ==============
+
 def get_activated_workload_metrics_list_choices(request):
     """
     Get a tuple of activaded workload metric choices

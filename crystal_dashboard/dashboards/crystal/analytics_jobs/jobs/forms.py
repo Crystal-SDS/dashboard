@@ -21,7 +21,7 @@ class SubmitJob(forms.SelfHandlingForm):
     analyzer_id = forms.ChoiceField(choices = analyzer_choices,
                                     label=_('Analyzer'),
                                     help_text=_("The analyzer assigned to the submitted job."),
-                                    required=True,)
+                                    required=True)
     tenant_choices = []
     tenant_id = forms.ChoiceField(choices=tenant_choices,
                                   label=_("Project"),
@@ -33,16 +33,35 @@ class SubmitJob(forms.SelfHandlingForm):
     #                                help_text=_("The container assigned to the submitted job."),
     #                                required=False,
     #                                widget=forms.Select(choices=container_choices))
+
+    executor_cores = forms.CharField(label=_("Executor cores"),
+                                     help_text=_("The number of cores to use on each executor."),
+                                     widget=forms.TextInput(
+                                         attrs={"ng-model": "name", "not-blank": ""}
+                                     ))
+
+    executor_memory = forms.CharField(label=_("Executor memory"),
+                                      help_text=_("Amount of memory to use per executor process (e.g. 2g, 8g)"),
+                                      widget=forms.TextInput(
+                                         attrs={"ng-model": "name", "not-blank": ""}
+                                      ))
+
     pushdown = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
 
         self.tenant_choices = [('', 'Select one'), common.get_project_list_choices(request)]
-        self.container_choices = common.get_container_list_choices(request, request.user.project_id)  # TODO Default: containers from current project
+        # self.container_choices = common.get_container_list_choices(request, request.user.project_id)  # Default: containers from current project
         self.analyzer_choices = common.get_anj_analyzer_list_choices(request)
 
         super(SubmitJob, self).__init__(request, *args, **kwargs)
+
+        # Overwrite filter_id input form
+        self.fields['analyzer_id'] = forms.ChoiceField(choices=self.analyzer_choices,
+                                                       label=_('Analyzer'),
+                                                       help_text=_("The analyzer assigned to the submitted job."),
+                                                       required=True,)
 
         # Overwrite tenant_id input form
         self.fields['tenant_id'] = forms.ChoiceField(choices=self.tenant_choices,
@@ -56,12 +75,6 @@ class SubmitJob(forms.SelfHandlingForm):
         #                                                 label=_("Container"),
         #                                                 help_text=_("The container assigned to the submitted job."),
         #                                                 required=False)
-
-        # Overwrite filter_id input form
-        self.fields['analyzer_id'] = forms.ChoiceField(choices=self.analyzer_choices,
-                                                       label=_('Analyzer'),
-                                                       help_text=_("The analyzer assigned to the submitted job."),
-                                                       required=True,)
 
 
     @staticmethod
