@@ -185,25 +185,29 @@ class UpdateStoragePolicy(forms.SelfHandlingForm):
         super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
         # Overwrite target_id input form
         headers = api.swift.swift_api(request).head_container(self.initial['container_name'])
+        self.initial_value = headers.get('x-storage-policy')
         self.fields['policy'] = forms.ChoiceField(choices=self.policy_choices,
                                                     label=_("Storage Policies"),
                                                     required=True, 
-                                                    initial=headers.get('x-storage-policy'))
+                                                    initial=self.initial_value)
 
 
     def handle(self, request, data):
         name = self.initial['container_name']
-        try:
-            response = swift_api.swift_update_container_policy(request, request.user.project_id, name, data['policy'])
-            if 200 <= response.status_code < 300:
-                messages.success(request, _('Successfully updated container policy'))
-                return data
-            else:
-                raise ValueError(response.text)
-        except Exception as ex:
-            redirect = reverse("horizon:crystal:containers:index")
-            error_message = "Unable to update container policy.\st %s" % ex.message
-            exceptions.handle(request, _(error_message), redirect=redirect)
+        if (self.initial_value != data['policy']):
+            try:
+                response = swift_api.swift_update_container_policy(request, request.user.project_id, name, data['policy'])
+                if 200 <= response.status_code < 300:
+                    messages.success(request, _('Successfully updated container policy'))
+                    return data
+                else:
+                    raise ValueError(response.text)
+            except Exception as ex:
+                redirect = reverse("horizon:crystal:containers:index")
+                error_message = "Unable to update container policy.\st %s" % ex.message
+                exceptions.handle(request, _(error_message), redirect=redirect)
+        else:
+            return data
             
 
 class UpdateObject(UploadObject):
