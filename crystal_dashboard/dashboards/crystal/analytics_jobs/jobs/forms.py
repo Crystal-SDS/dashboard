@@ -36,15 +36,11 @@ class SubmitJob(forms.SelfHandlingForm):
 
     executor_cores = forms.CharField(label=_("Executor cores"),
                                      help_text=_("The number of cores to use on each executor."),
-                                     widget=forms.TextInput(
-                                         attrs={"ng-model": "name", "not-blank": ""}
-                                     ))
+                                     required=False)
 
     executor_memory = forms.CharField(label=_("Executor memory"),
                                       help_text=_("Amount of memory to use per executor process (e.g. 2g, 8g)"),
-                                      widget=forms.TextInput(
-                                         attrs={"ng-model": "name", "not-blank": ""}
-                                      ))
+                                      required=False)
 
     pushdown = forms.BooleanField(required=False)
 

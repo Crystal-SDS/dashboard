@@ -19,6 +19,7 @@ class CreateAnalyzer(forms.SelfHandlingForm):
     framework = forms.ChoiceField(
         label=_('Framework'),
         choices=[('Spark', _('Spark')),
+                 ('Flink', _('Flink')),
                  ('Others', _('Others'))],
         widget=forms.Select(attrs={
             'class': 'switchable',
