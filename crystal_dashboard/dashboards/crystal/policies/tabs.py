@@ -54,13 +54,13 @@ class StaticPoliciesTab(tabs.TableTab):
                 inst['reverse'] = 'Storage Node'
             if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
                 ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
-                                                        inst['object_name'], inst['object_type'], inst['object_size'], inst['object_tag'],
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'],
                                                         inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
                                                         inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
 
             elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
                 ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
-                                                        inst['object_name'], inst['object_type'], inst['object_size'], inst['object_tag'],
+                                                        inst['object_type'], inst['object_size'], inst['object_tag'],
                                                         inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
                                                         inst['put'], inst['get'], inst['post'], inst['head'], inst['delete']))
         return ret
@@ -88,7 +88,7 @@ class DynamicPoliciesTab(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ret.append(policies_models.DynamicPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['condition'], inst['action'], inst['filter'], inst['object_name'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['transient'], inst['parameters'], inst['status']))
+            ret.append(policies_models.DynamicPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['condition'], inst['action'], inst['filter'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['transient'], inst['parameters'], inst['status']))
         return sorted(ret, key=lambda x: x.id, reverse=True)
 
 

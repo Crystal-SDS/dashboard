@@ -85,16 +85,19 @@ class CreateContainer(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             if not data['parent']:
-                is_public = data["access"] == "public"
-                policy_name = data["policy_name"]
-                if policy_name:
-                    metadata = ({'is_public': is_public, "policy_name": policy_name})
-                else:
-                    metadata = ({'is_public': is_public})
+
+                headers = {'x-container-read': '', 'x-storage-policy': data["policy_name"]}
+                
+                if data["access"] == "public":
+                    headers['x-container-read'] = '.r:*,.rlistings'
+
                 # Create a container
-                api.swift.swift_create_container(request,
-                                                 data["name"],
-                                                 metadata=metadata)
+                response = swift_api.swift_create_container(request, request.user.project_id, data['name'], headers)
+                if 200 <= response.status_code < 300:
+                    messages.success(request, _('Successfully created container'))
+                    return data
+                else:
+                    raise ValueError(response.text)
                 messages.success(request, _("Container created successfully."))
             else:
                 # Create a pseudo-folder
@@ -108,8 +111,10 @@ class CreateContainer(forms.SelfHandlingForm):
                                                  subfolder_name)
                 messages.success(request, _("Folder created successfully."))
             return True
-        except Exception:
-            exceptions.handle(request, _('Unable to create container.'))
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:containers:index")
+            error_message = "Unable to create container. %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
 
 
 class UploadObject(forms.SelfHandlingForm):
