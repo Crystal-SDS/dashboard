@@ -11,17 +11,16 @@ from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 
 class SubmitJob(forms.SelfHandlingForm):
     job_file = forms.FileField(label=_("File"), required=True, allow_empty_file=False)
-    # name = forms.CharField(max_length=255,
-    #                        label=_("Name"),
-    #                        help_text=_("The name of the job to submit."),
-    #                        widget=forms.TextInput(
-    #                            attrs={"ng-model": "name", "not-blank": ""}
-    #                        ))
+
     analyzer_choices = []
-    analyzer_id = forms.ChoiceField(choices = analyzer_choices,
+    analyzer_id = forms.ChoiceField(choices=analyzer_choices,
                                     label=_('Analyzer'),
                                     help_text=_("The analyzer assigned to the submitted job."),
-                                    required=True)
+                                    required=True,
+                                    widget=forms.ThemableSelectWidget(attrs={
+                                        'class': 'switchable',
+                                        'data-slug': 'analyzer_id'})
+                                    )
     tenant_choices = []
     tenant_id = forms.ChoiceField(choices=tenant_choices,
                                   label=_("Project"),
@@ -35,12 +34,16 @@ class SubmitJob(forms.SelfHandlingForm):
     #                                widget=forms.Select(choices=container_choices))
 
     executor_cores = forms.CharField(label=_("Executor cores"),
-                                     help_text=_("The number of cores to use on each executor."),
-                                     required=False)
+                                     required=False,
+                                     )
 
     executor_memory = forms.CharField(label=_("Executor memory"),
-                                      help_text=_("Amount of memory to use per executor process (e.g. 2g, 8g)"),
-                                      required=False)
+                                      required=False,
+                                      )
+
+    parallelism = forms.CharField(label=_("Parallelism"),
+                                  required=False,
+                                  )
 
     pushdown = forms.BooleanField(required=False)
 
@@ -49,7 +52,10 @@ class SubmitJob(forms.SelfHandlingForm):
 
         self.tenant_choices = [('', 'Select one'), common.get_project_list_choices(request)]
         # self.container_choices = common.get_container_list_choices(request, request.user.project_id)  # Default: containers from current project
-        self.analyzer_choices = common.get_anj_analyzer_list_choices(request)
+        # self.analyzer_choices = common.get_anj_analyzer_list_choices(request)
+        analyzer_list = common.get_anj_analyzer_list(request)
+        self.analyzer_choices = [('', 'Select one')]
+        self.analyzer_choices.extend(analyzer_list)
 
         super(SubmitJob, self).__init__(request, *args, **kwargs)
 
@@ -57,7 +63,11 @@ class SubmitJob(forms.SelfHandlingForm):
         self.fields['analyzer_id'] = forms.ChoiceField(choices=self.analyzer_choices,
                                                        label=_('Analyzer'),
                                                        help_text=_("The analyzer assigned to the submitted job."),
-                                                       required=True,)
+                                                       required=True,
+                                                       widget=forms.ThemableSelectWidget(attrs={
+                                                           'class': 'switchable',
+                                                           'data-slug': 'analyzer_id'})
+                                                       )
 
         # Overwrite tenant_id input form
         self.fields['tenant_id'] = forms.ChoiceField(choices=self.tenant_choices,
@@ -66,12 +76,39 @@ class SubmitJob(forms.SelfHandlingForm):
                                                      help_text=_("The project assigned to the submitted job."),
                                                      required=True)
 
-        # Overwrite container_id input form
-        # self.fields['container_id'] = forms.ChoiceField(choices=self.container_choices,
-        #                                                 label=_("Container"),
-        #                                                 help_text=_("The container assigned to the submitted job."),
-        #                                                 required=False)
+        analyzers_ids = {'Spark': 'dummy', 'Flink': 'dummy'}
+        for analyzer in analyzer_list:
+            if 'Spark' in analyzer[1]:
+                analyzers_ids['Spark'] = analyzer[0]  # analyzer id
+            elif 'Flink' in analyzer[1]:
+                analyzers_ids['Flink'] = analyzer[0]  # analyzer id
 
+        self.fields['executor_cores'] = forms.CharField(label=_("Executor cores"),
+                                                        help_text=_("The number of cores to use on each executor."),
+                                                        required=False,
+                                                        widget=forms.TextInput(
+                                                            attrs={'class': 'switched',
+                                                                   'data-switch-on': 'analyzer_id',
+                                                                   'data-analyzer_id-' + analyzers_ids['Spark']: _("Executor cores")})
+                                                        )
+
+        self.fields['executor_memory'] = forms.CharField(label=_("Executor memory"),
+                                                         help_text=_("Amount of memory to use per executor process (e.g. 2g, 8g)"),
+                                                         required=False,
+                                                         widget=forms.TextInput(
+                                                             attrs={'class': 'switched',
+                                                                    'data-switch-on': 'analyzer_id',
+                                                                    'data-analyzer_id-' + analyzers_ids['Spark']: _("Executor memory")})
+                                                         )
+
+        self.fields['parallelism'] = forms.CharField(label=_("Parallelism"),
+                                                     help_text=_("The parallelism with which to run the program."),
+                                                     required=False,
+                                                     widget=forms.TextInput(
+                                                         attrs={'class': 'switched',
+                                                                'data-switch-on': 'analyzer_id',
+                                                                'data-analyzer_id-' + analyzers_ids['Flink']: _("Parallelism")})
+                                                     )
 
     @staticmethod
     def handle(request, data):
