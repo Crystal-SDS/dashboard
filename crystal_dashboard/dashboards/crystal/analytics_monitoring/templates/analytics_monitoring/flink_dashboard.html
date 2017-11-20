@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_header %}
+    {% include "crystal/analytics_monitoring/_page_header.html" with active_tab="flink-dashboard" %}
+{% endblock page_header %}
+
+{% block main %}
+    <iframe src="{{ flink_dashboard_url }}" height="1120" width=100%></iframe>
+{% endblock %}

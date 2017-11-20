@@ -3,13 +3,22 @@
 {% block nav %}
         <ul id="nav">
             <li class="btn btn-primary pull-right"
+                {% if active_tab == 'flink-dashboard' %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #e6e6e6;"
+                {% else %}
+                style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #ffffff;" onMouseOver="this.style.backgroundColor='#e6e6e6'" onMouseOut="this.style.backgroundColor='#FFFFFF'"
+                {% endif %}
+                >
+                <a href="{% url 'horizon:crystal:analytics_monitoring:flink' %}" style="text-decoration: none; color: #000000">Flink dashboard</a>
+            </li>
+            <li class="btn btn-primary pull-right"
                 {% if active_tab == 'history-server' %}
                 style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #e6e6e6;"
                 {% else %}
                 style="margin: 5px 5px 10px 5px; border-color: #ccc; background-color: #ffffff;" onMouseOver="this.style.backgroundColor='#e6e6e6'" onMouseOut="this.style.backgroundColor='#FFFFFF'"
                 {% endif %}
                 >
-                <a href="{% url 'horizon:crystal:analytics_monitoring:history' %}" style="text-decoration: none; color: #000000">History server</a>
+                <a href="{% url 'horizon:crystal:analytics_monitoring:history' %}" style="text-decoration: none; color: #000000">Spark History server</a>
             </li>
             <li class="btn btn-primary pull-right"
                 {% if active_tab == "index" %}
