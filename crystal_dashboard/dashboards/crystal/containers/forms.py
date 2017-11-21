@@ -71,8 +71,7 @@ class CreateContainer(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of storage policies
-        self.storage_policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name())
-
+        self.storage_policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name(), "deployed")
         # Initialization
         super(CreateContainer, self).__init__(request, *args, **kwargs)
 
@@ -185,7 +184,7 @@ class UpdateStoragePolicy(forms.SelfHandlingForm):
     
     def __init__(self, request, *args, **kwargs):
         # Obtain list of projects
-        self.policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name())
+        self.policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name(), "deployed")
         
         super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
         # Overwrite target_id input form

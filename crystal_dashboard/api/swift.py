@@ -282,6 +282,20 @@ def swift_list_storage_policies(request):
     return r
 
 
+def swift_list_deployed_storage_policies(request):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policies/deployed"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
 def swift_available_disks_storage_policy(request, storage_policy_id):
     token = get_token(request)
 
