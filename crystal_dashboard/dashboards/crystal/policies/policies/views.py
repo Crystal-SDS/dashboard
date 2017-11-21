@@ -54,7 +54,7 @@ def get_container_by_project(request):
         try:
             container_response = '<option value="">None</option>'
             
-            if not project_id.startswith('group_'):
+            if not project_id.startswith('group:'):
                 container_list = common.get_container_list(request, project_id)
                 if len(container_list) > 0:
                     # If the project contains some containers
