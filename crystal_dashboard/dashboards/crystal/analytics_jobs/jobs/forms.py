@@ -45,6 +45,10 @@ class SubmitJob(forms.SelfHandlingForm):
                                   required=False,
                                   )
 
+    arguments = forms.CharField(label=_("Arguments"),
+                                required=False,
+                                )
+
     pushdown = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kwargs):
