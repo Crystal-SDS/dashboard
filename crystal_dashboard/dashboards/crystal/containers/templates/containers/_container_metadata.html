@@ -10,4 +10,19 @@
   {% endif %}
   </li>
   <li>{% trans "Storage Policy: " %}{{ container.storage_policy }}</li>
+
+  {% if container.metadata != '' %}
+	    <div style="margin-top:5px;" id='{{ container.name }}_metadata'></div>
+  {% endif %}
+  
 </ul>
+
+<script type="text/javascript">
+	var container_name = "{{ container.name }}"
+	var metadata = "{{container.metadata}}"
+	var metadata = metadata.split(", ");
+	for (i = 0; i < metadata.length; i++) {
+		var value = metadata[i].split('=')
+		$("#"+container_name+"_metadata").append('<li><b>{% trans "'+value[0]+': " %}</b>'+value[1]+'</li>');
+	}
+</script>

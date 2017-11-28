@@ -187,7 +187,7 @@ class StorletFilterTable(tables.DataTable):
     main = tables.Column('main', verbose_name=_("Main Class"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     methods = tables.Column('methods', verbose_name=_("HTTP Methods"), form_field=forms.CharField(max_length=255))
     execution_server = tables.Column('execution_server', verbose_name=_("Exec. Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
-    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     valid_parameters = tables.Column('valid_parameters', verbose_name=_("Valid Parameters"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:
@@ -210,7 +210,7 @@ class NativeFilterTable(tables.DataTable):
     main = tables.Column('main', verbose_name=_("Main Class"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     methods = tables.Column('methods', verbose_name=_("HTTP Methods"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
     execution_server = tables.Column('execution_server', verbose_name=_("Execution Server"), form_field=forms.ChoiceField(choices=[('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
-    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('proxy', _('Proxy Node')), ('object', _('Storage Node'))]), update_action=UpdateCell)
+    reverse = tables.Column('reverse', verbose_name=_("Reverse"), form_field=forms.ChoiceField(choices=[('False', _('False')), ('object', _('Storage Node'))]), update_action=UpdateCell)
     valid_parameters = tables.Column('valid_parameters', verbose_name=_("Valid Parameters"), form_field=forms.CharField(max_length=255), update_action=UpdateCell)
 
     class Meta:

@@ -84,8 +84,9 @@ class DeleteMultipleAccessControlPolicies(DeleteAccessControlPolicy):
 
 class AccessControlTable(tables.DataTable):
     target_name = tables.Column('target_name', verbose_name=_("Target"))
-    user = tables.Column('user', verbose_name=_("User"))
-    permissions = tables.Column('permissions', verbose_name="Permissions")
+    identity = tables.Column('identity', verbose_name=_("Identity"))
+
+    permissions = tables.Column('permissions', verbose_name="Access Level")
     # write = tables.Column('write', verbose_name="Write")
     # read = tables.Column('read', verbose_name=_("Read"))
     conditions = tables.Column('conditions', verbose_name="Read Conditions")

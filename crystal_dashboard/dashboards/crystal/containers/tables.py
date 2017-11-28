@@ -24,11 +24,13 @@ from django.utils.translation import ungettext_lazy
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
+from horizon import forms
 
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
 from crystal_dashboard.api import swift as crystal_api
 from crystal_dashboard.dashboards.crystal.containers import utils
+from crystal_dashboard.dashboards.crystal.containers import models 
 
 LOG = logging.getLogger(__name__)
 
@@ -250,17 +252,25 @@ def get_metadata_loaded(container):
     return hasattr(container, 'is_public') and container.is_public is not None
 
 
-class UpdateContainer(tables.LinkAction):
+class UpdateContainerMetadata(tables.LinkAction):
     name = "update"
-    verbose_name = _("Edit")
+    verbose_name = _("Edit Metadata")
     icon = "pencil"
     url = "horizon:crystal:containers:update"
-    classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, datum=None):
-        container_name = self.table.kwargs['container_name']
-        return reverse(self.url, args=(container_name,))
+        return reverse(self.url, args=(datum.name,))
 
+
+class UpdateStoragePolicy(tables.LinkAction):
+    name = "update_policy"
+    verbose_name = _("Edit Storage Policy")
+    icon = "pencil"
+    url = "horizon:crystal:containers:update_policy"
+    classes = ("ajax-modal", "btn-view")
+
+    def get_link_url(self, datum=None):
+        return reverse(self.url, args=(datum.name,))
 
 class ContainersTable(tables.DataTable):
     METADATA_LOADED_CHOICES = (
@@ -284,13 +294,104 @@ class ContainersTable(tables.DataTable):
         row_class = ContainerAjaxUpdateRow
         status_columns = ['metadata_loaded', ]
         table_actions = (CreateContainer,)
-        row_actions = (ViewContainer, MakePublicContainer,
-                       MakePrivateContainer,UpdateContainer, DeleteContainer,)
+        # row_actions = (ViewContainer, UpdateContainer, MakePublicContainer,
+        #                MakePrivateContainer, DeleteContainer,)
+        # Josep: Disabled make a container Public for security reasons.
+        row_actions = (UpdateContainerMetadata, UpdateStoragePolicy, ViewContainer, DeleteContainer,)
         browser_table = "navigation"
         footer = False
 
     def get_object_id(self, container):
         return container.name
+
+
+class AddContainerMetadata(tables.LinkAction):
+    name = "add_metadata"
+    verbose_name = _("Add Metadata")
+    url = "horizon:crystal:containers:add_metadata"
+    classes = ("ajax-modal", "btn-update",)
+    icon = "plus"
+
+    def get_link_url(self, datum=None):
+        container_name = self.table.kwargs['container_name']
+        base_url = reverse(self.url, args=(container_name,))
+        return base_url
+
+
+class DeleteContainerMetadata(tables.DeleteAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Metadata",
+            u"Delete metadata",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Metadata",
+            u"Deleted Metadata",
+            count
+        )
+
+    name = "delete_metadata"
+    success_url = "horizon:crystal:containers:update"
+
+    def get_success_url(self, obj):
+        container_name = self.table.kwargs['container_name']
+        return reverse(self.success_url, args=(container_name,))
+
+    def delete(self, request, obj_id):
+        try:
+            container_name = self.table.kwargs['container_name']
+            header = {'x-remove-container-meta-' + obj_id: 'x'}
+            api.swift.swift_api(request).post_container(container_name, headers=header)
+
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:containers:index")
+            error_message = "Unable to remove metadata.\t %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
+
+
+class DeleteMultipleContainerMetadata(DeleteContainerMetadata):
+    name = "delete_multiple_instances"
+
+
+class UpdateMetadataCell(tables.UpdateAction):
+    ajax = True
+
+    def allowed(self, request, project, cell):
+        return cell.column.name == 'value'
+
+    def update_cell(self, request, datum, id, cell_name, new_cell_value):
+        try:
+            headers = {id: new_cell_value}
+            api.swift.swift_api(request).post_container(datum.container, headers=headers)
+        except Exception:
+            exceptions.handle(request, ignore=True)
+        return True
+
+
+class UpdateMetadataRow(tables.Row):
+    ajax = True
+
+    def get_data(self, request, id):
+        headers = api.swift.swift_api(request).head_container(self.table.kwargs['container_name'])
+        value = headers[id]
+        return models.MetadataObject(id, self.table.kwargs['container_name'], id, value)
+
+
+class UpdateContainerMetadataTable(tables.DataTable):
+    key = tables.Column('key', verbose_name="Key")
+    value = tables.Column('value', verbose_name=_("Value"), form_field=forms.CharField(max_length=25), update_action=UpdateMetadataCell)
+
+    class Meta(object):
+        name = "update_container_table"
+        verbose_name = _("Update Container")
+        table_actions = (AddContainerMetadata, DeleteMultipleContainerMetadata)
+        row_actions = (DeleteContainerMetadata,)
+        row_class = UpdateMetadataRow
 
 
 class ViewObject(tables.LinkAction):

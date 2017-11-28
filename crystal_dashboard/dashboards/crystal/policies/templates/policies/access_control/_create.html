@@ -19,7 +19,7 @@
     <script type="text/javascript">
         $("#id_project_id").change(function () {
             $("#id_container_id").load("{% url 'horizon:crystal:policies:policies:get_container_by_project' %}", {'project_id': $("#id_project_id").find("option:selected").val()});
-            $("#id_user_id").load("{% url 'horizon:crystal:policies:policies:get_users_by_project' %}", {'project_id': $("#id_project_id").find("option:selected").val()});
+            $("#id_identity").load("{% url 'horizon:crystal:policies:policies:get_users_by_project' %}", {'project_id': $("#id_project_id").find("option:selected").val()});
         });
     </script>
 {% endblock %}

@@ -27,6 +27,7 @@ from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
+from crystal_dashboard.api import swift as swift_api
 from crystal_dashboard.dashboards.crystal.containers import utils
 from crystal_dashboard.dashboards.crystal import common
 
@@ -40,6 +41,10 @@ no_begin_or_end_slash = validators.RegexValidator(r'^[^\/](?u).+[^\/]$',
                                                     "the beginning or end of "
                                                     "your string."),
                                                   code="nobeginorendslash")
+
+no_space_validator = validators.RegexValidator(r'^(?u)[^\s:-;]+$',
+                                               _("Invalid character."),
+                                               code="nospace")
 
 
 class CreateContainer(forms.SelfHandlingForm):
@@ -57,7 +62,7 @@ class CreateContainer(forms.SelfHandlingForm):
 
     policy_choices = []
     policy_name = forms.ChoiceField(choices=policy_choices,
-                                    label=_("Policy Name"),
+                                    label=_("Storage Policy"),
                                     help_text=_("The storage policy that you want to assign to the specific project."),
                                     required=True)
 
@@ -66,30 +71,32 @@ class CreateContainer(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         # Obtain list of storage policies
-        self.storage_policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name())
-
+        self.storage_policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name(), "deployed")
         # Initialization
         super(CreateContainer, self).__init__(request, *args, **kwargs)
 
         # Overwrite policy_id input form
         self.fields['policy_name'] = forms.ChoiceField(choices=self.storage_policy_choices,
-                                                       label=_("Policy Name"),
+                                                       label=_("Storage Policy"),
                                                        help_text=_("The storage policy that you want to assign to the specific project."),
                                                        required=True)
 
     def handle(self, request, data):
         try:
             if not data['parent']:
-                is_public = data["access"] == "public"
-                policy_name = data["policy_name"]
-                if policy_name:
-                    metadata = ({'is_public': is_public, "policy_name": policy_name})
-                else:
-                    metadata = ({'is_public': is_public})
+
+                headers = {'x-container-read': '', 'x-storage-policy': data["policy_name"]}
+                
+                if data["access"] == "public":
+                    headers['x-container-read'] = '.r:*,.rlistings'
+
                 # Create a container
-                api.swift.swift_create_container(request,
-                                                 data["name"],
-                                                 metadata=metadata)
+                response = swift_api.swift_create_container(request, request.user.project_id, data['name'], headers)
+                if 200 <= response.status_code < 300:
+                    messages.success(request, _('Successfully created container'))
+                    return data
+                else:
+                    raise ValueError(response.text)
                 messages.success(request, _("Container created successfully."))
             else:
                 # Create a pseudo-folder
@@ -103,8 +110,10 @@ class CreateContainer(forms.SelfHandlingForm):
                                                  subfolder_name)
                 messages.success(request, _("Folder created successfully."))
             return True
-        except Exception:
-            exceptions.handle(request, _('Unable to create container.'))
+        except Exception as ex:
+            redirect = reverse("horizon:crystal:containers:index")
+            error_message = "Unable to create container. %s" % ex.message
+            exceptions.handle(request, _(error_message), redirect=redirect)
 
 
 class UploadObject(forms.SelfHandlingForm):
@@ -154,12 +163,56 @@ class UploadObject(forms.SelfHandlingForm):
             exceptions.handle(request, _("Unable to upload object."))
 
 
-class UpdateContainer(forms.SelfHandlingForm):
-    
+class AddMetadata(forms.SelfHandlingForm):
+    key = forms.CharField(max_length=255,
+                          required=True,
+                          validators=[no_space_validator])
+    value = forms.CharField(max_length=255,
+                            required=True)
 
     def handle(self, request, data):
+        name = self.initial['container_name']
+        data['key'] = data['key'].replace(' ', ':')
+        headers = {'X-Container-Meta-' + data['key']: data['value']}
+        api.swift.swift_api(request).post_container(name, headers=headers)
         return data
 
+
+class UpdateStoragePolicy(forms.SelfHandlingForm):
+    policy_choices = []
+    policy = forms.ChoiceField()
+    
+    def __init__(self, request, *args, **kwargs):
+        # Obtain list of projects
+        self.policy_choices = common.get_storage_policy_list_choices(request, common.ListOptions.by_name(), "deployed")
+        
+        super(UpdateStoragePolicy, self).__init__(request, *args, **kwargs)
+        # Overwrite target_id input form
+        headers = api.swift.swift_api(request).head_container(self.initial['container_name'])
+        self.initial_value = headers.get('x-storage-policy')
+        self.fields['policy'] = forms.ChoiceField(choices=self.policy_choices,
+                                                    label=_("Storage Policies"),
+                                                    required=True, 
+                                                    initial=self.initial_value)
+
+
+    def handle(self, request, data):
+        name = self.initial['container_name']
+        if (self.initial_value != data['policy']):
+            try:
+                response = swift_api.swift_update_container_policy(request, request.user.project_id, name, data['policy'])
+                if 200 <= response.status_code < 300:
+                    messages.success(request, _('Successfully updated container policy'))
+                    return data
+                else:
+                    raise ValueError(response.text)
+            except Exception as ex:
+                redirect = reverse("horizon:crystal:containers:index")
+                error_message = "Unable to update container policy.\st %s" % ex.message
+                exceptions.handle(request, _(error_message), redirect=redirect)
+        else:
+            return data
+            
 
 class UpdateObject(UploadObject):
     def __init__(self, *args, **kwargs):

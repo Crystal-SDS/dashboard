@@ -8,7 +8,6 @@ from crystal_dashboard.api import policies as api
 from crystal_dashboard.dashboards.crystal import common
 from crystal_dashboard.dashboards.crystal import exceptions as sdsexception
 from openstack_dashboard import api as api_keystone
-from openstack_dashboard.utils import identity
 
 
 class CreateAccessControlPolicy(forms.SelfHandlingForm):
@@ -22,26 +21,31 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
     container_choices = [('', 'None')]
     container_id = forms.CharField(label=_("Container"),
                                    help_text=_("The container where the rule will be applied."),
-                                   required=True,
+                                   required=False,
                                    widget=forms.Select(choices=container_choices))
 
     users_choices = [('', 'None')]
-    user_id = forms.CharField(label=_("Users"),
-                              help_text=_("The user where the rule will be applied."),
-                              required=True,
-                              widget=forms.Select(choices=users_choices))
+    identity = forms.CharField(label=_("User/Group"),
+                               help_text=_("The user or group where the rule will be applied."),
+                               required=True,
+                               widget=forms.Select(choices=users_choices))
 
-    write = forms.BooleanField(required=False, label="Write")
-    read = forms.BooleanField(required=False, label="Read")
+    access = forms.ChoiceField(
+        label=_('Level of access'),
+        choices=[('list', _('List')),
+                 ('read', _('Read-only')),
+                 ('read-write', _('Read and Write'))],
+        initial='list'
+    )
 
     object_type_choices = []
     object_type = forms.ChoiceField(choices=object_type_choices,
-                                    label=_("Object Type"),
+                                    label=_("Read Condition: Object Type"),
                                     help_text=_("The type of object the rule will be applied to."),
                                     required=False)
 
     object_tag = forms.CharField(max_length=255,
-                                 label=_("Object Tag"),
+                                 label=_("Read Condition: Object Tag"),
                                  required=False,
                                  help_text=_("The metadata tag of object the rule will be applied to."))
 
@@ -61,7 +65,7 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
                                                       required=True)
 
         self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
-                                                       label=_("Object Type"),
+                                                       label=_("Read Condition: Object Type"),
                                                        help_text=_("The type of object the rule will be applied to."),
                                                        required=False)
 
@@ -82,25 +86,41 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
 class UpdateAccessControlPolicy(forms.SelfHandlingForm):
 
-    write = forms.BooleanField(required=False, label="Write")
-    read = forms.BooleanField(required=False, label="Read")
+    access = forms.ChoiceField()
+
     object_type_choices = []
     object_type = forms.ChoiceField(choices=object_type_choices,
-                                    label=_("Object Type"),
+                                    label=_("Read Condition: Object Type"),
                                     help_text=_("The type of object the rule will be applied to."),
                                     required=False)
 
     object_tag = forms.CharField(max_length=255,
-                                 label=_("Object Tag"),
+                                 label=_("Read Condition: Object Tag"),
                                  required=False,
                                  help_text=_("The metadata tag of object the rule will be applied to."))
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):        
         super(UpdateAccessControlPolicy, self).__init__(request, *args, **kwargs)
+
+        initial_value = ''
+        if self.initial['read'] and self.initial['write']:
+            initial_value = 'read-write'
+        elif self.initial['read']:
+            initial_value = 'read'
+        elif self.initial['list']:
+            initial_value = 'list'
+
+        self.fields['access'] = forms.ChoiceField(
+            label=_('Level of access'),
+            choices=[('list', _('List')),
+                 ('read', _('Read-only')),
+                 ('read-write', _('Read and Write'))],
+            initial=initial_value
+        )        
 
         self.object_type_choices = common.get_object_type_choices(request)
         self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
-                                                       label=_("Object Type"),
+                                                       label=_("Read Condition: Object Type"),
                                                        help_text=_("The type of object the rule will be applied to."),
                                                        required=False)
 

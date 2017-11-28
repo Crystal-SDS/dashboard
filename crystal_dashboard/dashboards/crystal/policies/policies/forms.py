@@ -287,6 +287,7 @@ class CreateDynamicPolicy(forms.SelfHandlingForm):
 
 
 class UpdatePolicy(forms.SelfHandlingForm):
+    
     object_type_choices = []
     object_type = forms.ChoiceField(choices=object_type_choices,
                                     label=_("Object Type"),
