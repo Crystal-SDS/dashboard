@@ -52,7 +52,7 @@ class StaticPoliciesTab(tabs.TableTab):
                 inst['reverse'] = 'Proxy Node'
             elif inst['reverse'] == 'object':
                 inst['reverse'] = 'Storage Node'
-            if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
+            if self.request.user.project_name == settings.CRYSTAL_ADMIN_PROJECT:
                 ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
                                                         inst['object_type'], inst['object_size'], inst['object_tag'],
                                                         inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
