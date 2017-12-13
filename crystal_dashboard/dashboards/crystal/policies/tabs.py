@@ -54,6 +54,13 @@ class StaticPoliciesTab(tabs.TableTab):
                 inst['reverse'] = 'Proxy Node'
             elif inst['reverse'] == 'object':
                 inst['reverse'] = 'Storage Node'
+            if 'post' not in inst:
+                inst['post'] = False
+            if 'head' not in inst:
+                inst['head'] = False
+            if 'delete' not in inst:
+                inst['delete'] = False
+
             if self.request.user.project_name == local_settings.CRYSTAL_ADMIN_PROJECT:
                 ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
                                                         inst['object_type'], inst['object_size'], inst['object_tag'],
