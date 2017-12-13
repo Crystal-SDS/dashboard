@@ -52,18 +52,18 @@ def get_container_by_project(request):
     if request.method == 'POST':
         project_id = request.POST.get('project_id')
         try:
-            container_list = common.get_container_list(request, project_id)
-            if len(container_list) > 0:
-                # If the project contains some containers
-                container_response = '<option value="">Select one</option>'
-                container_response += '<optgroup label="Containers">'
-                for container in container_list:
-                    value, label = container
-                    container_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
-                container_response += '</optgroup>'
-            else:
-                # If the project does not contain some containers
-                container_response = '<option value="">None</option>'
+            container_response = '<option value="">None</option>'
+            
+            if not project_id.startswith('group:'):
+                container_list = common.get_container_list(request, project_id)
+                if len(container_list) > 0:
+                    # If the project contains some containers
+                    container_response = '<option value="">Select one</option>'
+                    container_response += '<optgroup label="Containers">'
+                    for container in container_list:
+                        value, label = container
+                        container_response += '<option value="' + str(value) + '">' + str(label) + '</option>'
+                    container_response += '</optgroup>'
         except:
             # If get_container_list raises an exception
             container_response = '<option value="">None</option>'

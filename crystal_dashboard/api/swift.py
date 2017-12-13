@@ -282,6 +282,20 @@ def swift_list_storage_policies(request):
     return r
 
 
+def swift_list_deployed_storage_policies(request):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/storage_policies/deployed"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.get(url, headers=headers)
+    return r
+
+
 def swift_available_disks_storage_policy(request, storage_policy_id):
     token = get_token(request)
 
@@ -414,12 +428,26 @@ def swift_get_project_containers(request, project_id):
     return r
 
 
-def swift_update_container_policy(request, project_id, storage_policy_id):
+def swift_create_container(request, project_id, container_name, container_headers):
     token = get_token(request)
 
     headers = {}
 
-    url = settings.IOSTACK_CONTROLLER_URL + "/swift/" + str(project_id) + "/container/policy"
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/" + project_id + "/" + str(container_name) + "/create"
+
+    headers["X-Auth-Token"] = str(token)
+    headers['Content-Type'] = "application/json"
+
+    r = requests.post(url, json.dumps(container_headers), headers=headers)
+    return r
+
+
+def swift_update_container_policy(request, project_id, container_name, storage_policy_id):
+    token = get_token(request)
+
+    headers = {}
+
+    url = settings.IOSTACK_CONTROLLER_URL + "/swift/" + project_id + "/" + str(container_name) + "/policy"
 
     headers["X-Auth-Token"] = str(token)
     headers['Content-Type'] = "application/json"

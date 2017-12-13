@@ -351,7 +351,7 @@ def get_groups_list(request, project_id):
 # ==============
 # Storage Policies
 # ==============
-def get_storage_policy_list_choices(request, by_attribute):
+def get_storage_policy_list_choices(request, by_attribute, by_state=None):
     """
     Get a tuple of storage policy choices
 
@@ -359,10 +359,10 @@ def get_storage_policy_list_choices(request, by_attribute):
     :param by_attribute: filter by attribute
     :return: tuple with storage policy choices
     """
-    return ('', 'Select one'), ('Storage Policies', get_storage_policy_list(request, by_attribute))
+    return ('', 'Select one'), ('Storage Policies', get_storage_policy_list(request, by_attribute, by_state))
 
 
-def get_storage_policy_list(request, by_attribute):
+def get_storage_policy_list(request, by_attribute, by_state=None):
     """
     Get a list of storage policies
 
@@ -371,7 +371,10 @@ def get_storage_policy_list(request, by_attribute):
     :return: list with storage policies
     """
     try:
-        response = api_swift.swift_list_storage_policies(request)
+        if by_state == "deployed":
+            response = api_swift.swift_list_deployed_storage_policies(request)
+        else:
+            response = api_swift.swift_list_storage_policies(request)
         if 200 <= response.status_code < 300:
             response_text = response.text
         else:

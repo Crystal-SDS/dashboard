@@ -23,7 +23,7 @@ class CreateController(forms.SelfHandlingForm):
 
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 2}),
-                                  label=_("valid_parameters"),
+                                  label=_("Valid Parameters"),
                                   required=False)
 
     instances = forms.CharField(max_length=255,
@@ -71,7 +71,7 @@ class UpdateController(forms.SelfHandlingForm):
 
     valid_parameters = forms.CharField(widget=forms.widgets.Textarea(
                                   attrs={'rows': 2}),
-                                  label=_("valid_parameters"),
+                                  label=_("Valid Parameters"),
                                   required=False)
 
     def __init__(self, request, *args, **kwargs):

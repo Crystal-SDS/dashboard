@@ -86,13 +86,8 @@ class CreateAccessControlPolicy(forms.SelfHandlingForm):
 
 class UpdateAccessControlPolicy(forms.SelfHandlingForm):
 
-    access = forms.ChoiceField(
-        label=_('Level of access'),
-        choices=[('list', _('List')),
-                 ('read', _('Read-only')),
-                 ('read-write', _('Read and Write'))],
-        initial='list'
-    )
+    access = forms.ChoiceField()
+
     object_type_choices = []
     object_type = forms.ChoiceField(choices=object_type_choices,
                                     label=_("Read Condition: Object Type"),
@@ -104,8 +99,24 @@ class UpdateAccessControlPolicy(forms.SelfHandlingForm):
                                  required=False,
                                  help_text=_("The metadata tag of object the rule will be applied to."))
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):        
         super(UpdateAccessControlPolicy, self).__init__(request, *args, **kwargs)
+
+        initial_value = ''
+        if self.initial['read'] and self.initial['write']:
+            initial_value = 'read-write'
+        elif self.initial['read']:
+            initial_value = 'read'
+        elif self.initial['list']:
+            initial_value = 'list'
+
+        self.fields['access'] = forms.ChoiceField(
+            label=_('Level of access'),
+            choices=[('list', _('List')),
+                 ('read', _('Read-only')),
+                 ('read-write', _('Read and Write'))],
+            initial=initial_value
+        )        
 
         self.object_type_choices = common.get_object_type_choices(request)
         self.fields['object_type'] = forms.ChoiceField(choices=self.object_type_choices,
