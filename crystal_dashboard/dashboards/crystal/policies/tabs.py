@@ -21,6 +21,8 @@ from crystal_dashboard.dashboards.crystal.policies.access_control import tables 
 from openstack_dashboard import api as api_keystone
 from openstack_dashboard.utils import identity
 
+from crystal_dashboard.local import local_settings
+
 
 class StaticPoliciesTab(tabs.TableTab):
     table_classes = (policies_tables.StaticPoliciesTable,)
@@ -52,7 +54,14 @@ class StaticPoliciesTab(tabs.TableTab):
                 inst['reverse'] = 'Proxy Node'
             elif inst['reverse'] == 'object':
                 inst['reverse'] = 'Storage Node'
-            if self.request.user.project_name == settings.IOSTACK_KEYSTONE_ADMIN_TENANT:
+            if 'post' not in inst:
+                inst['post'] = False
+            if 'head' not in inst:
+                inst['head'] = False
+            if 'delete' not in inst:
+                inst['delete'] = False
+
+            if self.request.user.project_name == local_settings.CRYSTAL_ADMIN_PROJECT:
                 ret.append(policies_models.StaticPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['filter_name'],
                                                         inst['object_type'], inst['object_size'], inst['object_tag'],
                                                         inst['execution_server'], inst['reverse'], inst['execution_order'], inst['params'],
@@ -88,7 +97,16 @@ class DynamicPoliciesTab(tabs.TableTab):
         instances = json.loads(strobj)
         ret = []
         for inst in instances:
-            ret.append(policies_models.DynamicPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['condition'], inst['action'], inst['filter'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['transient'], inst['parameters'], inst['status']))
+            if self.request.user.project_name == local_settings.CRYSTAL_ADMIN_PROJECT:
+                ret.append(policies_models.DynamicPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['condition'], inst['action'], 
+                                                         inst['filter'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['transient'], 
+                                                         inst['parameters'], inst['status']))
+    
+            elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
+                ret.append(policies_models.DynamicPolicy(inst['id'], inst['target_id'], inst['target_name'], inst['condition'], inst['action'], 
+                                                         inst['filter'], inst['object_type'], inst['object_size'], inst['object_tag'], inst['transient'], 
+                                                         inst['parameters'], inst['status']))
+            
         return sorted(ret, key=lambda x: x.id, reverse=True)
 
 
@@ -133,7 +151,14 @@ class AccessControlTab(tabs.TableTab):
                 instances = []
                 users = []
                 exceptions.handle(self.request, "User name not found")
-            ret.append(access_control_models.AccessControlPolicy(inst['id'], inst['target_id'], inst['target_name'],
+                
+            if self.request.user.project_name == local_settings.CRYSTAL_ADMIN_PROJECT:
+                ret.append(access_control_models.AccessControlPolicy(inst['id'], inst['target_id'], inst['target_name'],
+                                                                 inst['user_name'], inst['group_name'], inst['list'], inst['write'],
+                                                                 inst['read'], inst['object_type'], inst['object_tag']))
+
+            elif self.request.user.project_name == inst['target_name'] or inst['target_name'] == 'Global':
+                ret.append(access_control_models.AccessControlPolicy(inst['id'], inst['target_id'], inst['target_name'],
                                                                  inst['user_name'], inst['group_name'], inst['list'], inst['write'],
                                                                  inst['read'], inst['object_type'], inst['object_tag']))
 
