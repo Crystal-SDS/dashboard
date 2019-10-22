@@ -33,11 +33,11 @@ cat dashboard/crystal_dashboard/local/local_settings.py >> /etc/openstack-dashbo
 ```
 
 ## Overview
-![Storage Nodes](http://crystal-sds.org/wp-content/uploads/2016/05/nodes.png)
+![Storage Nodes](http://cloudlab.urv.cat/crystal/wp-content/uploads/2016/05/nodes.png)
 
-![Storlet Filters](http://crystal-sds.org/wp-content/uploads/2016/05/storlet_filters.png)
+![Storlet Filters](http://cloudlab.urv.cat/crystal/wp-content/uploads/2016/05/storlet_filters.png)
 
-![SWift Monitoring](http://crystal-sds.org/wp-content/uploads/2016/05/monitoring.png)
+![SWift Monitoring](http://cloudlab.urv.cat/crystal/wp-content/uploads/2016/05/monitoring.png)
 
 
 
